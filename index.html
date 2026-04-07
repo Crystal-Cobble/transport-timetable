@@ -406,9 +406,10 @@
         }
         .departure-info h3 {
             margin: 0;
-            font-size: 1rem;
+            font-size: 1.3rem;
             line-height: 1.15;
             letter-spacing: -0.01em;
+            font-weight: 700;
         }
         .departure-info p {
             margin: 0.35rem 0 0;
@@ -703,7 +704,7 @@
                 border-radius: 0.95rem;
             }
             .departure-info h3 {
-                font-size: 1rem;
+                font-size: 1.1rem;
                 line-height: 1.2;
                 padding-right: 0.2rem;
             }
@@ -727,9 +728,9 @@
                 font-size: 0.68rem;
             }
             .departure-meta {
-                justify-content: flex-start;
-                gap: 0.28rem;
-                font-size: 0.74rem;
+                gap: 0.24rem;
+                font-size: 0.67rem;
+                padding-top: 0.08rem;
             }
             .departure-meta-primary,
             .departure-meta-secondary {
@@ -846,7 +847,7 @@
                 min-width: 0;
             }
             .departure-info h3 {
-                font-size: 0.86rem;
+                font-size: 0.95rem;
                 line-height: 1.05;
             }
             .departure-info p {
@@ -916,7 +917,7 @@
                 <div class="field-row">
                     <div class="search-box">
                         <label for="stop-search">Search stop name</label>
-                        <input id="stop-search" placeholder="Type a stop name or location" autocomplete="off" aria-haspopup="listbox" aria-expanded="false" />
+                        <input type="text" id="stop-search" placeholder="Type a stop name or location" autocomplete="off" aria-haspopup="listbox" aria-expanded="false" />
                         <div class="search-dropdown hidden" id="search-dropdown" role="listbox" aria-label="Stop suggestions"></div>
                     </div>
                 </div>
@@ -956,8 +957,10 @@
 
     <script>
         const API_BASE = 'https://api.at.govt.nz';
-        const API_KEY = '0526f69dcb074a4b8df741eef46121fc';
+        const GTFS_API_KEY = '0b6d714ed53748ceb08b086129ed4375'; // GTFS V3 Secondary (try this for departures)
+        const REALTIME_API_KEY = '52aacd1bd356439b8a54949165d70812'; // Realtime Compact Primary
         const REALTIME_VEHICLE_LOCATIONS_URL = `${API_BASE}/realtime/legacy/vehiclelocations`;
+        const REALTIME_TRIP_UPDATES_URL = `${API_BASE}/realtime/legacy/tripupdates`;
         const SELECTED_STOPS_STORAGE_KEY = 'at-departure-board-selected-stops';
 
         const fallbackStops = [
@@ -1030,6 +1033,7 @@
             fetchedAt: 0,
             byTrip: new Map()
         };
+        const stopPlatformCache = new Map();
 
         const searchInput = document.getElementById('stop-search');
         const searchDropdown = document.getElementById('search-dropdown');
@@ -1078,6 +1082,24 @@
                 .replace(/\s+(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
                 .replace(/\s*[-–—:]\s*$/i, '')
                 .trim();
+        }
+
+        function getStopPlatformLabel(stop) {
+            if (!stop) return '';
+            if (stop.platformCode) return String(stop.platformCode).trim();
+            const raw = String(stop.stopName || stop.displayName || '').trim();
+            // Try multiple patterns for platform extraction
+            const patterns = [
+                /\b(?:platform|plat|bay|stop)\s+([A-Z0-9]+)\b/i,
+                /[\s\-]([A-Z0-9]{1,2})\s*$/i,
+                /plat(?:form)?\s*([A-Z0-9]+)/i,
+                /platform\s+([A-Z0-9]+)/i
+            ];
+            for (const pattern of patterns) {
+                const match = raw.match(pattern);
+                if (match && match[1]) return String(match[1]).trim().toUpperCase();
+            }
+            return '';
         }
 
         function groupSearchResults(results) {
@@ -1141,32 +1163,74 @@
             state.searchError = null;
             renderSearchList(query);
 
-            const params = new URLSearchParams();
-            params.set('filter[stop_code]', `${normalized}*`);
-            params.set('filter[stop_name]', `*${normalized}*`);
-            params.set('page[limit]', '20');
-            const url = `${API_BASE}/gtfs/v3/stops?${params.toString()}`;
+            const today = new Date().toISOString().split('T')[0];
+            const baseParams = new URLSearchParams();
+            baseParams.set('filter[date]', today);
+            baseParams.set('page[limit]', '80');
 
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        'Ocp-Apim-Subscription-Key': API_KEY,
-                        'Accept': 'application/json'
-                    }
-                });
-                const result = await response.json();
+            const directParams = new URLSearchParams(baseParams);
+            if (/^\d+$/.test(normalized)) {
+                directParams.set('filter[stop_code]', `${normalized}*`);
+            } else {
+                directParams.set('filter[stop_name]', `*${normalized}*`);
+            }
 
-                if (requestId !== searchRequestId) return [];
-                const matches = (result.data || []).map(item => {
+            const directUrl = `${API_BASE}/gtfs/v3/stops?${directParams.toString()}`;
+
+            async function parseStopResults(data) {
+                return (data || []).map(item => {
                     const attr = item.attributes || {};
                     return {
                         stopCode: attr.stop_code || '',
                         stopName: attr.stop_name || '',
                         stopId: attr.stop_id || '',
+                        platformCode: attr.platform_code || '',
                         locationType: attr.location_type,
                         wheelchairBoarding: attr.wheelchair_boarding
                     };
                 });
+            }
+
+            async function filterLocal(stops) {
+                return stops.filter(stop =>
+                    normalizeText(stop.stopName).includes(normalized) ||
+                    normalizeText(stop.stopCode).includes(normalized)
+                );
+            }
+
+            const tryLocalSearch = async () => {
+                const fallbackUrl = `${API_BASE}/gtfs/v3/stops?filter[date]=${today}&page[limit]=200`;
+                const fallbackResponse = await fetch(fallbackUrl, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!fallbackResponse.ok) throw new Error(`HTTP ${fallbackResponse.status}`);
+                const fallbackJson = await fallbackResponse.json();
+                const fallbackStops = await parseStopResults(fallbackJson.data || []);
+                return filterLocal(fallbackStops);
+            };
+
+            try {
+                const response = await fetch(directUrl, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (requestId !== searchRequestId) return [];
+
+                const rawStops = await parseStopResults(result.data || []);
+                let matches = rawStops;
+                if (matches.length === 0) {
+                    matches = await tryLocalSearch();
+                }
 
                 state.searchResults = matches;
                 state.searchLoading = false;
@@ -1175,12 +1239,21 @@
                 return matches;
             } catch (error) {
                 if (requestId !== searchRequestId) return [];
-                state.searchLoading = false;
-                state.searchError = error.message || 'Unable to search stops';
-                const fallback = getFallbackMatches(query);
-                state.searchResults = fallback;
-                renderSearchList(query);
-                return fallback;
+                try {
+                    const matches = await tryLocalSearch();
+                    state.searchResults = matches;
+                    state.searchLoading = false;
+                    state.searchError = null;
+                    renderSearchList(query);
+                    return matches;
+                } catch (_fallbackError) {
+                    state.searchLoading = false;
+                    state.searchError = error.message || 'Unable to search stops';
+                    const fallback = getFallbackMatches(query);
+                    state.searchResults = fallback;
+                    renderSearchList(query);
+                    return fallback;
+                }
             }
         }
 
@@ -1271,6 +1344,7 @@
                     stopName: stop.stopName,
                     route: dep.route,
                     destination: dep.destination,
+                    details: dep.destination || stop.stopName,
                     platform: dep.platform,
                     status: dep.status,
                     time: departureTime
@@ -1278,7 +1352,7 @@
             });
         }
 
-        function formatDepartureStatus(movement) {
+        function formatDepartureStatus(movement, hasLiveTracking = false) {
             const scheduled = movement.scheduledDepartureTime;
             const expected = movement.expectedDepartureTime;
             if (movement.departureBoardingActivity === 'cancelled') return 'Cancelled';
@@ -1295,7 +1369,7 @@
                 if (diffMinutes > 0) return `Delayed by ${diffMinutes} min`;
                 if (diffMinutes < 0) return `Ahead of schedule by ${Math.abs(diffMinutes)} min`;
                 if (isBoardingNow) return 'Boarding';
-                return '';
+                return hasLiveTracking ? 'On time' : '';
             }
 
             if (isBoardingNow) {
@@ -1316,14 +1390,24 @@
         }
 
         function normalizeTripKey(value) {
-            return String(value || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+            // Remove the last dash-separated segment if there are 6+ parts (GTFS includes extra hash)
+            let processedValue = String(value || '');
+            const parts = processedValue.split('-');
+            if (parts.length >= 6) {
+                // Keep first 5 segments (ROUTE-STOP-TIME-SEQ-HASH)
+                processedValue = parts.slice(0, 5).join('-');
+            }
+            return processedValue.replace(/[^a-z0-9]/gi, '').toLowerCase();
         }
 
         function normalizeOccupancyStatus(raw) {
-            const numericValue = Number(raw);
+            let numericValue = Number(raw);
+            if (Number.isFinite(numericValue)) {
+                numericValue = Math.max(0, Math.min(5, numericValue));
+            }
             const gtfsNumericStatusMap = {
                 0: { label: 'Very quiet', percent: 10, className: 'low' },
-                1: { label: 'Seats available', percent: 25, className: 'low' },
+                1: { label: 'Seats available', percent: 30, className: 'low' },
                 2: { label: 'Few seats left', percent: 55, className: 'medium' },
                 3: { label: 'Standing room only', percent: 82, className: 'high' },
                 4: { label: 'Very crowded', percent: 94, className: 'high' },
@@ -1470,58 +1554,255 @@
         async function fetchRealtimeVehicleLookup() {
             const cacheTtlMs = 20 * 1000;
             if ((Date.now() - realtimeVehicleCache.fetchedAt) < cacheTtlMs && realtimeVehicleCache.byTrip.size > 0) {
+                console.log(`Using cached realtime data (${realtimeVehicleCache.byTrip.size} trips)`);
                 return realtimeVehicleCache.byTrip;
             }
 
-            const response = await fetch(REALTIME_VEHICLE_LOCATIONS_URL, {
-                headers: {
-                    'Ocp-Apim-Subscription-Key': API_KEY,
-                    'Accept': 'application/json'
-                }
-            });
-            if (!response.ok) {
-                throw new Error(`Realtime vehicles HTTP ${response.status}`);
-            }
-
-            const json = await response.json();
-            const entities = (json.response && json.response.entity) || [];
             const byTrip = new Map();
 
-            entities.forEach(entity => {
-                const vehicle = entity.vehicle || entity.VehiclePosition?.vehicle;
-                const tripKey = normalizeTripKey(vehicle?.trip?.trip_id);
-                const occupancy = getOccupancyInfo(vehicle);
-                if (!tripKey || !occupancy) return;
-                byTrip.set(tripKey, occupancy);
-            });
+            function processEntity(entity, source) {
+                const tripUpdate = entity.trip_update || entity.TripUpdate || entity.tripUpdate;
+                const vehicle = entity.vehicle || entity.VehiclePosition?.vehicle || tripUpdate?.vehicle;
+                const trip = tripUpdate?.trip || vehicle?.trip;
+                const tripId = trip?.trip_id || trip?.tripId;
+                if (!tripId) return;
+                const tripKey = normalizeTripKey(tripId);
+                if (!tripKey) return;
 
+                const occupancy = getOccupancyInfo(vehicle || {});
+                const hasTripUpdate = Boolean(tripUpdate && tripUpdate.trip);
+                const existing = byTrip.get(tripKey) || { occupancy: null, tripUpdate: null, hasLiveData: false };
+
+                if (!existing.occupancy && occupancy) existing.occupancy = occupancy;
+                if (!existing.occupancy) existing.occupancy = getOccupancyInfo(tripUpdate || {});
+                if (!existing.tripUpdate && hasTripUpdate) existing.tripUpdate = tripUpdate;
+                existing.hasLiveData = true;
+                byTrip.set(tripKey, existing);
+            }
+
+            // Fetch both endpoints independently — either can fail without breaking the other
+            const realtimeHeaders = {
+                'Ocp-Apim-Subscription-Key': REALTIME_API_KEY,
+                'Accept': 'application/json'
+            };
+
+            const [tripResult, vehicleResult] = await Promise.all([
+                fetch(REALTIME_TRIP_UPDATES_URL, { headers: realtimeHeaders })
+                    .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+                    .then(json => (json.response && json.response.entity) || [])
+                    .catch(err => { console.warn('Trip updates unavailable:', err); return []; }),
+                fetch(REALTIME_VEHICLE_LOCATIONS_URL, { headers: realtimeHeaders })
+                    .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+                    .then(json => (json.response && json.response.entity) || [])
+                    .catch(err => { console.warn('Vehicle locations unavailable:', err); return []; })
+            ]);
+
+            tripResult.forEach(entity => processEntity(entity, 'TripUpdate'));
+            vehicleResult.forEach(entity => processEntity(entity, 'Vehicle'));
+
+            console.log(`Realtime API: ${byTrip.size} active trips (${tripResult.length} trip updates, ${vehicleResult.length} vehicles)`);
             realtimeVehicleCache.fetchedAt = Date.now();
             realtimeVehicleCache.byTrip = byTrip;
             return byTrip;
         }
 
-        function findRealtimeOccupancyForMovement(movement, realtimeLookup) {
+        function findRealtimeDataForMovement(movement, realtimeLookup) {
             if (!realtimeLookup || realtimeLookup.size === 0) return null;
 
-            const movementTripKey = normalizeTripKey(
+            const rawTripId =
                 movement.vehicleJourneyName
                 || movement.vehicle_journey_name
                 || movement.tripId
                 || movement.trip_id
-            );
+                || movement.trip?.trip_id;
+
+            const movementTripKey = normalizeTripKey(rawTripId);
             if (!movementTripKey) return null;
 
-            if (realtimeLookup.has(movementTripKey)) {
-                return realtimeLookup.get(movementTripKey);
+            let realtimeData = realtimeLookup.get(movementTripKey);
+            if (!realtimeData) {
+                realtimeData = Array.from(realtimeLookup.entries()).find(([tripKey]) =>
+                    movementTripKey.startsWith(tripKey) ||
+                    tripKey.startsWith(movementTripKey) ||
+                    movementTripKey.includes(tripKey) ||
+                    tripKey.includes(movementTripKey)
+                )?.[1] || null;
+            }
+            if (!realtimeData) {
+                console.log(`No realtime data for trip: raw="${rawTripId}", normalized="${movementTripKey}"`);
             }
 
-            for (const [tripKey, occupancy] of realtimeLookup.entries()) {
-                if (movementTripKey.startsWith(tripKey) || tripKey.startsWith(movementTripKey)) {
-                    return occupancy;
+            return realtimeData || null;
+        }
+
+        function cleanRouteId(routeId) {
+            if (!routeId) return '—';
+            const match = String(routeId).match(/^(\d+|[A-Z]+\d*)/);
+            return match ? match[1] : String(routeId);
+        }
+
+        function mapStopTripToRow(trip, stop, realtimeLookup) {
+            const attrs = trip.attributes || trip;
+            // For realtime stop_time_update matching, try both the full stop_id and the stop_code prefix
+            const mainCode = attrs.stop_id || stop.stopId || stop.stopCode || '';
+            const stopCodePrefix = (stop.stopCode || '').split('-')[0];
+            
+            // Parse departure time - format is HH:MM:SS or ISO-like date/time
+            let departureTime = null;
+            if (attrs.departure_time) {
+                const depStr = String(attrs.departure_time);
+                if (/^\d{2}:\d{2}:\d{2}$/.test(depStr)) {
+                    const today = new Date();
+                    const [hours, minutes, seconds] = depStr.split(':').map(Number);
+                    departureTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes, seconds);
+                } else if (/^\d{4}-\d{2}-\d{2}$/.test(depStr)) {
+                    departureTime = new Date(`${depStr}T${attrs.trip_start_time || '00:00:00'}`);
+                } else {
+                    departureTime = new Date(depStr);
                 }
             }
+            if (!window.loggedTrips) window.loggedTrips = 0;
+            if (window.loggedTrips < 5) {
+                console.log(`GTFS trip: ${attrs.trip_id} -> ${normalizeTripKey(attrs.trip_id)}`);
+                window.loggedTrips++;
+            }
 
-            return null;
+            // DEBUG: Log trip ID for matching
+            // const rawGtfsTrip = attrs.trip_id || 'MISSING';
+            // console.log(`GTFS trip: "${rawGtfsTrip}" (normalized: "${normalizeTripKey(rawGtfsTrip)}")`);
+
+            const realtimeData = findRealtimeDataForMovement({
+                trip_id: attrs.trip_id,
+                vehicleJourneyName: attrs.trip_id
+            }, realtimeLookup);
+            const hasLiveTracking = !!realtimeData?.hasLiveData;
+            const realtimeOccupancy = realtimeData?.occupancy || null;
+            let expectedTime = null;
+            let delaySeconds = null;
+            let hasStopLevelData = false; // true only when we have per-stop delay info
+            if (realtimeData?.tripUpdate) {
+                // Try matching stop_time_update by stop_id (multiple formats) or by stop_sequence
+                const stopSequence = attrs.stop_sequence;
+                const rawStopTimeUpdates = realtimeData.tripUpdate.stop_time_update;
+                const stopTimeUpdates = Array.isArray(rawStopTimeUpdates)
+                    ? rawStopTimeUpdates
+                    : rawStopTimeUpdates ? [rawStopTimeUpdates] : [];
+                const stopTimeUpdate = stopTimeUpdates.find(update => {
+                    const updateStopId = normalizeText(update.stop_id);
+                    // Try exact match with full stop_id, then prefix match with stop_code
+                    if (updateStopId === normalizeText(mainCode)) return true;
+                    if (updateStopId === normalizeText(attrs.stop_id)) return true;
+                    if (stopCodePrefix && updateStopId.startsWith(stopCodePrefix + '-')) return true;
+                    // Also try matching by stop_sequence
+                    if (stopSequence != null && update.stop_sequence != null && Number(update.stop_sequence) === Number(stopSequence)) return true;
+                    return false;
+                });
+                if (stopTimeUpdate) {
+                    hasStopLevelData = true;
+                    // Use delay field directly if available (more reliable)
+                    const depDelay = stopTimeUpdate.departure?.delay ?? stopTimeUpdate.arrival?.delay;
+                    if (depDelay != null) {
+                        delaySeconds = Number(depDelay);
+                        if (departureTime) {
+                            expectedTime = new Date(departureTime.getTime() + (delaySeconds * 1000));
+                        }
+                    } else {
+                        // Fall back to absolute time
+                        const timestamp = stopTimeUpdate.departure?.time || stopTimeUpdate.arrival?.time;
+                        if (timestamp != null) {
+                            expectedTime = new Date(Number(timestamp) * 1000);
+                        }
+                    }
+                } else {
+                    console.log(`No stopTimeUpdate found for stop ${mainCode} (seq ${stopSequence}) in trip ${attrs.trip_id}`);
+                }
+                // Fall back to trip-level delay — but only use non-zero delays as evidence
+                // A trip-level delay of 0 without per-stop data just means "scheduled, no info"
+                if (delaySeconds == null && realtimeData.tripUpdate.delay != null) {
+                    const tripDelay = Number(realtimeData.tripUpdate.delay);
+                    if (tripDelay !== 0) {
+                        delaySeconds = tripDelay;
+                        if (departureTime) {
+                            expectedTime = new Date(departureTime.getTime() + (delaySeconds * 1000));
+                        }
+                    }
+                }
+            } else {
+                console.log(`No tripUpdate for trip ${attrs.trip_id}`);
+            }
+            // Legacy fallback: trip.delay (some feeds put it here) — same rule, skip 0
+            if (delaySeconds == null && realtimeData?.tripUpdate?.trip?.delay != null && departureTime) {
+                const legacyDelay = Number(realtimeData.tripUpdate.trip.delay);
+                if (legacyDelay !== 0) {
+                    delaySeconds = legacyDelay;
+                    expectedTime = new Date(departureTime.getTime() + (delaySeconds * 1000));
+                }
+            }
+            const tripShortName = String(attrs.trip_short_name || '').trim();
+            const routeLabel = tripShortName && !/^[0-9]+$/.test(tripShortName)
+                ? tripShortName
+                : cleanRouteId(attrs.route_id) || '—';
+            const details = [
+                attrs.stop_headsign && attrs.stop_headsign !== attrs.trip_headsign ? attrs.stop_headsign : null,
+                attrs.trip_short_name && !/^[0-9]+$/.test(attrs.trip_short_name) ? `Trip ${attrs.trip_short_name}` : null
+            ].filter(Boolean).join(' • ') || stop.stopName;
+
+            // Get platform: try cache first (for parent stations), then stop's platform code
+            let platform = attrs.stop_id ? stopPlatformCache.get(attrs.stop_id) : null;
+            if (!platform) {
+                platform = getStopPlatformLabel(stop) || '—';
+            }
+            if (!platform || platform === '—') {
+                platform = attrs.platform_code || attrs.platformCode || platform;
+            }
+
+            let status = '';
+            // Only show status when we have genuine evidence of live tracking:
+            // - per-stop delay data (hasStopLevelData), or
+            // - occupancy data confirming the vehicle is active
+            // For "On time", also require the departure is within 60 min (far-future trips aren't truly tracked)
+            const hasGenuineTracking = hasStopLevelData || !!realtimeOccupancy;
+            const minutesToDeparture = departureTime ? Math.round((departureTime.getTime() - Date.now()) / 60000) : null;
+            if (hasLiveTracking) {
+                if (delaySeconds != null) {
+                    const delayMinutes = Math.round(Math.abs(delaySeconds) / 60);
+                    if (delaySeconds > 60) {
+                        status = `Delayed by ${delayMinutes} min`;
+                    } else if (delaySeconds < -60) {
+                        status = `Ahead by ${delayMinutes} min`;
+                    } else if (hasGenuineTracking && (minutesToDeparture == null || minutesToDeparture <= 60)) {
+                        status = 'On time';
+                    }
+                } else if (expectedTime && departureTime) {
+                    const diff = expectedTime.getTime() - departureTime.getTime();
+                    const diffMinutes = Math.round(Math.abs(diff) / 60000);
+                    if (diff > 60000) {
+                        status = `Delayed by ${diffMinutes} min`;
+                    } else if (diff < -60000) {
+                        status = `Ahead by ${diffMinutes} min`;
+                    } else if (hasGenuineTracking && (minutesToDeparture == null || minutesToDeparture <= 60)) {
+                        status = 'On time';
+                    }
+                }
+            }
+            if (!window.loggedStatus) window.loggedStatus = 0;
+            if (window.loggedStatus < 5) {
+                console.log(`Trip ${attrs.trip_id}: hasLive=${hasLiveTracking}, expected=${expectedTime}, departure=${departureTime}, status=${status}`);
+                window.loggedStatus++;
+            }
+
+            return {
+                stopName: stop.stopName,
+                route: routeLabel,
+                destination: attrs.trip_headsign || attrs.stop_headsign || '—',
+                details: details,
+                platform: platform,
+                status: status,
+                occupancy: realtimeOccupancy || null,
+                time: expectedTime || departureTime,
+                scheduledTime: departureTime,
+                expectedTime: expectedTime
+            };
         }
 
         function mapMovementToRow(movement, stopName, realtimeLookup) {
@@ -1530,15 +1811,19 @@
             const scheduledTime = scheduled ? new Date(scheduled) : null;
             const expectedTime = expected ? new Date(expected) : null;
             const time = expectedTime || scheduledTime;
-            const realtimeOccupancy = findRealtimeOccupancyForMovement(movement, realtimeLookup);
+            const realtimeData = findRealtimeDataForMovement(movement, realtimeLookup);
+            const occupancy = realtimeData?.occupancy || getOccupancyInfo(movement);
+            const hasLiveTracking = !!realtimeData?.hasLiveData || !!occupancy;
 
+            const destination = movement.destinationDisplay || movement.destination_display || movement.stopDisplay || '—';
             return {
                 stopName,
                 route: movement.route_short_name || movement.route_long_name || movement.route_id || '—',
-                destination: movement.destinationDisplay || movement.destination_display || movement.stopDisplay || '—',
+                destination,
+                details: destination !== '—' ? destination : stopName,
                 platform: movement.departurePlatformName || movement.departure_platform_name || '—',
-                status: formatDepartureStatus(movement),
-                occupancy: realtimeOccupancy || getOccupancyInfo(movement),
+                status: formatDepartureStatus(movement, hasLiveTracking),
+                occupancy: occupancy,
                 time,
                 scheduledTime,
                 expectedTime
@@ -1563,12 +1848,29 @@
             if (/^(T2|WEST|2|T2WEST)$/.test(code) || code.startsWith('T2')) return 'WEST';
             if (/^(T3|STH|3|T3STH)$/.test(code) || code.startsWith('T3')) return 'STH';
             if (/^(T4|EAST|4|T4EAST)$/.test(code) || code.startsWith('T4')) return 'EAST';
+            // Rail bus replacements
+            if (code === 'RBE') return 'RBE';
+            if (code === 'RBW' || code === 'RBWX') return code;
+            if (code === 'RBO') return 'RBO';
+            if (code === 'RBS' || code === 'RBSX') return code;
+            // Keep NX1, NX2, WX1, etc. as-is
+            if (/^(NX|WX)[12]$/.test(code)) return code;
+            // For other routes with letters followed by numbers, keep them together
+            if (/^[A-Z]+\d+$/.test(code)) return code;
+            // Only strip numbers for generic cases
+            const letterPrefix = code.match(/^([A-Z]{2,})\d+$/);
+            if (letterPrefix) return letterPrefix[1];
             return labelCode;
         }
 
         function getRouteColor(route) {
             const raw = String(route || '').trim().toUpperCase();
             const code = raw.replace(/\s+/g, '');
+            // Rail bus replacements
+            if (code === 'RBE') return '#F59E0B';
+            if (code === 'RBW' || code === 'RBWX') return '#10B981';
+            if (code === 'RBO') return '#00AEEF';
+            if (code === 'RBS' || code === 'RBSX') return '#EF4444';
             if (code.startsWith('ONE')) return '#00AEEF';
             if (/^(T1|1|T1ONE)$/.test(code) || code.startsWith('T1')) return '#3B82F6';
             if (code === 'WEST' || code.startsWith('T2')) return '#10B981';
@@ -1597,13 +1899,19 @@
             return `<span class="occupancy-meter" aria-hidden="true">${Array.from({ length: 4 }, (_, index) => `<span class="${index < filledBars ? 'filled' : ''}"></span>`).join('')}</span>`;
         }
 
-        function formatDepartureTimeLabel(time, scheduledTime, expectedTime) {
+        function formatDepartureTimeLabel(time, scheduledTime, expectedTime, hasLiveTracking = false) {
             if (!time) return '—';
             const now = new Date();
             const target = expectedTime || scheduledTime || time;
             const minutesAway = Math.round((new Date(target).getTime() - now.getTime()) / 60000);
-            if (minutesAway <= 0) return 'Now';
-            if (minutesAway < 60) return `${minutesAway} min`;
+            
+            // Only show "X min" countdown for live-tracked departures within 60 minutes
+            if (hasLiveTracking && minutesAway <= 60) {
+                if (minutesAway <= 0) return 'Now';
+                return `${minutesAway} min`;
+            }
+            
+            // Otherwise show scheduled clock time
             return new Date(target).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' });
         }
 
@@ -1624,12 +1932,21 @@
                 return;
             }
 
-            const url = `${API_BASE}/serviceinfo/v1/departures/${encodeURIComponent(stop.stopCode)}`;
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            const currentHour = today.getHours();
+            
+            // Use the full stop_id for the API call (the API requires it, not just the stop_code)
+            const stopId = stop.stopId || stop.stopCode;
+            const stopCode = stop.stopCode || '';
+            const url = `${API_BASE}/gtfs/v3/stops/${encodeURIComponent(stopId)}/stoptrips?filter[date]=${dateStr}&filter[start_hour]=${currentHour}&filter[hour_range]=4`;
+            
             try {
                 const [response, realtimeLookup] = await Promise.all([
                     fetch(url, {
                         headers: {
-                            'Ocp-Apim-Subscription-Key': API_KEY,
+                            'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
                             'Accept': 'application/json'
                         }
                     }),
@@ -1639,11 +1956,13 @@
                     throw new Error(`HTTP ${response.status}`);
                 }
                 const json = await response.json();
-                const movements = (json.response && json.response.movements) || [];
-                const rows = movements
-                    .filter(m => m.departureBoardingActivity !== 'noBoarding')
-                    .map(m => mapMovementToRow(m, stop.stopName, realtimeLookup))
-                    .filter(row => row.time)
+                const tripData = (json.data || []);
+                console.log(`Fetched ${tripData.length} trips for stop ${stopId}`);
+                
+                console.log(`Platform cache has ${stopPlatformCache.size} entries before mapping departures`);
+                const rows = tripData
+                    .map(trip => mapStopTripToRow(trip, stop, realtimeLookup))
+                    .filter(row => row.time && row.time.getTime() >= Date.now() - 60000)
                     .sort((a, b) => (a.time?.getTime() || 0) - (b.time?.getTime() || 0));
 
                 if (!state.selectedStops.some(item => item.stopCode === key)) return;
@@ -1677,6 +1996,79 @@
                 localStorage.setItem(SELECTED_STOPS_STORAGE_KEY, JSON.stringify(stopsToStore));
             } catch (error) {
                 // Ignore storage failures.
+            }
+        }
+
+        async function fetchStopDetails(stop) {
+            if (!stop || !stop.stopId) return stop;
+
+            const url = `${API_BASE}/gtfs/v3/stops/${encodeURIComponent(stop.stopId)}`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) return stop;
+                const json = await response.json();
+                const attrs = (json.data && json.data.attributes) || {};
+                stop.platformCode = stop.platformCode || attrs.platform_code || '';
+                stop.parentStation = stop.parentStation || attrs.parent_station || '';
+                stop.locationType = attrs.location_type;
+                console.log(`Stop ${stop.stopName}: platformCode="${stop.platformCode}", locationType=${attrs.location_type}, parentStation="${stop.parentStation}"`);
+                
+                // If this is a parent station or has a parent, fetch child stops
+                if (attrs.location_type === 1 || stop.parentStation) {
+                    await fetchChildStops(stop.parentStation || stop.stopId);
+                }
+            } catch (error) {
+                console.error(`Error fetching stop details for ${stop.stopCode}:`, error);
+            }
+            return stop;
+        }
+
+        async function fetchChildStops(parentStopId) {
+            const url = `${API_BASE}/gtfs/v3/stops?filter[parent_station]=${encodeURIComponent(parentStopId)}&page[limit]=500`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                let json = await response.json();
+                let stops = json.data || [];
+
+                if (stops.length === 0) {
+                    const dateStr = new Date().toISOString().split('T')[0];
+                    const fallbackResponse = await fetch(`${API_BASE}/gtfs/v3/stops?filter[date]=${dateStr}&page[limit]=500`, {
+                        headers: {
+                            'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                            'Accept': 'application/json'
+                        }
+                    });
+                    if (fallbackResponse.ok) {
+                        const fallbackJson = await fallbackResponse.json();
+                        stops = (fallbackJson.data || []).filter(item => {
+                            const attrs = item.attributes || {};
+                            return attrs.parent_station === parentStopId;
+                        });
+                    }
+                }
+
+                stops.forEach(item => {
+                    const attrs = item.attributes || {};
+                    const stopId = attrs.stop_id;
+                    const platform = attrs.platform_code || '';
+                    if (stopId) {
+                        stopPlatformCache.set(stopId, platform);
+                        console.log(`Cached platform: ${stopId} -> "${platform}"`);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching child stops:', error);
             }
         }
 
@@ -1792,18 +2184,19 @@
             departures.forEach(dep => {
                 const card = document.createElement('div');
                 card.className = 'departure-card';
-                const timeLabel = formatDepartureTimeLabel(dep.time, dep.scheduledTime, dep.expectedTime);
+                const hasLiveTracking = !!dep.expectedTime;
+                const timeLabel = formatDepartureTimeLabel(dep.time, dep.scheduledTime, dep.expectedTime, hasLiveTracking);
                 const scheduledLabel = formatClockTimeLabel(dep.scheduledTime || dep.expectedTime || dep.time);
-                const normalizedStatus = dep.status.toLowerCase();
+                const routeLabel = getRouteLabel(dep.route);
+                const routeColor = getRouteColor(dep.route);
+                const routeBackground = hexToRgba(routeColor, 0.18);
+                const routeBorder = hexToRgba(routeColor, 0.33);
+                const normalizedStatus = (dep.status || '').toLowerCase();
                 const statusClass = normalizedStatus.includes('delay') ? 'status-delay'
                     : normalizedStatus.includes('ahead') ? 'status-ahead'
                     : normalizedStatus.includes('board') ? 'status-board'
                     : normalizedStatus.includes('cancel') ? 'status-cancel'
                     : 'status-on';
-                const routeLabel = getRouteLabel(dep.route);
-                const routeColor = getRouteColor(dep.route);
-                const routeBackground = hexToRgba(routeColor, 0.18);
-                const routeBorder = hexToRgba(routeColor, 0.33);
                 const statusHtml = dep.status ? `<span class="departure-status ${statusClass}">${dep.status}</span>` : '';
                 const occupancyHtml = dep.occupancy
                     ? `<span class="occupancy-chip ${dep.occupancy.className}">${renderOccupancyMeter(dep.occupancy.percent)}<span>${dep.occupancy.label}</span></span>`
@@ -1813,8 +2206,8 @@
                     <div class="departure-row">
                         <div class="departure-route" style="background:${routeBackground}; color:${routeColor}; border: 1px solid ${routeBorder};">${routeLabel}</div>
                         <div class="departure-info">
-                            <h3>${dep.destination}</h3>
-                            <p>${dep.stopName}</p>
+                            <h3>${dep.details}</h3>
+                            <p>${dep.destination}</p>
                         </div>
                         <div class="departure-time">
                             <span class="departure-time-main">${timeLabel}</span>
@@ -1862,7 +2255,20 @@
             }
             renderSelectedStops();
             renderBoard();
-            fetchDeparturesForStop(stop);
+            
+            // Wait for stop details (including child stops/platforms) to be fetched before fetching departures
+            fetchStopDetails(stop).then(updatedStop => {
+                const index = state.selectedStops.findIndex(item => item.stopCode === updatedStop.stopCode);
+                if (index !== -1) {
+                    state.selectedStops[index] = updatedStop;
+                    saveSelectedStops();
+                    renderSelectedStops();
+                }
+                // Now fetch departures AFTER platform cache is populated
+                return fetchDeparturesForStop(updatedStop);
+            }).catch(error => {
+                console.error(`Error during addStop for ${stop.stopCode}:`, error);
+            });
         }
 
         function addStopFromInput() {
@@ -1918,15 +2324,25 @@
             renderBoard();
             updateLiveTime();
             updateLastUpdated();
+
+            if (state.selectedStops.length > 0) {
+                Promise.all(state.selectedStops.map(fetchStopDetails)).then(updatedStops => {
+                    state.selectedStops = updatedStops;
+                    saveSelectedStops();
+                    renderSelectedStops();
+                    renderBoard();
+                    refreshAllDepartures();
+                }).catch(() => {
+                    refreshAllDepartures();
+                });
+            }
+
             liveClockTimer = setInterval(updateLiveTime, 1000);
             refreshTimer = setInterval(() => {
                 if (state.selectedStops.length > 0) {
                     refreshAllDepartures();
                 }
             }, 30000);
-            if (state.selectedStops.length > 0) {
-                refreshAllDepartures();
-            }
         });
 
         clearButton.addEventListener('click', clearStops);
