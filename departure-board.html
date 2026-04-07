@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auckland Transport Departure Board</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #061226;
+            --panel: rgba(13, 33, 61, 0.92);
+            --panel-strong: rgba(7, 18, 34, 0.98);
+            --border: rgba(255,255,255,0.12);
+            --text: #f8fbff;
+            --muted: #9fb7d2;
+            --accent: #4fd1c5;
+            --danger: #ffb16d;
+            --success: #7ee787;
+            --error: #ff7b7b;
+            --shadow: 0 28px 80px rgba(0,0,0,0.35);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, system-ui, sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top left, rgba(25, 132, 199, 0.18), transparent 22%),
+                        linear-gradient(180deg, #08131f 0%, #0b1e3a 100%);
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(79, 209, 197, 0.05), transparent 25%),
+                        radial-gradient(circle at 15% 15%, rgba(255,255,255,0.08), transparent 0 16%);
+            pointer-events: none;
+        }
+        .page {
+            width: min(1200px, calc(100% - 2rem));
+            margin: 0 auto;
+            padding: 2rem 0 3rem;
+        }
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+        }
+        .hero {
+            max-width: 42rem;
+        }
+        .hero h1 {
+            margin: 0 0 0.75rem;
+            font-size: clamp(2.3rem, 4vw, 3.6rem);
+            line-height: 1.05;
+        }
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        .status-card {
+            background: rgba(8, 17, 36, 0.9);
+            border: 1px solid var(--border);
+            padding: 1.3rem 1.4rem;
+            border-radius: 1.4rem;
+            min-width: 18rem;
+            box-shadow: var(--shadow);
+        }
+        .status-card span {
+            display: block;
+        }
+        .status-card .label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+        .status-card .value {
+            margin-top: 0.85rem;
+            font-size: clamp(2.1rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: 0.03em;
+        }
+        .status-card .subnote {
+            margin-top: 0.45rem;
+            color: rgba(255,255,255,0.68);
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+        .controls {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+        .controls-panel {
+            display: grid;
+            gap: 1rem;
+            padding: 1.3rem 1.4rem;
+            border-radius: 1.5rem;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            box-shadow: var(--shadow);
+        }
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.85rem;
+            align-items: end;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-dropdown {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 0.65rem);
+            background: rgba(8, 17, 36, 0.98);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 1rem;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+            max-height: 18rem;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .search-dropdown.hidden { display: none; }
+        .search-item {
+            padding: 0.95rem 1rem;
+            cursor: pointer;
+            color: var(--text);
+            white-space: normal;
+            transition: background 0.18s ease;
+        }
+        .search-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        .board-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .button-fullscreen {
+            background: #5c96ff;
+            color: #fff;
+        }
+        .button-fullscreen:hover {
+            background: #4f85e1;
+        }
+        .fullscreen-mode .button-fullscreen {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: none;
+            opacity: 0.82;
+        }
+        .fullscreen-mode .button-fullscreen:hover {
+            background: rgba(255,255,255,0.14);
+            opacity: 1;
+        }
+        .board-table tbody tr:hover td {
+            background: rgba(255,255,255,0.06);
+        }
+        .fullscreen-mode {
+            overflow: hidden;
+        }
+        body.fullscreen-mode .page {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 1.5rem;
+            overflow: auto;
+            background: var(--bg);
+        }
+        body.fullscreen-mode header,
+        body.fullscreen-mode .controls {
+            display: none;
+        }
+        body.fullscreen-mode .board {
+            min-height: calc(100vh - 3.5rem);
+            border-radius: 0;
+            padding: 1.5rem;
+        }
+        body.fullscreen-mode .board-header {
+            margin-bottom: 1rem;
+        }
+        body.fullscreen-mode .board-actions {
+            justify-content: space-between;
+        }
+        label {
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem 1rem;
+            border-radius: 0.95rem;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            font-size: 1rem;
+        }
+        input[type="text"]:focus {
+            outline: 2px solid rgba(79, 209, 197, 0.65);
+            border-color: rgba(79, 209, 197, 0.45);
+        }
+        button {
+            border: none;
+            cursor: pointer;
+            border-radius: 0.95rem;
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            font-size: 0.98rem;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        button:hover { transform: translateY(-1px); }
+        .button-add {
+            color: #071924;
+            background: #7ce8d0;
+        }
+        .button-clear {
+            color: var(--text);
+            background: rgba(255,255,255,0.08);
+        }
+        .button-clear:hover { background: rgba(255,255,255,0.16); }
+        .selected-stops {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .stop-menu {
+            position: relative;
+        }
+        .stop-menu summary {
+            list-style: none;
+        }
+        .stop-menu summary::-webkit-details-marker {
+            display: none;
+        }
+        .stop-menu-button {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-weight: 700;
+        }
+        .stop-menu-button::after {
+            content: "▾";
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        .stop-menu[open] .stop-menu-button::after {
+            content: "▴";
+        }
+        .stop-menu-panel {
+            margin-top: 0.65rem;
+            padding: 0.9rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(8, 17, 36, 0.96);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.24);
+            display: grid;
+            gap: 0.75rem;
+        }
+        .stop-menu-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.75rem 1rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--text);
+            font-size: 0.98rem;
+        }
+        .chip button {
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            color: var(--text);
+            font-weight: 700;
+        }
+        .chip button:hover { background: rgba(255,255,255,0.15); }
+        .board {
+            position: relative;
+            background: linear-gradient(180deg, rgba(7, 18, 33, 0.96), rgba(8, 22, 44, 0.94));
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 2rem;
+            padding: 1.2rem;
+            box-shadow: 0 40px 110px rgba(0,0,0,0.35);
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+        }
+        .board::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(79, 209, 197, 0.12), transparent 22%),
+                radial-gradient(circle at 85% 10%, rgba(96, 165, 250, 0.12), transparent 22%);
+            pointer-events: none;
+            opacity: 0.86;
+        }
+        .board > * {
+            position: relative;
+            z-index: 1;
+        }
+        #board-body {
+            position: relative;
+        }
+        .board-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .board-header h2 {
+            margin: 0;
+            font-size: clamp(1.75rem, 2.5vw, 2.4rem);
+            letter-spacing: -0.02em;
+        }
+        .board-header .note {
+            margin-top: 0.35rem;
+            color: rgba(255,255,255,0.72);
+            font-size: 0.95rem;
+        }
+        .board-stats {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        .board-actions {
+            display: grid;
+            gap: 0.5rem;
+            align-items: end;
+            justify-items: end;
+            text-align: right;
+        }
+        .departure-list {
+            display: grid;
+            gap: 0.7rem;
+        }
+        .departure-card {
+            display: grid;
+            gap: 0.7rem;
+            padding: 1rem 1rem;
+            border-radius: 1.3rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 18px 40px rgba(0,0,0,0.14);
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+        .departure-card:hover {
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.07);
+            border-color: rgba(255,255,255,0.16);
+        }
+        .departure-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .departure-route {
+            min-width: 4.3rem;
+            padding: 0.75rem 0.9rem;
+            border-radius: 1.1rem;
+            background: rgba(79, 209, 197, 0.16);
+            color: #e9fbff;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.08em;
+        }
+        .departure-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .departure-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+        }
+        .departure-info p {
+            margin: 0.35rem 0 0;
+            color: rgba(255,255,255,0.72);
+            font-size: 0.9rem;
+        }
+        .departure-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.68);
+            font-size: 0.88rem;
+        }
+        .departure-time {
+            display: grid;
+            justify-items: end;
+            gap: 0.35rem;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .departure-time-main {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .departure-time-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.38rem 0.62rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.76);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+        .departure-meta-primary,
+        .departure-meta-secondary {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .departure-platform {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-weight: 700;
+        }
+        .departure-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.08);
+            color: #e9fbff;
+        }
+        .departure-status::before {
+            content: "";
+            width: 0.7rem;
+            height: 0.7rem;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.85;
+        }
+        .departure-status.status-on { color: #7ee787; background: rgba(126, 231, 135, 0.12); }
+        .departure-status.status-board { color: #93c5fd; background: rgba(147, 197, 253, 0.12); }
+        .departure-status.status-delay { color: #ffcc7d; background: rgba(255, 190, 117, 0.14); }
+        .departure-status.status-ahead { color: #7dd3fc; background: rgba(125, 211, 252, 0.16); }
+        .departure-status.status-cancel { color: #ff9ca4; background: rgba(255, 156, 164, 0.14); }
+        .occupancy-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.08);
+            color: #e9fbff;
+        }
+        .occupancy-meter {
+            display: inline-flex;
+            gap: 0.15rem;
+            align-items: flex-end;
+        }
+        .occupancy-meter span {
+            width: 0.28rem;
+            height: 0.7rem;
+            border-radius: 999px;
+            background: currentColor;
+            opacity: 0.22;
+        }
+        .occupancy-meter span.filled {
+            opacity: 0.95;
+        }
+        .occupancy-chip.low { color: #7ee787; background: rgba(126, 231, 135, 0.12); }
+        .occupancy-chip.medium { color: #fbbf24; background: rgba(251, 191, 36, 0.14); }
+        .occupancy-chip.high { color: #fb7185; background: rgba(251, 113, 133, 0.16); }
+        .occupancy-chip.unknown { color: #93c5fd; background: rgba(147, 197, 253, 0.12); }
+        .board-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+        }
+        .board-table thead {
+            border-bottom: 1px solid rgba(255,255,255,0.16);
+        }
+        .board-table th,
+        .board-table td {
+            text-align: left;
+            padding: 1rem 1rem;
+            font-size: 0.98rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .board-table th {
+            color: var(--muted);
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .board-table tr:nth-child(even) td {
+            background: rgba(255,255,255,0.03);
+        }
+        .route-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 3.2rem;
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(79, 209, 197, 0.14);
+            color: #e9fbff;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+        }
+        .status-chip {
+            display: inline-flex;
+            padding: 0.45rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .status-on { background: rgba(45, 172, 119, 0.18); color: #9becc6; }
+        .status-delay { background: rgba(245, 135, 104, 0.2); color: #ffd7b2; }
+        .status-board { background: rgba(98, 107, 255, 0.18); color: #dcdcff; }
+        .status-cancel { background: rgba(255, 116, 116, 0.18); color: #ffd1d1; }
+        .empty-state {
+            margin: 2rem 0;
+            padding: 1.8rem;
+            border-radius: 1.2rem;
+            background: rgba(255,255,255,0.05);
+            color: var(--muted);
+            text-align: center;
+        }
+        .note {
+            margin-top: 0.25rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        @media (max-width: 800px) {
+            .page {
+                width: min(100%, calc(100% - 1.25rem));
+                padding: 1rem 0 1.6rem;
+            }
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.85rem;
+                margin-bottom: 1.1rem;
+            }
+            .hero h1 {
+                font-size: clamp(1.95rem, 9vw, 2.6rem);
+                margin-bottom: 0.45rem;
+            }
+            .hero p {
+                font-size: 0.96rem;
+                line-height: 1.55;
+            }
+            .status-card {
+                min-width: auto;
+                padding: 1rem 1.05rem;
+                border-radius: 1.15rem;
+            }
+            .status-card .value {
+                margin-top: 0.55rem;
+                font-size: clamp(1.8rem, 8vw, 2.4rem);
+            }
+            .status-card .subnote {
+                font-size: 0.76rem;
+            }
+            .controls {
+                margin-bottom: 1rem;
+            }
+            .controls-panel {
+                padding: 1rem;
+                border-radius: 1.2rem;
+                gap: 0.85rem;
+            }
+            .field-row {
+                grid-template-columns: 1fr;
+                gap: 0.7rem;
+            }
+            .button-clear,
+            .button-fullscreen {
+                width: 100%;
+            }
+            .selected-stops {
+                display: grid;
+                gap: 0.55rem;
+            }
+            .stop-menu-button {
+                padding: 0.82rem 0.9rem;
+                border-radius: 0.95rem;
+                font-size: 0.9rem;
+            }
+            .stop-menu-panel {
+                padding: 0.8rem;
+                gap: 0.6rem;
+            }
+            .chip {
+                width: 100%;
+                justify-content: space-between;
+                padding: 0.8rem 0.95rem;
+                border-radius: 1rem;
+                font-size: 0.92rem;
+            }
+            .board {
+                padding: 0.95rem;
+                border-radius: 1.35rem;
+            }
+            .board-header {
+                gap: 0.9rem;
+                margin-bottom: 0.85rem;
+            }
+            .board-header h2 {
+                font-size: 1.45rem;
+            }
+            .board-header .note {
+                font-size: 0.88rem;
+                line-height: 1.45;
+            }
+            .board-actions {
+                width: 100%;
+                justify-items: stretch;
+                text-align: left;
+            }
+            .board-stats {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.55rem;
+                width: 100%;
+            }
+            .board-stats span {
+                padding: 0.75rem 0.85rem;
+                border-radius: 1rem;
+                border: 1px solid rgba(255,255,255,0.1);
+                background: rgba(255,255,255,0.05);
+                color: #dcecff;
+                min-height: 3.4rem;
+                display: flex;
+                align-items: center;
+            }
+            .departure-list {
+                gap: 0.8rem;
+            }
+            .departure-card {
+                padding: 0.9rem;
+                border-radius: 1.15rem;
+                gap: 0.85rem;
+            }
+            .departure-row {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                align-items: start;
+                gap: 0.75rem;
+            }
+            .departure-route {
+                min-width: 3.65rem;
+                padding: 0.65rem 0.7rem;
+                font-size: 1rem;
+                border-radius: 0.95rem;
+            }
+            .departure-info h3 {
+                font-size: 1rem;
+                line-height: 1.2;
+                padding-right: 0.2rem;
+            }
+            .departure-info p {
+                margin-top: 0.28rem;
+                font-size: 0.83rem;
+            }
+            .departure-time {
+                grid-column: 1 / -1;
+                width: 100%;
+                justify-items: start;
+                padding-top: 0.15rem;
+                gap: 0.28rem;
+            }
+            .departure-time-main {
+                font-size: 0.96rem;
+                color: #bff7f0;
+            }
+            .departure-time-pill {
+                padding: 0.28rem 0.5rem;
+                font-size: 0.68rem;
+            }
+            .departure-meta {
+                justify-content: flex-start;
+                gap: 0.28rem;
+                font-size: 0.74rem;
+            }
+            .departure-meta-primary,
+            .departure-meta-secondary {
+                display: contents;
+            }
+            .departure-platform,
+            .departure-status,
+            .occupancy-chip {
+                width: auto;
+                justify-content: flex-start;
+                flex: 0 0 auto;
+            }
+            .departure-platform {
+                font-size: 0.68rem;
+                line-height: 1;
+            }
+            .departure-status,
+            .occupancy-chip {
+                padding: 0.32rem 0.48rem;
+                border-radius: 0.95rem;
+                font-size: 0.68rem;
+                line-height: 1;
+            }
+            .departure-status::before {
+                width: 0.42rem;
+                height: 0.42rem;
+            }
+            .occupancy-meter span {
+                width: 0.18rem;
+                height: 0.46rem;
+            }
+            .board-table th,
+            .board-table td {
+                padding: 0.95rem;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .page {
+                width: min(100%, calc(100% - 1rem));
+                padding-top: 0.85rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .controls-panel,
+            .board {
+                padding: 0.72rem;
+            }
+            input[type="text"] {
+                padding: 0.82rem 0.9rem;
+                font-size: 0.95rem;
+            }
+            .board-header {
+                gap: 0.55rem;
+            }
+            .board-actions {
+                grid-template-columns: 1fr auto;
+                align-items: center;
+                justify-items: stretch;
+                gap: 0.45rem;
+            }
+            .board-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.35rem;
+            }
+            .board-stats span {
+                min-height: 2.2rem;
+                padding: 0.42rem 0.5rem;
+                font-size: 0.68rem;
+                border-radius: 0.8rem;
+            }
+            .button-fullscreen {
+                width: auto;
+                min-height: 2.2rem;
+                padding: 0.42rem 0.68rem;
+                font-size: 0.72rem;
+                border-radius: 0.85rem;
+                white-space: nowrap;
+            }
+            .controls-panel {
+                gap: 0.65rem;
+            }
+            .stop-menu-button {
+                padding: 0.68rem 0.78rem;
+                font-size: 0.84rem;
+            }
+            .stop-menu-panel {
+                padding: 0.68rem;
+            }
+            .chip {
+                padding: 0.68rem 0.82rem;
+                font-size: 0.86rem;
+            }
+            .departure-card {
+                padding: 0.5rem 0.56rem;
+                gap: 0.35rem;
+                border-radius: 1rem;
+            }
+            .departure-row {
+                grid-template-columns: auto 1fr auto;
+                align-items: center;
+                gap: 0.45rem;
+            }
+            .departure-route {
+                min-width: 0;
+                width: auto;
+                padding: 0.38rem 0.48rem;
+                font-size: 0.82rem;
+                border-radius: 0.82rem;
+                letter-spacing: 0.06em;
+            }
+            .departure-info {
+                min-width: 0;
+            }
+            .departure-info h3 {
+                font-size: 0.86rem;
+                line-height: 1.05;
+            }
+            .departure-info p {
+                font-size: 0.7rem;
+                margin-top: 0.18rem;
+            }
+            .departure-time {
+                grid-column: auto;
+                width: auto;
+                justify-items: end;
+                align-self: start;
+                padding-top: 0;
+                gap: 0.18rem;
+            }
+            .departure-time-main {
+                font-size: 0.92rem;
+                line-height: 1;
+            }
+            .departure-time-pill {
+                padding: 0.2rem 0.42rem;
+                font-size: 0.6rem;
+            }
+            .departure-meta {
+                gap: 0.24rem;
+                font-size: 0.67rem;
+                padding-top: 0.08rem;
+            }
+            .departure-platform {
+                font-size: 0.64rem;
+            }
+            .departure-status,
+            .occupancy-chip {
+                padding: 0.24rem 0.4rem;
+                font-size: 0.62rem;
+                border-radius: 0.72rem;
+            }
+            .departure-status::before {
+                width: 0.34rem;
+                height: 0.34rem;
+            }
+            .occupancy-meter {
+                gap: 0.1rem;
+            }
+            .occupancy-meter span {
+                width: 0.14rem;
+                height: 0.34rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div class="hero">
+                <h1>Auckland Transport departure board</h1>
+                <p>Search stops, add multiple locations, and monitor upcoming departures in one place. This is a separate departure board file to keep the existing layout untouched.</p>
+            </div>
+            <div class="status-card">
+                <span class="label">Live board</span>
+                <span class="value" id="live-time">00:00</span>
+                <span class="subnote" id="last-updated">Last updated at --:--:--</span>
+            </div>
+        </header>
+
+        <section class="controls">
+            <div class="controls-panel">
+                <div class="field-row">
+                    <div class="search-box">
+                        <label for="stop-search">Search stop name</label>
+                        <input id="stop-search" placeholder="Type a stop name or location" autocomplete="off" aria-haspopup="listbox" aria-expanded="false" />
+                        <div class="search-dropdown hidden" id="search-dropdown" role="listbox" aria-label="Stop suggestions"></div>
+                    </div>
+                </div>
+                <details class="stop-menu" id="stop-menu">
+                    <summary class="stop-menu-button">
+                        <span id="stop-menu-label">Selected stops</span>
+                    </summary>
+                    <div class="stop-menu-panel">
+                        <div class="selected-stops" id="selected-stops" aria-live="polite"></div>
+                        <div class="stop-menu-actions">
+                            <button class="button-clear" id="clear-stops-btn" type="button">Clear all stops</button>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <section class="board">
+            <div class="board-header">
+                <div>
+                    <h2>Departures</h2>
+                    <p class="note">Search and pin multiple stops, then switch to fullscreen for a focused departure board.</p>
+                </div>
+                <div class="board-actions">
+                    <div class="board-stats">
+                        <span id="watch-count">Watching 0 stops</span>
+                        <span id="departure-count">0 upcoming departures</span>
+                    </div>
+                    <button class="button-fullscreen" id="fullscreen-toggle" type="button">Enter fullscreen</button>
+                </div>
+            </div>
+            <div id="board-body">
+                <div class="empty-state" id="empty-state">Add one or more stops to see live departures.</div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const API_BASE = 'https://api.at.govt.nz';
+        const API_KEY = '0526f69dcb074a4b8df741eef46121fc';
+        const REALTIME_VEHICLE_LOCATIONS_URL = `${API_BASE}/realtime/legacy/vehiclelocations`;
+        const SELECTED_STOPS_STORAGE_KEY = 'at-departure-board-selected-stops';
+
+        const fallbackStops = [
+            {
+                stopCode: 'britomart',
+                stopId: 'britomart',
+                stopName: 'Britomart Transport Centre',
+                departures: [
+                    { route: '14', destination: 'Albany', platform: '5', status: 'On time', offset: 4 },
+                    { route: '14', destination: 'Takanini', platform: '5', status: 'On time', offset: 12 },
+                    { route: 'Type 9', destination: 'Southmall', platform: '7', status: 'Delayed', offset: 18 },
+                    { route: 'F2', destination: 'Devonport', platform: '3', status: 'Boarding', offset: 2 }
+                ]
+            },
+            {
+                stopCode: 'newmarket',
+                stopId: 'newmarket',
+                stopName: 'Newmarket Station',
+                departures: [
+                    { route: 'T2', destination: 'Manukau', platform: '2', status: 'On time', offset: 5 },
+                    { route: 'T4', destination: 'Papakura', platform: '1', status: 'On time', offset: 9 },
+                    { route: '12', destination: 'Mt Eden', platform: 'A', status: 'On time', offset: 16 }
+                ]
+            },
+            {
+                stopCode: 'takapuna',
+                stopId: 'takapuna',
+                stopName: 'Takapuna Bus Station',
+                departures: [
+                    { route: '13', destination: 'Britomart', platform: '4', status: 'On time', offset: 6 },
+                    { route: '12B', destination: 'Hauraki', platform: '5', status: 'Delayed', offset: 14 },
+                    { route: '72', destination: 'Albany', platform: '3', status: 'On time', offset: 10 }
+                ]
+            },
+            {
+                stopCode: 'devonport',
+                stopId: 'devonport',
+                stopName: 'Devonport Ferry Terminal',
+                departures: [
+                    { route: 'F2', destination: 'Auckland CBD', platform: '1', status: 'On time', offset: 8 },
+                    { route: 'F4', destination: 'Wynyard Quarter', platform: '1', status: 'On time', offset: 21 }
+                ]
+            },
+            {
+                stopCode: 'manukau',
+                stopId: 'manukau',
+                stopName: 'Manukau Bus Station',
+                departures: [
+                    { route: 'T2', destination: 'Britomart', platform: '2', status: 'On time', offset: 7 },
+                    { route: '31', destination: 'Onehunga', platform: '4', status: 'Delayed', offset: 11 },
+                    { route: '33', destination: 'East Tamaki', platform: '5', status: 'On time', offset: 15 }
+                ]
+            }
+        ];
+
+        const state = {
+            selectedStops: [],
+            departureData: {},
+            searchResults: [],
+            searchLoading: false,
+            searchError: null,
+            searchQuery: ''
+        };
+
+        let searchRequestId = 0;
+        let searchTimer = null;
+        let refreshTimer = null;
+        let liveClockTimer = null;
+        const realtimeVehicleCache = {
+            fetchedAt: 0,
+            byTrip: new Map()
+        };
+
+        const searchInput = document.getElementById('stop-search');
+        const searchDropdown = document.getElementById('search-dropdown');
+        const clearButton = document.getElementById('clear-stops-btn');
+        const stopMenu = document.getElementById('stop-menu');
+        const stopMenuLabel = document.getElementById('stop-menu-label');
+        const fullscreenToggle = document.getElementById('fullscreen-toggle');
+        const selectedStopsContainer = document.getElementById('selected-stops');
+        const boardBody = document.getElementById('board-body');
+        const liveTime = document.getElementById('live-time');
+        const lastUpdated = document.getElementById('last-updated');
+        const watchCount = document.getElementById('watch-count');
+        const departureCount = document.getElementById('departure-count');
+
+        function normalizeText(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function getStopGroupKey(stop) {
+            const raw = String(stop.stopName || stop.stopCode || '').trim().replace(/\s+/g, ' ');
+            const cleaned = raw
+                .replace(/^(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*[-:]?\s*/i, '')
+                .replace(/^(?:bay|stop|platform|plat)\s*[A-Z]+\s*[-:]?\s*/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s*[-–—:]\s*$/i, '')
+                .trim();
+            const normalizedRaw = normalizeText(raw);
+            const normalizedCleaned = normalizeText(cleaned || raw);
+            if (normalizedRaw === normalizedCleaned) {
+                return `${normalizedRaw}:${stop.stopCode || stop.stopId || ''}`;
+            }
+            return normalizedCleaned;
+        }
+
+        function getPrettyStopName(stop) {
+            const raw = String(stop.stopName || stop.stopCode || '').trim().replace(/\s+/g, ' ');
+            return raw
+                .replace(/^(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*[-:]?\s*/i, '')
+                .replace(/^(?:bay|stop|platform|plat)\s*[A-Z]+\s*[-:]?\s*/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s*[-–—:]\s*$/i, '')
+                .trim();
+        }
+
+        function groupSearchResults(results) {
+            const groups = new Map();
+            (results || []).forEach(stop => {
+                const key = getStopGroupKey(stop);
+                const existing = groups.get(key);
+                if (existing) {
+                    if (!existing.rawStops.some(item => item.stopCode === stop.stopCode)) {
+                        existing.rawStops.push(stop);
+                    }
+                } else {
+                    groups.set(key, {
+                        displayName: getPrettyStopName(stop) || stop.stopName,
+                        rawStops: [stop]
+                    });
+                }
+            });
+
+            return Array.from(groups.values()).map(group => {
+                const pendingStops = group.rawStops.filter(stop => !stopIsSelected(stop));
+                return {
+                    displayName: group.displayName,
+                    rawStops: group.rawStops,
+                    pendingStops,
+                    count: pendingStops.length,
+                    stopCode: pendingStops[0]?.stopCode || group.rawStops[0].stopCode
+                };
+            }).filter(group => group.count > 0);
+        }
+
+        function addStopGroup(group, preserveSearch = false) {
+            const stopsToAdd = group.pendingStops || group.rawStops.filter(stop => !stopIsSelected(stop));
+            if (stopsToAdd.length === 0) {
+                return;
+            }
+            stopsToAdd.forEach(stop => addStop(stop, true));
+            if (!preserveSearch) {
+                searchInput.value = '';
+                state.searchQuery = '';
+                state.searchResults = [];
+                hideSearchList();
+            }
+        }
+
+        function getFallbackMatches(query) {
+            const normalized = normalizeText(query);
+            if (!normalized) return [];
+            return fallbackStops.filter(stop =>
+                stop.stopName.toLowerCase().includes(normalized) ||
+                stop.stopCode.toLowerCase().includes(normalized)
+            );
+        }
+
+        async function fetchStopSuggestions(query) {
+            const normalized = normalizeText(query);
+            if (!normalized) return [];
+
+            const requestId = ++searchRequestId;
+            state.searchLoading = true;
+            state.searchError = null;
+            renderSearchList(query);
+
+            const params = new URLSearchParams();
+            params.set('filter[stop_code]', `${normalized}*`);
+            params.set('filter[stop_name]', `*${normalized}*`);
+            params.set('page[limit]', '20');
+            const url = `${API_BASE}/gtfs/v3/stops?${params.toString()}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                const result = await response.json();
+
+                if (requestId !== searchRequestId) return [];
+                const matches = (result.data || []).map(item => {
+                    const attr = item.attributes || {};
+                    return {
+                        stopCode: attr.stop_code || '',
+                        stopName: attr.stop_name || '',
+                        stopId: attr.stop_id || '',
+                        locationType: attr.location_type,
+                        wheelchairBoarding: attr.wheelchair_boarding
+                    };
+                });
+
+                state.searchResults = matches;
+                state.searchLoading = false;
+                state.searchError = null;
+                renderSearchList(query);
+                return matches;
+            } catch (error) {
+                if (requestId !== searchRequestId) return [];
+                state.searchLoading = false;
+                state.searchError = error.message || 'Unable to search stops';
+                const fallback = getFallbackMatches(query);
+                state.searchResults = fallback;
+                renderSearchList(query);
+                return fallback;
+            }
+        }
+
+        function renderSearchList(query = '') {
+            const normalized = normalizeText(query);
+            if (!normalized) {
+                searchDropdown.innerHTML = '<div class="search-item">Type a stop name or stop code to search the full AT database.</div>';
+                return;
+            }
+
+            if (state.searchLoading) {
+                searchDropdown.innerHTML = '<div class="search-item">Searching stops…</div>';
+                return;
+            }
+
+            const matches = groupSearchResults(state.searchResults);
+            if (!matches || matches.length === 0) {
+                const message = state.searchResults && state.searchResults.length > 0
+                    ? 'All matching stops are already added. Remove one or try a different search.'
+                    : state.searchError
+                        ? 'Search unavailable — using offline fallback.'
+                        : 'No stops found for this query.';
+                searchDropdown.innerHTML = `<div class="search-item">${message}</div>`;
+                return;
+            }
+
+            searchDropdown.innerHTML = matches.map((stop, index) => {
+                const label = stop.count > 1
+                    ? `${stop.displayName} (${stop.rawStops.length} platforms)`
+                    : `${stop.displayName} (${stop.stopCode})`;
+                return `<div class="search-item" data-group-index="${index}" role="option">${label}</div>`;
+            }).join('');
+
+            searchDropdown.querySelectorAll('.search-item[data-group-index]').forEach(item => {
+                item.addEventListener('click', () => {
+                    const groupIndex = Number(item.dataset.groupIndex);
+                    const stopGroup = matches[groupIndex];
+                    if (stopGroup) {
+                        addStopGroup(stopGroup, true);
+                        renderSearchList(searchInput.value);
+                        showSearchList();
+                    }
+                });
+            });
+        }
+
+        function scheduleSearch(query) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => fetchStopSuggestions(query), 220);
+        }
+
+        function showSearchList() {
+            searchDropdown.classList.remove('hidden');
+            searchInput.setAttribute('aria-expanded', 'true');
+            renderSearchList(searchInput.value);
+        }
+
+        function hideSearchList() {
+            searchDropdown.classList.add('hidden');
+            searchInput.setAttribute('aria-expanded', 'false');
+        }
+
+        function findStopByInput(value) {
+            const normalized = normalizeText(value);
+            if (!normalized) return null;
+
+            const exactMatch = state.searchResults.find(stop =>
+                normalizeText(stop.stopName) === normalized || normalizeText(stop.stopCode) === normalized
+            );
+            if (exactMatch) return exactMatch;
+
+            if (state.searchResults.length > 0) return state.searchResults[0];
+
+            return fallbackStops.find(stop =>
+                normalizeText(stop.stopName) === normalized || normalizeText(stop.stopCode) === normalized
+            );
+        }
+
+        function stopIsSelected(stop) {
+            return state.selectedStops.some(item => item.stopCode === stop.stopCode);
+        }
+
+        function transformFallbackDepartures(stop) {
+            const now = new Date();
+            return (stop.departures || []).map(dep => {
+                const departureTime = new Date(now.getTime() + dep.offset * 60000);
+                return {
+                    stopName: stop.stopName,
+                    route: dep.route,
+                    destination: dep.destination,
+                    platform: dep.platform,
+                    status: dep.status,
+                    time: departureTime
+                };
+            });
+        }
+
+        function formatDepartureStatus(movement) {
+            const scheduled = movement.scheduledDepartureTime;
+            const expected = movement.expectedDepartureTime;
+            if (movement.departureBoardingActivity === 'cancelled') return 'Cancelled';
+
+            const boardingThresholdMs = 3 * 60 * 1000; // show boarding only when arrival is imminent
+            const targetTime = expected ? new Date(expected) : scheduled ? new Date(scheduled) : null;
+            const now = new Date();
+            const isBoardingNow = movement.departureBoardingActivity === 'boarding' && targetTime && (targetTime.getTime() - now.getTime()) <= boardingThresholdMs;
+
+            if (expected && scheduled) {
+                const scheduledMs = new Date(scheduled).getTime();
+                const expectedMs = new Date(expected).getTime();
+                const diffMinutes = Math.round((expectedMs - scheduledMs) / 60000);
+                if (diffMinutes > 0) return `Delayed by ${diffMinutes} min`;
+                if (diffMinutes < 0) return `Ahead of schedule by ${Math.abs(diffMinutes)} min`;
+                if (isBoardingNow) return 'Boarding';
+                return '';
+            }
+
+            if (isBoardingNow) {
+                return 'Boarding';
+            }
+            if (movement.departureBoardingActivity === 'noBoarding') return 'Not boarding';
+            return '';
+        }
+
+        function getOccupancyValueByPath(source, paths) {
+            return paths.reduce((result, path) => {
+                if (result != null) return result;
+                return path.reduce((value, key) => {
+                    if (value == null || typeof value !== 'object') return undefined;
+                    return value[key];
+                }, source);
+            }, undefined);
+        }
+
+        function normalizeTripKey(value) {
+            return String(value || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+        }
+
+        function normalizeOccupancyStatus(raw) {
+            const numericValue = Number(raw);
+            const gtfsNumericStatusMap = {
+                0: { label: 'Very quiet', percent: 10, className: 'low' },
+                1: { label: 'Seats available', percent: 25, className: 'low' },
+                2: { label: 'Few seats left', percent: 55, className: 'medium' },
+                3: { label: 'Standing room only', percent: 82, className: 'high' },
+                4: { label: 'Very crowded', percent: 94, className: 'high' },
+                5: { label: 'Full', percent: 100, className: 'high' },
+                6: { label: 'Not accepting passengers', percent: 100, className: 'high' },
+                7: { label: 'Occupancy unavailable', percent: null, className: 'unknown' },
+                8: { label: 'Not boardable', percent: null, className: 'unknown' }
+            };
+            if (Number.isFinite(numericValue) && gtfsNumericStatusMap[numericValue]) {
+                return gtfsNumericStatusMap[numericValue];
+            }
+
+            const value = String(raw || '').trim();
+            if (!value) return null;
+
+            const lower = value.toLowerCase();
+            const upper = value.toUpperCase();
+            const percentMatch = value.match(/(\d{1,3})\s*%/);
+            if (percentMatch) {
+                const percent = Math.min(100, Math.max(0, Number(percentMatch[1])));
+                return {
+                    label: `${percent}% full`,
+                    percent,
+                    className: percent >= 76 ? 'high' : percent >= 41 ? 'medium' : 'low'
+                };
+            }
+
+            const gtfsStatusMap = {
+                EMPTY: { label: 'Very quiet', percent: 10, className: 'low' },
+                MANY_SEATS_AVAILABLE: { label: 'Seats available', percent: 25, className: 'low' },
+                FEW_SEATS_AVAILABLE: { label: 'Few seats left', percent: 55, className: 'medium' },
+                STANDING_ROOM_ONLY: { label: 'Standing room only', percent: 82, className: 'high' },
+                CRUSHED_STANDING_ROOM_ONLY: { label: 'Very crowded', percent: 94, className: 'high' },
+                FULL: { label: 'Full', percent: 100, className: 'high' },
+                NOT_ACCEPTING_PASSENGERS: { label: 'Not accepting passengers', percent: 100, className: 'high' },
+                NO_DATA_AVAILABLE: { label: 'Occupancy unavailable', percent: null, className: 'unknown' },
+                UNKNOWN: { label: 'Occupancy unavailable', percent: null, className: 'unknown' }
+            };
+
+            if (gtfsStatusMap[upper]) return gtfsStatusMap[upper];
+            if (/full|heavy|high|crowd|busy|congest|standing/.test(lower)) return { label: 'Busy', percent: 85, className: 'high' };
+            if (/medium|moderate|mod/.test(lower)) return { label: 'Moderate load', percent: 55, className: 'medium' };
+            if (/low|light|few|available|empty|quiet/.test(lower)) return { label: 'Plenty of space', percent: 25, className: 'low' };
+            return { label: value, percent: null, className: 'unknown' };
+        }
+
+        function getOccupancyInfo(movement) {
+            const countPaths = [
+                ['passengerCount'],
+                ['passengers'],
+                ['onboardPassengers'],
+                ['onBoardPassengers'],
+                ['occupancyCount'],
+                ['currentLoad'],
+                ['vehicleOccupancy', 'passengerCount'],
+                ['occupancy', 'passengerCount'],
+                ['attributes', 'passengerCount'],
+                ['attributes', 'passengers'],
+                ['attributes', 'onboardPassengers'],
+                ['attributes', 'onBoardPassengers'],
+                ['attributes', 'occupancyCount'],
+                ['attributes', 'currentLoad']
+            ];
+            const capacityPaths = [
+                ['capacity'],
+                ['vehicleCapacity'],
+                ['occupancyCapacity'],
+                ['vehicleOccupancy', 'capacity'],
+                ['occupancy', 'capacity'],
+                ['attributes', 'capacity'],
+                ['attributes', 'vehicleCapacity'],
+                ['attributes', 'occupancyCapacity']
+            ];
+            const percentPaths = [
+                ['occupancyPercentage'],
+                ['occupancyPercent'],
+                ['loadPercentage'],
+                ['loadPercent'],
+                ['occupancy', 'percentage'],
+                ['occupancy', 'percent'],
+                ['vehicleOccupancy', 'percentage'],
+                ['vehicleOccupancy', 'percent'],
+                ['attributes', 'occupancyPercentage'],
+                ['attributes', 'occupancyPercent'],
+                ['attributes', 'loadPercentage'],
+                ['attributes', 'loadPercent']
+            ];
+            const statusPaths = [
+                ['occupancyStatus'],
+                ['occupancy_status'],
+                ['congestionLevel'],
+                ['congestion_level'],
+                ['occupancyLevel'],
+                ['vehicleOccupancyStatus'],
+                ['vehicle_occupancy_status'],
+                ['vehicleOccupancy', 'status'],
+                ['attributes', 'occupancyStatus'],
+                ['attributes', 'occupancy_status'],
+                ['attributes', 'congestionLevel'],
+                ['attributes', 'congestion_level'],
+                ['attributes', 'vehicleOccupancyStatus'],
+                ['attributes', 'vehicle_occupancy_status']
+            ];
+
+            const rawCount = getOccupancyValueByPath(movement, countPaths);
+            const rawCapacity = getOccupancyValueByPath(movement, capacityPaths);
+            const rawPercent = getOccupancyValueByPath(movement, percentPaths);
+            const rawStatus = getOccupancyValueByPath(movement, statusPaths);
+            const occupancyObject = typeof movement.occupancy === 'object' ? movement.occupancy : null;
+            const occupancyStatus = rawStatus ?? occupancyObject?.status ?? occupancyObject?.level ?? occupancyObject?.text;
+
+            const parsedCount = Number.isFinite(Number(rawCount)) && Number(rawCount) >= 0 ? Math.round(Number(rawCount)) : null;
+            const parsedCapacity = Number.isFinite(Number(rawCapacity)) && Number(rawCapacity) > 0 ? Math.round(Number(rawCapacity)) : null;
+
+            let percent = Number.isFinite(Number(rawPercent)) ? Math.round(Number(rawPercent)) : null;
+            if (percent == null && parsedCount != null && parsedCapacity != null) {
+                percent = Math.round((parsedCount / parsedCapacity) * 100);
+            }
+            if (percent != null) {
+                percent = Math.min(100, Math.max(0, percent));
+            }
+
+            const normalizedStatus = normalizeOccupancyStatus(occupancyStatus);
+            const resolvedPercent = percent ?? normalizedStatus?.percent ?? null;
+            const className = resolvedPercent != null
+                ? (resolvedPercent >= 76 ? 'high' : resolvedPercent >= 41 ? 'medium' : 'low')
+                : (normalizedStatus?.className || 'unknown');
+
+            let label = '';
+            if (parsedCount != null && parsedCapacity != null) {
+                label = `${parsedCount}/${parsedCapacity} aboard`;
+            } else if (parsedCount != null) {
+                label = `${parsedCount} aboard`;
+            } else if (percent != null) {
+                label = `${percent}% full`;
+            } else if (normalizedStatus) {
+                label = normalizedStatus.label;
+            }
+
+            if (!label) return null;
+            return { label, className, percent: resolvedPercent };
+        }
+
+        async function fetchRealtimeVehicleLookup() {
+            const cacheTtlMs = 20 * 1000;
+            if ((Date.now() - realtimeVehicleCache.fetchedAt) < cacheTtlMs && realtimeVehicleCache.byTrip.size > 0) {
+                return realtimeVehicleCache.byTrip;
+            }
+
+            const response = await fetch(REALTIME_VEHICLE_LOCATIONS_URL, {
+                headers: {
+                    'Ocp-Apim-Subscription-Key': API_KEY,
+                    'Accept': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Realtime vehicles HTTP ${response.status}`);
+            }
+
+            const json = await response.json();
+            const entities = (json.response && json.response.entity) || [];
+            const byTrip = new Map();
+
+            entities.forEach(entity => {
+                const vehicle = entity.vehicle || entity.VehiclePosition?.vehicle;
+                const tripKey = normalizeTripKey(vehicle?.trip?.trip_id);
+                const occupancy = getOccupancyInfo(vehicle);
+                if (!tripKey || !occupancy) return;
+                byTrip.set(tripKey, occupancy);
+            });
+
+            realtimeVehicleCache.fetchedAt = Date.now();
+            realtimeVehicleCache.byTrip = byTrip;
+            return byTrip;
+        }
+
+        function findRealtimeOccupancyForMovement(movement, realtimeLookup) {
+            if (!realtimeLookup || realtimeLookup.size === 0) return null;
+
+            const movementTripKey = normalizeTripKey(
+                movement.vehicleJourneyName
+                || movement.vehicle_journey_name
+                || movement.tripId
+                || movement.trip_id
+            );
+            if (!movementTripKey) return null;
+
+            if (realtimeLookup.has(movementTripKey)) {
+                return realtimeLookup.get(movementTripKey);
+            }
+
+            for (const [tripKey, occupancy] of realtimeLookup.entries()) {
+                if (movementTripKey.startsWith(tripKey) || tripKey.startsWith(movementTripKey)) {
+                    return occupancy;
+                }
+            }
+
+            return null;
+        }
+
+        function mapMovementToRow(movement, stopName, realtimeLookup) {
+            const scheduled = movement.scheduledDepartureTime || movement.departureTime;
+            const expected = movement.expectedDepartureTime || scheduled;
+            const scheduledTime = scheduled ? new Date(scheduled) : null;
+            const expectedTime = expected ? new Date(expected) : null;
+            const time = expectedTime || scheduledTime;
+            const realtimeOccupancy = findRealtimeOccupancyForMovement(movement, realtimeLookup);
+
+            return {
+                stopName,
+                route: movement.route_short_name || movement.route_long_name || movement.route_id || '—',
+                destination: movement.destinationDisplay || movement.destination_display || movement.stopDisplay || '—',
+                platform: movement.departurePlatformName || movement.departure_platform_name || '—',
+                status: formatDepartureStatus(movement),
+                occupancy: realtimeOccupancy || getOccupancyInfo(movement),
+                time,
+                scheduledTime,
+                expectedTime
+            };
+        }
+
+        function hexToRgba(hex, alpha) {
+            const sanitized = String(hex || '').replace('#', '');
+            const bigint = parseInt(sanitized, 16);
+            if (Number.isNaN(bigint)) return `rgba(79, 209, 197, ${alpha})`;
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function getRouteLabel(route) {
+            const raw = String(route || '').trim().toUpperCase();
+            const code = raw.replace(/[^A-Z0-9]/g, '');
+            const labelCode = (code.match(/^[A-Z0-9]+/) || [raw])[0];
+            if (/^(T1|ONE|1|T1ONE)$/.test(code) || code.startsWith('T1')) return 'ONE';
+            if (/^(T2|WEST|2|T2WEST)$/.test(code) || code.startsWith('T2')) return 'WEST';
+            if (/^(T3|STH|3|T3STH)$/.test(code) || code.startsWith('T3')) return 'STH';
+            if (/^(T4|EAST|4|T4EAST)$/.test(code) || code.startsWith('T4')) return 'EAST';
+            return labelCode;
+        }
+
+        function getRouteColor(route) {
+            const raw = String(route || '').trim().toUpperCase();
+            const code = raw.replace(/\s+/g, '');
+            if (code.startsWith('ONE')) return '#00AEEF';
+            if (/^(T1|1|T1ONE)$/.test(code) || code.startsWith('T1')) return '#3B82F6';
+            if (code === 'WEST' || code.startsWith('T2')) return '#10B981';
+            if (code === 'STH' || code.startsWith('T3')) return '#EF4444';
+            if (code === 'EAST' || code.startsWith('T4')) return '#F59E0B';
+            if (code.startsWith('TMK')) return '#007AB8';
+            if (code.startsWith('INN')) return '#56AF31';
+            if (code.startsWith('OUT')) return '#F39200';
+            if (code.startsWith('CTY') || raw.includes('CITYLINK')) return '#E30613';
+            if (code.startsWith('AIR') || raw.includes('AIRPORTLINK')) return '#F97316';
+            if (/^(T5|5)$/.test(code) || code.startsWith('T5')) return '#9c2a88';
+            if (/^(T6|6)$/.test(code) || code.startsWith('T6')) return '#ffbb00';
+            if (code === 'NX1') return '#1D4ED8';
+            if (code === 'NX2') return '#60A5FA';
+            if (code.startsWith('NX')) return '#8c5dff';
+            if (code.startsWith('WX1')) return '#047857';
+            if (code.startsWith('WX')) return '#3f9eff';
+            if (/^F/.test(code)) return '#ffba4f';
+            if (/LINK/.test(code) || code.startsWith('L')) return '#ff925e';
+            if (/^T[0-9]/.test(code)) return '#31d7ae';
+            return '#4fd1c5';
+        }
+
+        function renderOccupancyMeter(percent) {
+            const filledBars = percent == null ? 0 : Math.max(1, Math.min(4, Math.ceil(percent / 25)));
+            return `<span class="occupancy-meter" aria-hidden="true">${Array.from({ length: 4 }, (_, index) => `<span class="${index < filledBars ? 'filled' : ''}"></span>`).join('')}</span>`;
+        }
+
+        function formatDepartureTimeLabel(time, scheduledTime, expectedTime) {
+            if (!time) return '—';
+            const now = new Date();
+            const target = expectedTime || scheduledTime || time;
+            const minutesAway = Math.round((new Date(target).getTime() - now.getTime()) / 60000);
+            if (minutesAway <= 0) return 'Now';
+            if (minutesAway < 60) return `${minutesAway} min`;
+            return new Date(target).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatClockTimeLabel(time) {
+            if (!time) return '';
+            return new Date(time).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function fetchDeparturesForStop(stop) {
+            const key = stop.stopCode;
+            state.departureData[key] = { status: 'loading', rows: [] };
+            renderSelectedStops();
+            renderBoard();
+
+            if (stop.departures && stop.stopCode && !/^[0-9]+$/.test(stop.stopCode)) {
+                state.departureData[key] = { status: 'ready', rows: transformFallbackDepartures(stop), updatedAt: Date.now() };
+                renderBoard();
+                return;
+            }
+
+            const url = `${API_BASE}/serviceinfo/v1/departures/${encodeURIComponent(stop.stopCode)}`;
+            try {
+                const [response, realtimeLookup] = await Promise.all([
+                    fetch(url, {
+                        headers: {
+                            'Ocp-Apim-Subscription-Key': API_KEY,
+                            'Accept': 'application/json'
+                        }
+                    }),
+                    fetchRealtimeVehicleLookup().catch(() => new Map())
+                ]);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const json = await response.json();
+                const movements = (json.response && json.response.movements) || [];
+                const rows = movements
+                    .filter(m => m.departureBoardingActivity !== 'noBoarding')
+                    .map(m => mapMovementToRow(m, stop.stopName, realtimeLookup))
+                    .filter(row => row.time)
+                    .sort((a, b) => (a.time?.getTime() || 0) - (b.time?.getTime() || 0));
+
+                if (!state.selectedStops.some(item => item.stopCode === key)) return;
+                state.departureData[key] = { status: 'ready', rows, updatedAt: Date.now() };
+                updateLastUpdated(state.departureData[key].updatedAt);
+            } catch (error) {
+                if (stop.departures) {
+                    state.departureData[key] = { status: 'ready', rows: transformFallbackDepartures(stop), updatedAt: Date.now(), offline: true };
+                    updateLastUpdated(state.departureData[key].updatedAt);
+                } else {
+                    state.departureData[key] = { status: 'error', error: error.message, rows: [] };
+                }
+            }
+            renderBoard();
+        }
+
+        function refreshAllDepartures() {
+            state.selectedStops.forEach(stop => fetchDeparturesForStop(stop));
+        }
+
+        function saveSelectedStops() {
+            try {
+                const stopsToStore = state.selectedStops.map(stop => ({
+                    stopCode: stop.stopCode,
+                    stopId: stop.stopId || '',
+                    stopName: stop.stopName,
+                    displayName: stop.displayName || '',
+                    parentStation: stop.parentStation || '',
+                    platformCode: stop.platformCode || ''
+                }));
+                localStorage.setItem(SELECTED_STOPS_STORAGE_KEY, JSON.stringify(stopsToStore));
+            } catch (error) {
+                // Ignore storage failures.
+            }
+        }
+
+        function restoreSelectedStops() {
+            try {
+                const raw = localStorage.getItem(SELECTED_STOPS_STORAGE_KEY);
+                if (!raw) return;
+                const storedStops = JSON.parse(raw);
+                if (!Array.isArray(storedStops)) return;
+
+                state.selectedStops = storedStops
+                    .filter(stop => stop && stop.stopCode && stop.stopName)
+                    .map(stop => ({
+                        stopCode: stop.stopCode,
+                        stopId: stop.stopId || stop.stopCode,
+                        stopName: stop.stopName,
+                        displayName: stop.displayName || stop.stopName,
+                        parentStation: stop.parentStation || '',
+                        platformCode: stop.platformCode || ''
+                    }));
+
+                state.selectedStops.forEach(stop => {
+                    if (!state.departureData[stop.stopCode]) {
+                        state.departureData[stop.stopCode] = { status: 'loading', rows: [] };
+                    }
+                });
+            } catch (error) {
+                // Ignore invalid storage payloads.
+            }
+        }
+
+        function renderSelectedStops() {
+            selectedStopsContainer.innerHTML = '';
+            stopMenuLabel.textContent = state.selectedStops.length === 0
+                ? 'Selected stops'
+                : `${state.selectedStops.length} selected stop${state.selectedStops.length === 1 ? '' : 's'}`;
+            if (state.selectedStops.length === 0) {
+                selectedStopsContainer.innerHTML = '<span class="note">No stops selected yet.</span>';
+                return;
+            }
+
+            state.selectedStops.forEach(stop => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                chip.innerHTML = `<span>${stop.stopName} (${stop.stopCode})</span><button aria-label="Remove ${stop.stopName}" data-stop-code="${stop.stopCode}">&times;</button>`;
+                selectedStopsContainer.appendChild(chip);
+            });
+        }
+
+        function createBoardBody(content) {
+            if (typeof content === 'string') {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = content;
+                return wrapper.firstElementChild;
+            }
+            return content;
+        }
+
+        function replaceBoardBodyContent(element) {
+            if (typeof element === 'string') {
+                boardBody.innerHTML = element;
+                return;
+            }
+            if (element instanceof Node) {
+                boardBody.replaceChildren(element);
+                return;
+            }
+            boardBody.innerHTML = '';
+        }
+
+        function getDepartureRows() {
+            const rows = state.selectedStops.flatMap(stop => {
+                const data = state.departureData[stop.stopCode];
+                return data && data.rows ? data.rows.map(row => ({ ...row, stopName: stop.stopName })) : [];
+            });
+            return rows.sort((a, b) => (a.time?.getTime() || 0) - (b.time?.getTime() || 0));
+        }
+
+        function renderBoard() {
+            const selected = state.selectedStops;
+            watchCount.textContent = `Watching ${selected.length} stop${selected.length === 1 ? '' : 's'}`;
+
+            if (selected.length === 0) {
+                departureCount.textContent = '0 upcoming departures';
+                replaceBoardBodyContent('<div class="empty-state">Add one or more stops to see live departures.</div>');
+                return;
+            }
+
+            const departures = getDepartureRows();
+            const loadingStops = selected.filter(stop => state.departureData[stop.stopCode]?.status === 'loading');
+            const errorStops = selected.filter(stop => state.departureData[stop.stopCode]?.status === 'error');
+
+            departureCount.textContent = `${departures.length} upcoming departures`;
+
+            if (departures.length === 0 && loadingStops.length > 0) {
+                replaceBoardBodyContent('<div class="empty-state">Loading live departures…</div>');
+                return;
+            }
+
+            if (departures.length === 0 && errorStops.length > 0) {
+                replaceBoardBodyContent('<div class="empty-state">Unable to load departures for the selected stops.</div>');
+                return;
+            }
+
+            if (departures.length === 0) {
+                replaceBoardBodyContent('<div class="empty-state">No departures found for the selected stops.</div>');
+                return;
+            }
+
+            const list = document.createElement('div');
+            list.className = 'departure-list';
+
+            departures.forEach(dep => {
+                const card = document.createElement('div');
+                card.className = 'departure-card';
+                const timeLabel = formatDepartureTimeLabel(dep.time, dep.scheduledTime, dep.expectedTime);
+                const scheduledLabel = formatClockTimeLabel(dep.scheduledTime || dep.expectedTime || dep.time);
+                const normalizedStatus = dep.status.toLowerCase();
+                const statusClass = normalizedStatus.includes('delay') ? 'status-delay'
+                    : normalizedStatus.includes('ahead') ? 'status-ahead'
+                    : normalizedStatus.includes('board') ? 'status-board'
+                    : normalizedStatus.includes('cancel') ? 'status-cancel'
+                    : 'status-on';
+                const routeLabel = getRouteLabel(dep.route);
+                const routeColor = getRouteColor(dep.route);
+                const routeBackground = hexToRgba(routeColor, 0.18);
+                const routeBorder = hexToRgba(routeColor, 0.33);
+                const statusHtml = dep.status ? `<span class="departure-status ${statusClass}">${dep.status}</span>` : '';
+                const occupancyHtml = dep.occupancy
+                    ? `<span class="occupancy-chip ${dep.occupancy.className}">${renderOccupancyMeter(dep.occupancy.percent)}<span>${dep.occupancy.label}</span></span>`
+                    : '';
+
+                card.innerHTML = `
+                    <div class="departure-row">
+                        <div class="departure-route" style="background:${routeBackground}; color:${routeColor}; border: 1px solid ${routeBorder};">${routeLabel}</div>
+                        <div class="departure-info">
+                            <h3>${dep.destination}</h3>
+                            <p>${dep.stopName}</p>
+                        </div>
+                        <div class="departure-time">
+                            <span class="departure-time-main">${timeLabel}</span>
+                            <span class="departure-time-pill">Sched ${scheduledLabel}</span>
+                        </div>
+                    </div>
+                    <div class="departure-meta">
+                        <div class="departure-meta-primary">
+                            <span class="departure-platform">Platform ${dep.platform || '—'}</span>
+                            ${occupancyHtml}
+                        </div>
+                        <div class="departure-meta-secondary">
+                            ${statusHtml}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            replaceBoardBodyContent(list);
+
+            if (loadingStops.length > 0 || errorStops.length > 0) {
+                const note = document.createElement('p');
+                note.className = 'note';
+                note.textContent = `Updating ${loadingStops.length} stop${loadingStops.length === 1 ? '' : 's'}${errorStops.length ? `, ${errorStops.length} failed` : ''}.`;
+                boardBody.appendChild(note);
+            }
+        }
+
+        function addStop(stop, preserveSearch = false) {
+            if (stopIsSelected(stop)) {
+                alert(`${stop.stopName} is already added.`);
+                return;
+            }
+            state.selectedStops.push(stop);
+            saveSelectedStops();
+            if (!state.departureData[stop.stopCode]) {
+                state.departureData[stop.stopCode] = { status: 'loading', rows: [] };
+            }
+            if (!preserveSearch) {
+                searchInput.value = '';
+                state.searchQuery = '';
+                state.searchResults = [];
+                hideSearchList();
+            }
+            renderSelectedStops();
+            renderBoard();
+            fetchDeparturesForStop(stop);
+        }
+
+        function addStopFromInput() {
+            const value = searchInput.value.trim();
+            if (!value) return;
+            const stop = findStopByInput(value);
+            if (!stop) {
+                alert('Stop not found. Try a full Auckland stop name or code.');
+                return;
+            }
+            addStop(stop);
+        }
+
+        function removeStop(stopCode) {
+            state.selectedStops = state.selectedStops.filter(stop => stop.stopCode !== stopCode);
+            saveSelectedStops();
+            renderSelectedStops();
+            renderBoard();
+        }
+
+        function clearStops() {
+            state.selectedStops = [];
+            state.departureData = {};
+            saveSelectedStops();
+            stopMenu.open = false;
+            renderSelectedStops();
+            renderBoard();
+        }
+
+        function setFullscreen(enabled) {
+            document.body.classList.toggle('fullscreen-mode', enabled);
+            fullscreenToggle.textContent = enabled ? 'Exit fullscreen' : 'Enter fullscreen';
+        }
+
+        function toggleFullscreen() {
+            setFullscreen(!document.body.classList.contains('fullscreen-mode'));
+        }
+
+        function updateLiveTime() {
+            const now = new Date();
+            liveTime.textContent = now.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        function updateLastUpdated(timestamp = Date.now()) {
+            const value = new Date(timestamp);
+            lastUpdated.textContent = `Last updated at ${value.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            restoreSelectedStops();
+            renderSearchList('');
+            renderSelectedStops();
+            renderBoard();
+            updateLiveTime();
+            updateLastUpdated();
+            liveClockTimer = setInterval(updateLiveTime, 1000);
+            refreshTimer = setInterval(() => {
+                if (state.selectedStops.length > 0) {
+                    refreshAllDepartures();
+                }
+            }, 30000);
+            if (state.selectedStops.length > 0) {
+                refreshAllDepartures();
+            }
+        });
+
+        clearButton.addEventListener('click', clearStops);
+
+        searchDropdown.addEventListener('mousedown', event => {
+            event.preventDefault();
+        });
+
+        selectedStopsContainer.addEventListener('click', event => {
+            const button = event.target.closest('button[data-stop-code]');
+            if (!button) return;
+            removeStop(button.dataset.stopCode);
+        });
+
+        searchInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addStopFromInput();
+                hideSearchList();
+            }
+        });
+
+        searchInput.addEventListener('input', event => {
+            const query = event.target.value;
+            state.searchQuery = query;
+            state.searchResults = [];
+            state.searchError = null;
+            state.searchLoading = Boolean(query.trim());
+            renderSearchList(query);
+            scheduleSearch(query);
+            showSearchList();
+        });
+
+        searchInput.addEventListener('focus', () => {
+            showSearchList();
+            if (searchInput.value.trim()) {
+                scheduleSearch(searchInput.value);
+            }
+        });
+
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                if (!searchDropdown.contains(document.activeElement)) {
+                    hideSearchList();
+                }
+            }, 150);
+        });
+
+        document.addEventListener('click', event => {
+            if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+                hideSearchList();
+            }
+        });
+
+        fullscreenToggle.addEventListener('click', toggleFullscreen);
+    </script>
+</body>
+</html>
