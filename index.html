@@ -464,6 +464,13 @@
             gap: 0.45rem;
             font-weight: 700;
         }
+        .departure-stop-name {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.55);
+            font-weight: 500;
+        }
         .departure-status {
             display: inline-flex;
             align-items: center;
@@ -580,48 +587,256 @@
             color: var(--muted);
             font-size: 0.95rem;
         }
+        /* Service Alerts */
+        .alerts-panel { display: grid; gap: 0.65rem; margin-bottom: 1.25rem; }
+        .alerts-panel:empty { display: none; }
+        .alert-item {
+            display: flex; align-items: flex-start; gap: 0.85rem;
+            padding: 1rem 1.2rem; border-radius: 1.2rem;
+            border: 1px solid rgba(255, 177, 109, 0.25);
+            background: rgba(255, 177, 109, 0.08);
+            color: var(--text); font-size: 0.92rem; line-height: 1.5;
+        }
+        .alert-item .alert-icon { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: rgba(255, 177, 109, 0.2); color: #ffb16d; font-weight: 900; font-size: 0.8rem; flex-shrink: 0; }
+        .alert-item .alert-content { flex: 1; min-width: 0; }
+        .alert-item .alert-header { font-weight: 700; margin-bottom: 0.25rem; }
+        .alert-item .alert-body { color: rgba(255,255,255,0.72); font-size: 0.85rem; }
+        .alert-item .alert-routes { margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .alert-item .alert-route-tag {
+            padding: 0.2rem 0.55rem; border-radius: 999px;
+            background: rgba(255,255,255,0.1); font-size: 0.75rem; font-weight: 700;
+        }
+        /* Calendar Warning */
+        .calendar-warning { margin-bottom: 1rem; }
+        .calendar-warning:empty { display: none; }
+        .calendar-notice {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.85rem 1.1rem; border-radius: 1.1rem;
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            background: rgba(147, 197, 253, 0.08);
+            font-size: 0.88rem; color: #93c5fd;
+        }
+        .calendar-notice .cal-icon { display: inline-flex; align-items: center; justify-content: center; width: 1.3rem; height: 1.3rem; border-radius: 50%; background: rgba(147, 197, 253, 0.2); font-weight: 900; font-size: 0.7rem; }
+        /* Mode icons */
+        .mode-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-right: 0.3rem; opacity: 0.85;
+        }
+        .mode-icon svg {
+            width: 1em; height: 1em; vertical-align: middle;
+        }
+        /* Trip journey expandable */
+        .trip-journey {
+            margin-top: 0.5rem; padding: 0.65rem 0.85rem;
+            border-radius: 0.9rem; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            max-height: 16rem; overflow-y: auto;
+        }
+        .trip-journey-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 0.4rem; margin-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.78rem; font-weight: 700; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.08em;
+        }
+        .trip-stop-item {
+            display: flex; align-items: center; gap: 0.55rem;
+            padding: 0.35rem 0; font-size: 0.82rem; color: rgba(255,255,255,0.72);
+        }
+        .trip-stop-item.current-stop { color: var(--accent); font-weight: 700; }
+        .trip-stop-item .stop-dot {
+            width: 0.5rem; height: 0.5rem; border-radius: 50%;
+            background: rgba(255,255,255,0.25); flex-shrink: 0;
+        }
+        .trip-stop-item.current-stop .stop-dot {
+            background: var(--accent); box-shadow: 0 0 6px var(--accent);
+        }
+        .trip-stop-item.vehicle-here { position: relative; }
+        .trip-vehicle-indicator {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.25rem 0; font-size: 0.72rem; font-weight: 700;
+            color: #60a5fa;
+        }
+        .trip-vehicle-indicator .vehicle-marker {
+            width: 1.3rem; height: 1.3rem;
+            flex-shrink: 0; animation: vehiclePulse 2s ease-in-out infinite;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .trip-vehicle-indicator .vehicle-marker svg {
+            width: 1.1rem; height: 1.1rem;
+            filter: drop-shadow(0 0 4px rgba(96,165,250,0.6));
+        }
+        .trip-vehicle-indicator .vehicle-line {
+            flex: 1; height: 1px; background: rgba(96,165,250,0.3);
+        }
+        @keyframes vehiclePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+        .trip-stop-item.stop-passed { opacity: 0.45; }
+        .trip-stop-time { margin-left: auto; font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+        .departure-card[data-expanded="true"] { border-color: rgba(79, 209, 197, 0.3); }
+        .departure-expand-btn {
+            background: none; border: none; color: var(--muted);
+            font-size: 0.78rem; padding: 0.35rem 0.6rem; border-radius: 0.6rem;
+            cursor: pointer; font-weight: 600; transition: color 0.15s;
+        }
+        .departure-expand-btn:hover { color: var(--accent); transform: none; }
+        /* Access icons */
+        .access-icons { display: inline-flex; gap: 0.3rem; align-items: center; font-size: 0.82rem; opacity: 0.75; }
+        .access-icons span { display: inline-flex; align-items: center; padding: 0.15rem 0.4rem; border-radius: 0.4rem; background: rgba(255,255,255,0.08); font-size: 0.72rem; font-weight: 600; }
+        /* Congestion chip */
+        .congestion-chip {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.3rem 0.6rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700;
+        }
+        .congestion-chip.cong-low { color: #7ee787; background: rgba(126, 231, 135, 0.1); }
+        .congestion-chip.cong-med { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+        .congestion-chip.cong-high { color: #fb7185; background: rgba(251, 113, 133, 0.12); }
+        /* Schedule badge */
+        .schedule-badge {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            padding: 0.25rem 0.55rem; border-radius: 999px;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .schedule-badge.sched-added { color: #7ee787; background: rgba(126, 231, 135, 0.12); }
+        .schedule-badge.sched-canceled { color: #ff9ca4; background: rgba(255, 156, 164, 0.14); }
+        .schedule-badge.sched-unscheduled { color: #93c5fd; background: rgba(147, 197, 253, 0.12); }
+        /* Vehicle distance */
+        .vehicle-distance { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; color: var(--muted); }
+        .vehicle-distance::before { content: ''; width: 0.35rem; height: 0.35rem; border-radius: 50%; background: currentColor; opacity: 0.5; }
+        /* Ferry vessel */
+        .vessel-name { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--muted); font-style: italic; }
+        .trip-detail-info { padding: 0.5rem 0.75rem; margin-top: 0.4rem; border-radius: 0.8rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+        .trip-detail-vehicle { font-size: 0.8rem; color: rgba(255,255,255,0.7); padding: 0.25rem 0; }
+        .trip-detail-alert { font-size: 0.78rem; color: #ffb16d; padding: 0.2rem 0; display: flex; align-items: center; gap: 0.4rem; }
+        .trip-detail-alert .alert-icon { width: 1.1rem; height: 1.1rem; font-size: 0.65rem; }
+        /* Toggle switches */
+        .board-toggles { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+        .toggle-label {
+            display: inline-flex; align-items: center; gap: 0.45rem;
+            font-size: 0.82rem; color: var(--muted); cursor: pointer; user-select: none;
+        }
+        .toggle-label input[type="checkbox"] {
+            appearance: none; -webkit-appearance: none;
+            width: 2.4rem; height: 1.3rem; border-radius: 999px;
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.16);
+            position: relative; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+        .toggle-label input[type="checkbox"]::after {
+            content: ''; position: absolute; top: 0.15rem; left: 0.15rem;
+            width: 0.9rem; height: 0.9rem; border-radius: 50%;
+            background: rgba(255,255,255,0.5); transition: transform 0.2s, background 0.2s;
+        }
+        .toggle-label input[type="checkbox"]:checked {
+            background: rgba(79, 209, 197, 0.35); border-color: rgba(79, 209, 197, 0.5);
+        }
+        .toggle-label input[type="checkbox"]:checked::after {
+            transform: translateX(1.1rem); background: var(--accent);
+        }
+        /* Out of service */
+        .oos-section { margin-top: 1rem; }
+        .oos-section-header {
+            display: flex; align-items: center; gap: 0.5rem;
+            margin-bottom: 0.6rem; font-size: 0.85rem; font-weight: 700;
+            color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
+        }
+        .oos-section-header::before {
+            content: ''; width: 0.55rem; height: 0.55rem; border-radius: 50%;
+            background: #9ca3af; opacity: 0.7;
+        }
+        .departure-card.oos-card {
+            border-color: rgba(156, 163, 175, 0.2); background: rgba(156, 163, 175, 0.05); opacity: 0.8;
+        }
+        .departure-card.oos-card:hover { opacity: 0.95; border-color: rgba(156, 163, 175, 0.3); }
+        .departure-status.status-oos { color: #9ca3af; background: rgba(156, 163, 175, 0.14); }
+        /* Line disruption notices */
+        .line-disruptions { display: grid; gap: 0.55rem; margin-bottom: 0.85rem; }
+        .line-disruptions:empty { display: none; }
+        .line-disruption-notice {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            padding: 0.9rem 1.1rem; border-radius: 1.1rem;
+            border: 1px solid rgba(255, 107, 107, 0.25);
+            background: rgba(255, 107, 107, 0.06);
+            font-size: 0.88rem; line-height: 1.45;
+        }
+        .line-disruption-notice .disruption-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 2rem; height: 2rem; border-radius: 0.6rem;
+            font-weight: 900; font-size: 0.75rem; flex-shrink: 0;
+            color: #fff; letter-spacing: 0.04em;
+        }
+        .line-disruption-notice .disruption-content { flex: 1; min-width: 0; }
+        .line-disruption-notice .disruption-title { font-weight: 700; margin-bottom: 0.2rem; }
+        .line-disruption-notice .disruption-body { color: rgba(255,255,255,0.68); font-size: 0.82rem; }
+        .line-disruption-notice .disruption-reason { margin-top: 0.25rem; color: rgba(255, 177, 109, 0.9); font-size: 0.8rem; font-style: italic; }
+        /* Rail replacement bus button in disruption notices */
+        .disruption-rb-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            margin-top: 0.55rem; padding: 0.4rem 0.85rem;
+            border: 1px solid rgba(79, 209, 197, 0.35); border-radius: 0.7rem;
+            background: rgba(79, 209, 197, 0.1); color: #4fd1c5;
+            font-size: 0.78rem; font-weight: 600; cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .disruption-rb-btn:hover { background: rgba(79, 209, 197, 0.2); border-color: rgba(79, 209, 197, 0.55); }
+        .disruption-rb-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .disruption-rb-btn .rb-icon { display: inline-flex; width: 1rem; height: 1rem; }
+        .disruption-rb-btn .rb-icon svg { width: 100%; height: 100%; }
+        /* Cancelled departure card */
+        .departure-card.cancelled-card { opacity: 0.55; }
+        .departure-card.cancelled-card .departure-time-main { text-decoration: line-through; color: var(--muted); }
+        /* Terminus badge */
+        .terminus-badge {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.25rem 0.55rem; border-radius: 999px;
+            font-size: 0.72rem; font-weight: 700;
+            color: #c084fc; background: rgba(192, 132, 252, 0.12);
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
         @media (max-width: 800px) {
             .page {
-                width: min(100%, calc(100% - 1.25rem));
-                padding: 1rem 0 1.6rem;
+                width: min(100%, calc(100% - 1rem));
+                padding: 0.75rem 0 1.2rem;
             }
             header {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 0.85rem;
-                margin-bottom: 1.1rem;
+                gap: 0.6rem;
+                margin-bottom: 0.8rem;
             }
             .hero h1 {
-                font-size: clamp(1.95rem, 9vw, 2.6rem);
-                margin-bottom: 0.45rem;
+                font-size: clamp(1.6rem, 7vw, 2.2rem);
+                margin-bottom: 0.25rem;
             }
             .hero p {
-                font-size: 0.96rem;
-                line-height: 1.55;
+                font-size: 0.85rem;
+                line-height: 1.4;
             }
             .status-card {
                 min-width: auto;
-                padding: 1rem 1.05rem;
-                border-radius: 1.15rem;
+                padding: 0.75rem 0.85rem;
+                border-radius: 1rem;
             }
             .status-card .value {
-                margin-top: 0.55rem;
-                font-size: clamp(1.8rem, 8vw, 2.4rem);
+                margin-top: 0.35rem;
+                font-size: clamp(1.5rem, 7vw, 2rem);
             }
             .status-card .subnote {
-                font-size: 0.76rem;
+                font-size: 0.72rem;
             }
             .controls {
-                margin-bottom: 1rem;
+                margin-bottom: 0.75rem;
             }
             .controls-panel {
-                padding: 1rem;
-                border-radius: 1.2rem;
-                gap: 0.85rem;
+                padding: 0.75rem;
+                border-radius: 1rem;
+                gap: 0.6rem;
             }
             .field-row {
                 grid-template-columns: 1fr;
-                gap: 0.7rem;
+                gap: 0.5rem;
             }
             .button-clear,
             .button-fullscreen {
@@ -629,38 +844,37 @@
             }
             .selected-stops {
                 display: grid;
-                gap: 0.55rem;
+                gap: 0.4rem;
             }
             .stop-menu-button {
-                padding: 0.82rem 0.9rem;
-                border-radius: 0.95rem;
-                font-size: 0.9rem;
+                padding: 0.65rem 0.75rem;
+                border-radius: 0.85rem;
+                font-size: 0.85rem;
             }
             .stop-menu-panel {
-                padding: 0.8rem;
-                gap: 0.6rem;
+                padding: 0.6rem;
+                gap: 0.5rem;
             }
             .chip {
                 width: 100%;
                 justify-content: space-between;
-                padding: 0.8rem 0.95rem;
-                border-radius: 1rem;
-                font-size: 0.92rem;
+                padding: 0.6rem 0.75rem;
+                border-radius: 0.85rem;
+                font-size: 0.85rem;
             }
             .board {
-                padding: 0.95rem;
-                border-radius: 1.35rem;
+                padding: 0.7rem;
+                border-radius: 1.1rem;
             }
             .board-header {
-                gap: 0.9rem;
-                margin-bottom: 0.85rem;
+                gap: 0.5rem;
+                margin-bottom: 0.6rem;
             }
             .board-header h2 {
-                font-size: 1.45rem;
+                font-size: 1.25rem;
             }
             .board-header .note {
-                font-size: 0.88rem;
-                line-height: 1.45;
+                display: none;
             }
             .board-actions {
                 width: 100%;
@@ -668,233 +882,252 @@
                 text-align: left;
             }
             .board-stats {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 0.55rem;
+                display: flex;
+                gap: 0.4rem;
                 width: 100%;
             }
             .board-stats span {
-                padding: 0.75rem 0.85rem;
-                border-radius: 1rem;
+                padding: 0.45rem 0.6rem;
+                border-radius: 0.75rem;
                 border: 1px solid rgba(255,255,255,0.1);
                 background: rgba(255,255,255,0.05);
                 color: #dcecff;
-                min-height: 3.4rem;
-                display: flex;
-                align-items: center;
+                font-size: 0.72rem;
+                flex: 1;
             }
             .departure-list {
-                gap: 0.8rem;
+                gap: 0.45rem;
             }
             .departure-card {
-                padding: 0.9rem;
-                border-radius: 1.15rem;
-                gap: 0.85rem;
+                padding: 0.6rem 0.65rem;
+                border-radius: 0.9rem;
+                gap: 0.3rem;
             }
             .departure-row {
                 display: grid;
-                grid-template-columns: auto 1fr;
-                align-items: start;
-                gap: 0.75rem;
+                grid-template-columns: auto 1fr auto;
+                align-items: center;
+                gap: 0.5rem;
             }
             .departure-route {
-                min-width: 3.65rem;
-                padding: 0.65rem 0.7rem;
-                font-size: 1rem;
-                border-radius: 0.95rem;
+                min-width: 2.8rem;
+                padding: 0.4rem 0.5rem;
+                font-size: 0.88rem;
+                border-radius: 0.75rem;
             }
             .departure-info h3 {
-                font-size: 1.1rem;
-                line-height: 1.2;
-                padding-right: 0.2rem;
+                font-size: 0.92rem;
+                line-height: 1.15;
             }
             .departure-info p {
-                margin-top: 0.28rem;
-                font-size: 0.83rem;
+                margin-top: 0.15rem;
+                font-size: 0.72rem;
             }
+            /* Hide route long name on mobile */
+            .route-long-name { display: none; }
             .departure-time {
-                grid-column: 1 / -1;
-                width: 100%;
-                justify-items: start;
-                padding-top: 0.15rem;
-                gap: 0.28rem;
+                grid-column: auto;
+                width: auto;
+                justify-items: end;
+                align-self: center;
+                padding-top: 0;
+                gap: 0.15rem;
             }
             .departure-time-main {
-                font-size: 0.96rem;
-                color: #bff7f0;
+                font-size: 0.95rem;
+                line-height: 1;
             }
             .departure-time-pill {
-                padding: 0.28rem 0.5rem;
-                font-size: 0.68rem;
+                padding: 0.18rem 0.38rem;
+                font-size: 0.58rem;
             }
             .departure-meta {
-                gap: 0.24rem;
-                font-size: 0.67rem;
-                padding-top: 0.08rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.3rem;
+                font-size: 0.7rem;
+                padding-top: 0;
             }
             .departure-meta-primary,
             .departure-meta-secondary {
                 display: contents;
             }
-            .departure-platform,
-            .departure-status,
-            .occupancy-chip {
-                width: auto;
-                justify-content: flex-start;
-                flex: 0 0 auto;
-            }
+            /* Hide less essential meta on mobile */
+            .congestion-chip,
+            .access-icons,
+            .vehicle-distance,
+            .vessel-name,
+            .schedule-badge,
+            .departure-stop-name { display: none; }
+            /* Show them again when journey view is expanded */
+            .departure-card[data-expanded="true"] .congestion-chip,
+            .departure-card[data-expanded="true"] .access-icons,
+            .departure-card[data-expanded="true"] .vehicle-distance,
+            .departure-card[data-expanded="true"] .vessel-name,
+            .departure-card[data-expanded="true"] .schedule-badge,
+            .departure-card[data-expanded="true"] .route-long-name,
+            .departure-card[data-expanded="true"] .departure-stop-name { display: revert; }
             .departure-platform {
-                font-size: 0.68rem;
+                font-size: 0.7rem;
                 line-height: 1;
             }
             .departure-status,
             .occupancy-chip {
-                padding: 0.32rem 0.48rem;
-                border-radius: 0.95rem;
-                font-size: 0.68rem;
+                padding: 0.22rem 0.42rem;
+                border-radius: 0.7rem;
+                font-size: 0.65rem;
                 line-height: 1;
             }
             .departure-status::before {
-                width: 0.42rem;
-                height: 0.42rem;
+                width: 0.35rem;
+                height: 0.35rem;
             }
             .occupancy-meter span {
-                width: 0.18rem;
-                height: 0.46rem;
+                width: 0.15rem;
+                height: 0.4rem;
+            }
+            .departure-expand-btn {
+                font-size: 0.68rem;
+                padding: 0.2rem 0.4rem;
             }
             .board-table th,
             .board-table td {
-                padding: 0.95rem;
+                padding: 0.7rem;
             }
+            .board-toggles { width: 100%; justify-content: flex-start; gap: 0.4rem; }
+            .toggle-label { font-size: 0.72rem; }
         }
 
         @media (max-width: 520px) {
             .page {
-                width: min(100%, calc(100% - 1rem));
-                padding-top: 0.85rem;
+                width: min(100%, calc(100% - 0.75rem));
+                padding-top: 0.6rem;
             }
             .hero h1 {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+            }
+            .hero p {
+                font-size: 0.78rem;
             }
             .controls-panel,
             .board {
-                padding: 0.72rem;
+                padding: 0.55rem;
             }
             input[type="text"] {
-                padding: 0.82rem 0.9rem;
-                font-size: 0.95rem;
+                padding: 0.7rem 0.75rem;
+                font-size: 0.9rem;
             }
             .board-header {
-                gap: 0.55rem;
+                gap: 0.35rem;
+            }
+            .board-header h2 {
+                font-size: 1.1rem;
             }
             .board-actions {
                 grid-template-columns: 1fr auto;
                 align-items: center;
                 justify-items: stretch;
-                gap: 0.45rem;
+                gap: 0.3rem;
             }
             .board-stats {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 0.35rem;
+                gap: 0.25rem;
             }
             .board-stats span {
-                min-height: 2.2rem;
-                padding: 0.42rem 0.5rem;
-                font-size: 0.68rem;
-                border-radius: 0.8rem;
+                padding: 0.35rem 0.4rem;
+                font-size: 0.62rem;
+                border-radius: 0.6rem;
             }
             .button-fullscreen {
                 width: auto;
-                min-height: 2.2rem;
-                padding: 0.42rem 0.68rem;
-                font-size: 0.72rem;
-                border-radius: 0.85rem;
+                min-height: 0;
+                padding: 0.35rem 0.55rem;
+                font-size: 0.65rem;
+                border-radius: 0.65rem;
                 white-space: nowrap;
             }
             .controls-panel {
-                gap: 0.65rem;
+                gap: 0.5rem;
             }
             .stop-menu-button {
-                padding: 0.68rem 0.78rem;
-                font-size: 0.84rem;
+                padding: 0.55rem 0.65rem;
+                font-size: 0.8rem;
             }
             .stop-menu-panel {
-                padding: 0.68rem;
+                padding: 0.5rem;
             }
             .chip {
-                padding: 0.68rem 0.82rem;
-                font-size: 0.86rem;
+                padding: 0.5rem 0.65rem;
+                font-size: 0.8rem;
+            }
+            .departure-list {
+                gap: 0.35rem;
             }
             .departure-card {
-                padding: 0.5rem 0.56rem;
-                gap: 0.35rem;
-                border-radius: 1rem;
+                padding: 0.45rem 0.5rem;
+                gap: 0.25rem;
+                border-radius: 0.8rem;
             }
             .departure-row {
-                grid-template-columns: auto 1fr auto;
-                align-items: center;
-                gap: 0.45rem;
+                gap: 0.35rem;
             }
             .departure-route {
                 min-width: 0;
                 width: auto;
-                padding: 0.38rem 0.48rem;
-                font-size: 0.82rem;
-                border-radius: 0.82rem;
-                letter-spacing: 0.06em;
-            }
-            .departure-info {
-                min-width: 0;
+                padding: 0.3rem 0.4rem;
+                font-size: 0.78rem;
+                border-radius: 0.65rem;
+                letter-spacing: 0.04em;
             }
             .departure-info h3 {
-                font-size: 0.95rem;
-                line-height: 1.05;
+                font-size: 0.85rem;
+                line-height: 1.1;
             }
             .departure-info p {
-                font-size: 0.7rem;
-                margin-top: 0.18rem;
-            }
-            .departure-time {
-                grid-column: auto;
-                width: auto;
-                justify-items: end;
-                align-self: start;
-                padding-top: 0;
-                gap: 0.18rem;
+                font-size: 0.65rem;
+                margin-top: 0.1rem;
             }
             .departure-time-main {
-                font-size: 0.92rem;
-                line-height: 1;
+                font-size: 0.85rem;
             }
             .departure-time-pill {
-                padding: 0.2rem 0.42rem;
-                font-size: 0.6rem;
+                padding: 0.15rem 0.32rem;
+                font-size: 0.52rem;
             }
             .departure-meta {
-                gap: 0.24rem;
-                font-size: 0.67rem;
-                padding-top: 0.08rem;
+                gap: 0.2rem;
+                font-size: 0.62rem;
             }
             .departure-platform {
-                font-size: 0.64rem;
+                font-size: 0.62rem;
             }
             .departure-status,
             .occupancy-chip {
-                padding: 0.24rem 0.4rem;
-                font-size: 0.62rem;
-                border-radius: 0.72rem;
+                padding: 0.18rem 0.32rem;
+                font-size: 0.58rem;
+                border-radius: 0.55rem;
             }
             .departure-status::before {
-                width: 0.34rem;
-                height: 0.34rem;
+                width: 0.28rem;
+                height: 0.28rem;
             }
             .occupancy-meter {
-                gap: 0.1rem;
+                gap: 0.08rem;
             }
             .occupancy-meter span {
-                width: 0.14rem;
-                height: 0.34rem;
+                width: 0.12rem;
+                height: 0.28rem;
             }
+            .departure-expand-btn {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.3rem;
+            }
+            .board-toggles { gap: 0.25rem; }
+            .toggle-label { font-size: 0.65rem; gap: 0.3rem; }
+            .toggle-label input[type="checkbox"] { width: 2rem; height: 1.1rem; }
+            .toggle-label input[type="checkbox"]::after { width: 0.7rem; height: 0.7rem; }
+            .toggle-label input[type="checkbox"]:checked::after { transform: translateX(0.9rem); }
+            .oos-section-header { font-size: 0.72rem; }
+            .terminus-badge { font-size: 0.6rem; padding: 0.18rem 0.4rem; }
         }
     </style>
 </head>
@@ -904,6 +1137,7 @@
             <div class="hero">
                 <h1>Auckland Transport departure board</h1>
                 <p>Search stops, add multiple locations, and monitor upcoming departures in one place. This is a separate departure board file to keep the existing layout untouched.</p>
+                <a href="live.html" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.75rem;padding:0.55rem 1.1rem;border-radius:0.85rem;background:rgba(79,209,197,0.14);border:1px solid rgba(79,209,197,0.3);color:#4fd1c5;font-weight:700;font-size:0.9rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(79,209,197,0.25)'" onmouseout="this.style.background='rgba(79,209,197,0.14)'">&#127758; Open Live Map</a>
             </div>
             <div class="status-card">
                 <span class="label">Live board</span>
@@ -935,6 +1169,9 @@
             </div>
         </section>
 
+        <div class="alerts-panel" id="alerts-panel"></div>
+        <div class="calendar-warning" id="calendar-warning"></div>
+
         <section class="board">
             <div class="board-header">
                 <div>
@@ -945,6 +1182,10 @@
                     <div class="board-stats">
                         <span id="watch-count">Watching 0 stops</span>
                         <span id="departure-count">0 upcoming departures</span>
+                    </div>
+                    <div class="board-toggles">
+                        <label class="toggle-label"><input type="checkbox" id="toggle-terminus" checked /> Show terminus arrivals</label>
+                        <label class="toggle-label"><input type="checkbox" id="toggle-oos" /> Show out-of-service trains</label>
                     </div>
                     <button class="button-fullscreen" id="fullscreen-toggle" type="button">Enter fullscreen</button>
                 </div>
@@ -962,6 +1203,11 @@
         const REALTIME_VEHICLE_LOCATIONS_URL = `${API_BASE}/realtime/legacy/vehiclelocations`;
         const REALTIME_TRIP_UPDATES_URL = `${API_BASE}/realtime/legacy/tripupdates`;
         const SELECTED_STOPS_STORAGE_KEY = 'at-departure-board-selected-stops';
+        const REALTIME_COMBINED_URL = `${API_BASE}/realtime/legacy`;
+        const REALTIME_SERVICE_ALERTS_URL = `${API_BASE}/realtime/legacy/servicealerts`;
+        const REALTIME_FERRY_POSITIONS_URL = `${API_BASE}/realtime/legacy/ferrypositions`;
+        const TERMINUS_TOGGLE_KEY = 'at-departure-board-show-terminus';
+        const OOS_TOGGLE_KEY = 'at-departure-board-show-oos';
 
         const fallbackStops = [
             {
@@ -1022,7 +1268,9 @@
             searchResults: [],
             searchLoading: false,
             searchError: null,
-            searchQuery: ''
+            searchQuery: '',
+            showTerminusArrivals: true,
+            showOutOfService: false
         };
 
         let searchRequestId = 0;
@@ -1034,6 +1282,93 @@
             byTrip: new Map()
         };
         const stopPlatformCache = new Map();
+        const routeDetailsCache = new Map();
+        const tripDetailsCache = new Map();
+        const tripStopTimesCache = new Map();
+        const ferryPositionCache = { fetchedAt: 0, vessels: [] };
+        const serviceAlertsCache = { fetchedAt: 0, alerts: [] };
+        const outOfServiceVehicles = [];
+        const calendarCache = new Map();
+        const expandedTripIds = new Set();
+        // Line status: tracks which rail route_ids have realtime data vs only scheduled
+        const lineStatusCache = {
+            fetchedAt: 0,
+            // routeId -> { routeId, shortName, longName, routeType, isRunning, scheduledCount, realtimeCount, alertReason }
+            routes: new Map()
+        };
+
+        // Rail route → Rail Replacement Bus route mapping
+        const RAIL_TO_RB_MAP = {
+            'STH-201': 'RBS-402',
+            'EAST-201': 'RBE-402',
+            'WEST-201': 'RBW-402',
+            'ONE-201': 'RBO-402',
+            'HUIA-404': 'RBM-402'
+        };
+        // All known rail route IDs (used for zero-trip station detection)
+        const KNOWN_RAIL_ROUTES = ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201', 'HUIA-404'];
+        // Station name (lowercase, stripped of "Train Station") → array of rail route IDs serving it
+        const STATION_ROUTES = {
+            // Southern Line only
+            'papakura': ['STH-201', 'HUIA-404'],
+            'takaanini': ['STH-201'],
+            'te mahia': ['STH-201'],
+            'manurewa': ['STH-201'],
+            'homai': ['STH-201'],
+            'ellerslie': ['STH-201'],
+            'greenlane': ['STH-201'],
+            'remuera': ['STH-201'],
+            'pukekohe': ['STH-201'],
+            // Eastern Line only
+            'manukau': ['EAST-201'],
+            'sylvia park': ['EAST-201'],
+            'panmure': ['EAST-201'],
+            'glen innes': ['EAST-201'],
+            'meadowbank': ['EAST-201'],
+            'orakei': ['EAST-201'],
+            // Western Line only
+            'swanson': ['WEST-201'],
+            'ranui': ['WEST-201'],
+            'henderson': ['WEST-201'],
+            'sturges road': ['WEST-201'],
+            'new lynn': ['WEST-201'],
+            'fruitvale road': ['WEST-201'],
+            'glen eden': ['WEST-201'],
+            'sunnyvale': ['WEST-201'],
+            'avondale': ['WEST-201'],
+            'mt albert': ['WEST-201'],
+            'baldwin avenue': ['WEST-201'],
+            'morningside': ['WEST-201'],
+            'kingsland': ['WEST-201'],
+            'grafton': ['WEST-201'],
+            // Onehunga Line only
+            'onehunga': ['ONE-201'],
+            'te papapa': ['ONE-201'],
+            // Southern + Eastern (shared section)
+            'puhinui': ['STH-201', 'EAST-201'],
+            'papatoetoe': ['STH-201', 'EAST-201'],
+            'middlemore': ['STH-201', 'EAST-201'],
+            'otahuhu': ['STH-201', 'EAST-201'],
+            // Southern + Onehunga
+            'penrose': ['STH-201', 'ONE-201'],
+            // Hub stations (multiple lines)
+            'newmarket': ['STH-201', 'ONE-201'],
+            'parnell': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'britomart': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            // CRL stations (all lines)
+            'karangahape': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'karanga-a-hape': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'te waihorotiu': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'aotea': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'maungawhau': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'mt eden': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            // Te Huia
+            'huntly': ['HUIA-404'],
+            'te rapa': ['HUIA-404'],
+            'frankton': ['HUIA-404']
+        };
+        // Cache for rail replacement bus stop lookups (stationStopCode -> { status, stops })
+        const rbStopCache = new Map();
 
         const searchInput = document.getElementById('stop-search');
         const searchDropdown = document.getElementById('search-dropdown');
@@ -1047,6 +1382,10 @@
         const lastUpdated = document.getElementById('last-updated');
         const watchCount = document.getElementById('watch-count');
         const departureCount = document.getElementById('departure-count');
+        const alertsPanel = document.getElementById('alerts-panel');
+        const calendarWarning = document.getElementById('calendar-warning');
+        const toggleTerminus = document.getElementById('toggle-terminus');
+        const toggleOOS = document.getElementById('toggle-oos');
 
         function normalizeText(value) {
             return String(value || '').trim().toLowerCase();
@@ -1186,7 +1525,9 @@
                         stopId: attr.stop_id || '',
                         platformCode: attr.platform_code || '',
                         locationType: attr.location_type,
-                        wheelchairBoarding: attr.wheelchair_boarding
+                        wheelchairBoarding: attr.wheelchair_boarding,
+                        stopLat: attr.stop_lat || null,
+                        stopLon: attr.stop_lon || null
                     };
                 });
             }
@@ -1342,6 +1683,7 @@
                 const departureTime = new Date(now.getTime() + dep.offset * 60000);
                 return {
                     stopName: stop.stopName,
+                    stopCode: stop.stopCode || '',
                     route: dep.route,
                     destination: dep.destination,
                     details: dep.destination || stop.stopName,
@@ -1554,56 +1896,459 @@
         async function fetchRealtimeVehicleLookup() {
             const cacheTtlMs = 20 * 1000;
             if ((Date.now() - realtimeVehicleCache.fetchedAt) < cacheTtlMs && realtimeVehicleCache.byTrip.size > 0) {
-                console.log(`Using cached realtime data (${realtimeVehicleCache.byTrip.size} trips)`);
+
                 return realtimeVehicleCache.byTrip;
             }
 
             const byTrip = new Map();
-
-            function processEntity(entity, source) {
-                const tripUpdate = entity.trip_update || entity.TripUpdate || entity.tripUpdate;
-                const vehicle = entity.vehicle || entity.VehiclePosition?.vehicle || tripUpdate?.vehicle;
-                const trip = tripUpdate?.trip || vehicle?.trip;
-                const tripId = trip?.trip_id || trip?.tripId;
-                if (!tripId) return;
-                const tripKey = normalizeTripKey(tripId);
-                if (!tripKey) return;
-
-                const occupancy = getOccupancyInfo(vehicle || {});
-                const hasTripUpdate = Boolean(tripUpdate && tripUpdate.trip);
-                const existing = byTrip.get(tripKey) || { occupancy: null, tripUpdate: null, hasLiveData: false };
-
-                if (!existing.occupancy && occupancy) existing.occupancy = occupancy;
-                if (!existing.occupancy) existing.occupancy = getOccupancyInfo(tripUpdate || {});
-                if (!existing.tripUpdate && hasTripUpdate) existing.tripUpdate = tripUpdate;
-                existing.hasLiveData = true;
-                byTrip.set(tripKey, existing);
-            }
-
-            // Fetch both endpoints independently — either can fail without breaking the other
+            const alerts = [];
+            const oosCollector = [];
             const realtimeHeaders = {
                 'Ocp-Apim-Subscription-Key': REALTIME_API_KEY,
                 'Accept': 'application/json'
             };
 
-            const [tripResult, vehicleResult] = await Promise.all([
-                fetch(REALTIME_TRIP_UPDATES_URL, { headers: realtimeHeaders })
-                    .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
-                    .then(json => (json.response && json.response.entity) || [])
-                    .catch(err => { console.warn('Trip updates unavailable:', err); return []; }),
-                fetch(REALTIME_VEHICLE_LOCATIONS_URL, { headers: realtimeHeaders })
-                    .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
-                    .then(json => (json.response && json.response.entity) || [])
-                    .catch(err => { console.warn('Vehicle locations unavailable:', err); return []; })
-            ]);
+            function createEmptyEntry() {
+                return { occupancy: null, tripUpdate: null, hasLiveData: false,
+                    position: null, congestionLevel: null, vehicleLabel: null, scheduleRelationship: null, routeId: '' };
+            }
 
-            tripResult.forEach(entity => processEntity(entity, 'TripUpdate'));
-            vehicleResult.forEach(entity => processEntity(entity, 'Vehicle'));
+            try {
+                // Use combined feed — single API call for trip updates + vehicle positions + alerts
+                const response = await fetch(REALTIME_COMBINED_URL, { headers: realtimeHeaders });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                const entities = (json.response && json.response.entity) || [];
 
-            console.log(`Realtime API: ${byTrip.size} active trips (${tripResult.length} trip updates, ${vehicleResult.length} vehicles)`);
+                let tripUpdateCount = 0, vehicleCount = 0, alertCount = 0;
+
+                entities.forEach(entity => {
+                    // Service Alerts
+                    if (entity.alert) {
+                        alerts.push(entity);
+                        alertCount++;
+                    }
+
+                    // Trip Updates
+                    if (entity.trip_update) {
+                        tripUpdateCount++;
+                        const tu = entity.trip_update;
+                        const trip = tu.trip;
+                        const tripId = trip?.trip_id;
+                        if (!tripId) return;
+                        const tripKey = normalizeTripKey(tripId);
+                        if (!tripKey) return;
+
+                        const existing = byTrip.get(tripKey) || createEmptyEntry();
+                        existing.tripUpdate = tu;
+                        existing.hasLiveData = true;
+                        existing.routeId = trip?.route_id || existing.routeId || '';
+                        if (trip.schedule_relationship != null) existing.scheduleRelationship = trip.schedule_relationship;
+                        if (tu.vehicle?.label) existing.vehicleLabel = tu.vehicle.label;
+                        if (!existing.occupancy) existing.occupancy = getOccupancyInfo(tu.vehicle || {}) || getOccupancyInfo(tu);
+                        byTrip.set(tripKey, existing);
+                    }
+
+                    // Vehicle Positions
+                    if (entity.vehicle && !entity.trip_update) {
+                        vehicleCount++;
+                        const vp = entity.vehicle;
+                        const trip = vp.trip;
+                        const tripId = trip?.trip_id;
+                        if (!tripId) {
+                            // Out-of-service vehicle (no trip assignment)
+                            if (vp.position) {
+                                const oosRouteId = trip?.route_id || '';
+                                const oosRouteInfo = routeDetailsCache.get(oosRouteId);
+                                oosCollector.push({
+                                    vehicleId: vp.vehicle?.id || '',
+                                    vehicleLabel: vp.vehicle?.label || vp.vehicle?.id || 'Unknown',
+                                    position: { lat: vp.position.latitude, lng: vp.position.longitude, bearing: vp.position.bearing },
+                                    routeId: oosRouteId,
+                                    routeType: oosRouteInfo?.routeType ?? null,
+                                    routeShortName: oosRouteInfo?.shortName || '',
+                                    timestamp: vp.timestamp || null
+                                });
+                            }
+                            return;
+                        }
+                        const tripKey = normalizeTripKey(tripId);
+                        if (!tripKey) return;
+
+                        const existing = byTrip.get(tripKey) || createEmptyEntry();
+                        existing.hasLiveData = true;
+                        existing.routeId = trip?.route_id || existing.routeId || '';
+
+                        if (vp.position) {
+                            existing.position = {
+                                lat: vp.position.latitude, lng: vp.position.longitude,
+                                bearing: vp.position.bearing, speed: vp.position.speed
+                            };
+                        }
+                        if (vp.congestion_level != null) existing.congestionLevel = vp.congestion_level;
+                        if (vp.occupancy_status != null && !existing.occupancy) {
+                            existing.occupancy = normalizeOccupancyStatus(vp.occupancy_status);
+                        }
+                        if (!existing.occupancy) existing.occupancy = getOccupancyInfo(vp);
+                        if (vp.vehicle?.label) existing.vehicleLabel = vp.vehicle.label;
+                        if (trip.schedule_relationship != null && existing.scheduleRelationship == null) {
+                            existing.scheduleRelationship = trip.schedule_relationship;
+                        }
+                        byTrip.set(tripKey, existing);
+                    }
+                });
+
+
+                serviceAlertsCache.alerts = alerts;
+                serviceAlertsCache.fetchedAt = Date.now();
+                renderServiceAlerts(alerts);
+
+            } catch (err) {
+                console.warn('Combined feed failed, falling back to separate endpoints:', err);
+                const [tripResult, vehicleResult] = await Promise.all([
+                    fetch(REALTIME_TRIP_UPDATES_URL, { headers: realtimeHeaders })
+                        .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+                        .then(json => (json.response && json.response.entity) || [])
+                        .catch(e => { console.warn('Trip updates unavailable:', e); return []; }),
+                    fetch(REALTIME_VEHICLE_LOCATIONS_URL, { headers: realtimeHeaders })
+                        .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+                        .then(json => (json.response && json.response.entity) || [])
+                        .catch(e => { console.warn('Vehicle locations unavailable:', e); return []; })
+                ]);
+
+                function processEntityFallback(entity) {
+                    const tripUpdate = entity.trip_update || entity.TripUpdate || entity.tripUpdate;
+                    const vehicle = entity.vehicle || entity.VehiclePosition?.vehicle || tripUpdate?.vehicle;
+                    const trip = tripUpdate?.trip || vehicle?.trip;
+                    const tripId = trip?.trip_id || trip?.tripId;
+                    if (!tripId) {
+                        // Capture out-of-service vehicles from fallback feeds
+                        if (vehicle?.position) {
+                            const fbRouteId = trip?.route_id || '';
+                            const fbRouteInfo = routeDetailsCache.get(fbRouteId);
+                            oosCollector.push({
+                                vehicleId: vehicle?.vehicle?.id || vehicle?.id || '',
+                                vehicleLabel: vehicle?.vehicle?.label || vehicle?.label || vehicle?.vehicle?.id || 'Unknown',
+                                position: { lat: vehicle.position.latitude, lng: vehicle.position.longitude, bearing: vehicle.position.bearing },
+                                routeId: fbRouteId,
+                                routeType: fbRouteInfo?.routeType ?? null,
+                                routeShortName: fbRouteInfo?.shortName || '',
+                                timestamp: vehicle.timestamp || null
+                            });
+                        }
+                        return;
+                    }
+                    const tripKey = normalizeTripKey(tripId);
+                    if (!tripKey) return;
+                    const existing = byTrip.get(tripKey) || createEmptyEntry();
+                    if (!existing.occupancy) existing.occupancy = getOccupancyInfo(vehicle || {});
+                    if (!existing.occupancy) existing.occupancy = getOccupancyInfo(tripUpdate || {});
+                    if (tripUpdate && tripUpdate.trip && !existing.tripUpdate) existing.tripUpdate = tripUpdate;
+                    existing.hasLiveData = true;
+                    existing.routeId = trip?.route_id || existing.routeId || '';
+                    if (vehicle?.position) {
+                        existing.position = {
+                            lat: vehicle.position.latitude, lng: vehicle.position.longitude,
+                            bearing: vehicle.position.bearing, speed: vehicle.position.speed
+                        };
+                    }
+                    if (vehicle?.congestion_level != null) existing.congestionLevel = vehicle.congestion_level;
+                    if (vehicle?.vehicle?.label || vehicle?.label) existing.vehicleLabel = vehicle?.vehicle?.label || vehicle?.label;
+                    if (trip?.schedule_relationship != null) existing.scheduleRelationship = trip.schedule_relationship;
+                    byTrip.set(tripKey, existing);
+                }
+
+                tripResult.forEach(e => processEntityFallback(e));
+                vehicleResult.forEach(e => processEntityFallback(e));
+
+            }
+
+            outOfServiceVehicles.length = 0;
+            outOfServiceVehicles.push(...oosCollector);
             realtimeVehicleCache.fetchedAt = Date.now();
             realtimeVehicleCache.byTrip = byTrip;
+            // Analyze which rail routes have active realtime data
+            analyzeLineStatus(byTrip);
+
+            // Also capture cancelled-trip vehicles as OOS: vehicles with position data
+            // on a rail route where the trip is cancelled and the line isn't running
+            byTrip.forEach((entry, tripKey) => {
+                if (!entry.position) return;
+                if (entry.scheduleRelationship !== 3) return; // only cancelled trips
+                const routeId = entry.routeId;
+                if (!routeId) return;
+                const rInfo = routeDetailsCache.get(routeId);
+                const rType = rInfo?.routeType;
+                if (rType != null && rType > 2) return; // only rail types
+                // Don't duplicate — check if this vehicle is already in OOS list
+                const vLabel = entry.vehicleLabel || tripKey;
+                if (outOfServiceVehicles.some(v => v.vehicleLabel === vLabel)) return;
+                outOfServiceVehicles.push({
+                    vehicleId: tripKey,
+                    vehicleLabel: vLabel,
+                    position: entry.position,
+                    routeId: routeId,
+                    routeType: rType ?? null,
+                    routeShortName: rInfo?.shortName || '',
+                    timestamp: null,
+                    cancelledTrip: true
+                });
+            });
+
             return byTrip;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // LINE STATUS ANALYSIS — detect which rail lines aren't running
+        // ═══════════════════════════════════════════════════════
+        function analyzeLineStatus(realtimeLookup) {
+            if (!realtimeLookup || realtimeLookup.size === 0) return;
+            // Count realtime entries per route_id (only for rail route types 0,1,2)
+            const routeRealtimeCounts = new Map(); // routeId -> { active: number, cancelled: number }
+            realtimeLookup.forEach((entry, tripKey) => {
+                const routeId = entry.routeId;
+                if (!routeId) return;
+                const routeInfo = routeDetailsCache.get(routeId);
+                // Only analyze rail routes (type 0=tram, 1=subway, 2=rail)
+                if (routeInfo && routeInfo.routeType != null && routeInfo.routeType > 2) return;
+                // If no routeInfo yet, we can't filter by type — include it (may be rail)
+                const counts = routeRealtimeCounts.get(routeId) || { active: 0, cancelled: 0 };
+                // schedule_relationship: 3 = CANCELED
+                if (entry.scheduleRelationship === 3) {
+                    counts.cancelled++;
+                } else {
+                    counts.active++;
+                }
+                routeRealtimeCounts.set(routeId, counts);
+            });
+            lineStatusCache.realtimeRouteCounts = routeRealtimeCounts;
+            lineStatusCache.fetchedAt = Date.now();
+        }
+
+        function isRailRouteRunning(routeId) {
+            if (!routeId) return true; // assume running if unknown
+            const countsMap = lineStatusCache.realtimeRouteCounts;
+            if (!countsMap) return true;
+            // Only draw conclusions if the overall realtime feed is working
+            // (has ANY entries — bus, train, ferry, etc.). If the feed itself is empty/down, assume running.
+            if (realtimeVehicleCache.byTrip.size === 0) return true;
+            const counts = countsMap.get(routeId);
+            if (!counts) return false; // feed is alive but this route has zero entries — NOT running
+            return counts.active > 0; // running if at least one non-cancelled trip has realtime
+        }
+
+        function isTripCancelledInRealtime(tripId, realtimeLookup) {
+            if (!tripId || !realtimeLookup) return false;
+            const tripKey = normalizeTripKey(tripId);
+            const entry = realtimeLookup.get(tripKey);
+            if (!entry) return false;
+            return entry.scheduleRelationship === 3;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // TRAIN STATION DETECTION & ZERO-TRIP DISRUPTION DETECTION
+        // ═══════════════════════════════════════════════════════
+
+        // Detect if a stop is a train station (parent station with "Train Station" in name, or locationType === 1 with rail-like name)
+        function isTrainStation(stop) {
+            if (!stop) return false;
+            const name = String(stop.stopName || '').toLowerCase();
+            // Parent stations (locationType 1) with "train station" in name
+            if (stop.locationType === 1 && name.includes('train station')) return true;
+            // Even without locationType set yet, name-based detection for common AT pattern
+            if (name.includes('train station')) return true;
+            // Check if the stop name looks like a known train station pattern (e.g. "Papakura Train Station", "Newmarket Train Station")
+            return false;
+        }
+
+        // Get the rail route IDs that serve a given train station (returns null if unknown → show all)
+        function getRoutesForStation(stop) {
+            const name = String(stop.stopName || '').toLowerCase()
+                .replace(/\s*train\s*station\s*/i, '').trim()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // strip diacritics (e.g. Ōtāhuhu → Otahuhu)
+            return STATION_ROUTES[name] || null;
+        }
+
+        // Get rail route IDs that have service alerts (indicating disruption)
+        function getRailRoutesWithAlerts() {
+            const alertedRoutes = new Map(); // routeId -> alertInfo
+            if (serviceAlertsCache.alerts.length === 0) return alertedRoutes;
+            serviceAlertsCache.alerts.forEach(alertEntity => {
+                const a = alertEntity.alert || {};
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                entities.forEach(e => {
+                    if (!e.route_id) return;
+                    const routeInfo = routeDetailsCache.get(e.route_id);
+                    // Only track rail routes (type 0, 1, 2)
+                    if (routeInfo && routeInfo.routeType != null && routeInfo.routeType > 2) return;
+                    if (!alertedRoutes.has(e.route_id)) {
+                        alertedRoutes.set(e.route_id, {
+                            routeId: e.route_id,
+                            shortName: routeInfo?.shortName || e.route_id,
+                            longName: routeInfo?.longName || '',
+                            routeColor: routeInfo?.routeColor || null
+                        });
+                    }
+                });
+            });
+            return alertedRoutes;
+        }
+
+        // Detect suspended rail lines for a train station that has ZERO scheduled trips.
+        // This handles the case where the GTFS timetable itself has been cleared (e.g. CRL transition).
+        function detectZeroTripStationDisruptions(stop) {
+            const disruptions = []; // array of { routeId, shortName, longName, color, reason }
+            if (!isTrainStation(stop)) return disruptions;
+            const data = state.departureData[stop.stopCode];
+            // Only trigger when we've fetched successfully but got zero rows
+            if (!data || data.status !== 'ready') return disruptions;
+            if (data.rows && data.rows.length > 0) return disruptions;
+            // The realtime feed must be alive (has bus data etc.) for us to conclude rail is down
+            if (realtimeVehicleCache.byTrip.size === 0) return disruptions;
+
+            // Determine which rail lines actually serve this station (null = unknown, show all)
+            const stationRoutes = getRoutesForStation(stop);
+
+            // Check which rail routes are NOT running (zero realtime entries)
+            // First try: use service alerts to identify which specific rail lines are disrupted
+            const alertedRailRoutes = getRailRoutesWithAlerts();
+            if (alertedRailRoutes.size > 0) {
+                alertedRailRoutes.forEach((info, routeId) => {
+                    // Only show lines that actually serve this station
+                    if (stationRoutes && !stationRoutes.includes(routeId)) return;
+                    // Confirm this route isn't actually running
+                    if (isRailRouteRunning(routeId)) return;
+                    const reason = getLineAlertReason(routeId);
+                    disruptions.push({
+                        routeId: routeId,
+                        shortName: getRouteLabel(info.shortName),
+                        longName: info.longName,
+                        color: info.routeColor || getRouteColor(info.shortName),
+                        reason: reason
+                    });
+                });
+            }
+
+            // Fallback: if no specific service alerts found, check known rail routes for this station
+            if (disruptions.length === 0) {
+                const routesToCheck = stationRoutes || KNOWN_RAIL_ROUTES;
+                routesToCheck.forEach(routeId => {
+                    if (isRailRouteRunning(routeId)) return;
+                    const routeInfo = routeDetailsCache.get(routeId);
+                    if (!routeInfo) return;
+                    disruptions.push({
+                        routeId: routeId,
+                        shortName: getRouteLabel(routeInfo.shortName),
+                        longName: routeInfo.longName || '',
+                        color: routeInfo.routeColor || getRouteColor(routeInfo.shortName),
+                        reason: getLineAlertReason(routeId)
+                    });
+                });
+            }
+
+            return disruptions;
+        }
+
+        // Search for a nearby rail replacement bus stop for a given train station
+        async function findRailReplacementBusStops(stop) {
+            const cacheKey = stop.stopCode;
+            const cached = rbStopCache.get(cacheKey);
+            if (cached && cached.status !== 'loading') return cached;
+
+            rbStopCache.set(cacheKey, { status: 'loading', stops: [] });
+            const stationName = getPrettyStopName(stop).replace(/\s*train\s*station\s*/i, '').trim();
+            if (!stationName) { rbStopCache.set(cacheKey, { status: 'done', stops: [] }); return rbStopCache.get(cacheKey); }
+
+            try {
+                // Search for bus stops near this station by name (e.g. "Papakura Station")
+                const today = new Date().toISOString().split('T')[0];
+                const searchTerms = [`${stationName} Station`, stationName];
+                let foundStops = [];
+
+                for (const term of searchTerms) {
+                    if (foundStops.length > 0) break;
+                    const url = `${API_BASE}/gtfs/v3/stops?filter[stop_name]=*${encodeURIComponent(term)}*&filter[date]=${today}&page[limit]=50`;
+                    const response = await fetch(url, {
+                        headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                    });
+                    if (!response.ok) continue;
+                    const json = await response.json();
+                    const stops = (json.data || []).map(item => {
+                        const a = item.attributes || {};
+                        return {
+                            stopCode: a.stop_code || '',
+                            stopId: a.stop_id || '',
+                            stopName: a.stop_name || '',
+                            locationType: a.location_type,
+                            stopLat: a.stop_lat || null,
+                            stopLon: a.stop_lon || null
+                        };
+                    });
+                    // Filter to bus-type stops (not train platforms) that are near the station
+                    foundStops = stops.filter(s => {
+                        // Exclude train platforms and the station itself
+                        if (s.stopCode === stop.stopCode) return false;
+                        const sName = s.stopName.toLowerCase();
+                        if (sName.includes('train station')) return false;
+                        if (sName.includes('platform') || sName.includes('plat ')) return false;
+                        // Must be within reasonable distance if we have coords
+                        if (stop.stopLat && s.stopLat) {
+                            const dist = haversineDistance(stop.stopLat, stop.stopLon, s.stopLat, s.stopLon);
+                            if (dist > 0.5) return false; // within 500m
+                        }
+                        return true;
+                    });
+                }
+
+                // Now check which of these stops actually have rail replacement bus trips
+                const rbStops = [];
+                for (const busStop of foundStops.slice(0, 5)) {
+                    const tripUrl = `${API_BASE}/gtfs/v3/stops/${encodeURIComponent(busStop.stopId)}/stoptrips?filter[date]=${new Date().toISOString().split('T')[0]}&filter[start_hour]=${new Date().getHours()}&filter[hour_range]=4`;
+                    try {
+                        const tripResp = await fetch(tripUrl, {
+                            headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                        });
+                        if (!tripResp.ok) continue;
+                        const tripJson = await tripResp.json();
+                        const trips = tripJson.data || [];
+                        // Check if any trips are on RB* routes
+                        const hasRbTrips = trips.some(t => {
+                            const rId = (t.attributes?.route_id || '').toUpperCase();
+                            return rId.startsWith('RB');
+                        });
+                        if (hasRbTrips) {
+                            rbStops.push(busStop);
+                        }
+                    } catch (_) {}
+                }
+
+                const result = { status: 'done', stops: rbStops };
+                rbStopCache.set(cacheKey, result);
+                return result;
+            } catch (err) {
+                console.warn('Failed to find rail replacement bus stops:', err);
+                const result = { status: 'error', stops: [] };
+                rbStopCache.set(cacheKey, result);
+                return result;
+            }
+        }
+
+        function getLineAlertReason(routeId) {
+            if (!routeId || serviceAlertsCache.alerts.length === 0) return '';
+            const relevant = serviceAlertsCache.alerts.filter(alertEntity => {
+                const a = alertEntity.alert || {};
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                return entities.some(e => e.route_id === routeId);
+            });
+            if (relevant.length === 0) return '';
+            const a = relevant[0].alert || {};
+            const headerText = a.header_text?.translation?.text
+                || (Array.isArray(a.header_text?.translation) ? a.header_text.translation[0]?.text : '')
+                || '';
+            const descText = a.description_text?.translation?.text
+                || (Array.isArray(a.description_text?.translation) ? a.description_text.translation[0]?.text : '')
+                || '';
+            return headerText + (descText ? ` — ${descText}` : '');
         }
 
         function findRealtimeDataForMovement(movement, realtimeLookup) {
@@ -1621,15 +2366,17 @@
 
             let realtimeData = realtimeLookup.get(movementTripKey);
             if (!realtimeData) {
-                realtimeData = Array.from(realtimeLookup.entries()).find(([tripKey]) =>
-                    movementTripKey.startsWith(tripKey) ||
-                    tripKey.startsWith(movementTripKey) ||
-                    movementTripKey.includes(tripKey) ||
-                    tripKey.includes(movementTripKey)
-                )?.[1] || null;
+                // Fuzzy match: only try prefix matching with a minimum overlap to avoid false matches
+                const MIN_MATCH_LEN = 8;
+                if (movementTripKey.length >= MIN_MATCH_LEN) {
+                    realtimeData = Array.from(realtimeLookup.entries()).find(([tripKey]) => {
+                        if (tripKey.length < MIN_MATCH_LEN) return false;
+                        return movementTripKey.startsWith(tripKey) || tripKey.startsWith(movementTripKey);
+                    })?.[1] || null;
+                }
             }
             if (!realtimeData) {
-                console.log(`No realtime data for trip: raw="${rawTripId}", normalized="${movementTripKey}"`);
+
             }
 
             return realtimeData || null;
@@ -1661,15 +2408,6 @@
                     departureTime = new Date(depStr);
                 }
             }
-            if (!window.loggedTrips) window.loggedTrips = 0;
-            if (window.loggedTrips < 5) {
-                console.log(`GTFS trip: ${attrs.trip_id} -> ${normalizeTripKey(attrs.trip_id)}`);
-                window.loggedTrips++;
-            }
-
-            // DEBUG: Log trip ID for matching
-            // const rawGtfsTrip = attrs.trip_id || 'MISSING';
-            // console.log(`GTFS trip: "${rawGtfsTrip}" (normalized: "${normalizeTripKey(rawGtfsTrip)}")`);
 
             const realtimeData = findRealtimeDataForMovement({
                 trip_id: attrs.trip_id,
@@ -1680,6 +2418,7 @@
             let expectedTime = null;
             let delaySeconds = null;
             let hasStopLevelData = false; // true only when we have per-stop delay info
+            let trainSkipsThisStop = false;
             if (realtimeData?.tripUpdate) {
                 // Try matching stop_time_update by stop_id (multiple formats) or by stop_sequence
                 const stopSequence = attrs.stop_sequence;
@@ -1697,6 +2436,11 @@
                     if (stopSequence != null && update.stop_sequence != null && Number(update.stop_sequence) === Number(stopSequence)) return true;
                     return false;
                 });
+                // If the trip has a substantial stop_time_update list (likely full trip) but our stop
+                // isn't in it, the train probably skips this stop in reality
+                if (!stopTimeUpdate && stopTimeUpdates.length >= 5) {
+                    trainSkipsThisStop = true;
+                }
                 if (stopTimeUpdate) {
                     hasStopLevelData = true;
                     // Use delay field directly if available (more reliable)
@@ -1714,7 +2458,7 @@
                         }
                     }
                 } else {
-                    console.log(`No stopTimeUpdate found for stop ${mainCode} (seq ${stopSequence}) in trip ${attrs.trip_id}`);
+
                 }
                 // Fall back to trip-level delay — but only use non-zero delays as evidence
                 // A trip-level delay of 0 without per-stop data just means "scheduled, no info"
@@ -1728,7 +2472,7 @@
                     }
                 }
             } else {
-                console.log(`No tripUpdate for trip ${attrs.trip_id}`);
+
             }
             // Legacy fallback: trip.delay (some feeds put it here) — same rule, skip 0
             if (delaySeconds == null && realtimeData?.tripUpdate?.trip?.delay != null && departureTime) {
@@ -1785,14 +2529,48 @@
                     }
                 }
             }
-            if (!window.loggedStatus) window.loggedStatus = 0;
-            if (window.loggedStatus < 5) {
-                console.log(`Trip ${attrs.trip_id}: hasLive=${hasLiveTracking}, expected=${expectedTime}, departure=${departureTime}, status=${status}`);
-                window.loggedStatus++;
+            // --- New feature enrichment ---
+            const routeInfo = routeDetailsCache.get(attrs.route_id);
+            const routeType = routeInfo?.routeType ?? 3;
+            const modeIcon = getModeIcon(routeType);
+            const modeLabel = getModeLabel(routeType);
+            const apiRouteColor = routeInfo?.routeColor || null;
+            const routeLongName = routeInfo?.longName || '';
+
+            const congestionInfo = realtimeData ? getCongestionInfo(realtimeData.congestionLevel) : null;
+            const schedRelInfo = realtimeData?.scheduleRelationship != null
+                ? getScheduleRelationshipInfo(realtimeData.scheduleRelationship) : null;
+
+            let vehicleDistance = null;
+            if (realtimeData?.position?.lat != null && stop.stopLat != null) {
+                const distKm = haversineDistance(
+                    realtimeData.position.lat, realtimeData.position.lng,
+                    stop.stopLat, stop.stopLon
+                );
+                vehicleDistance = formatDistance(distKm);
+            }
+
+            const vehicleLabel = realtimeData?.vehicleLabel || null;
+            const cachedTripDetails = tripDetailsCache.get(attrs.trip_id);
+            const wheelchairAccessible = cachedTripDetails?.wheelchairAccessible ?? null;
+            const bikesAllowed = cachedTripDetails?.bikesAllowed ?? null;
+
+            // If realtime data shows this train skips our stop, exclude it
+            if (trainSkipsThisStop) return null;
+
+            // Determine if this specific trip is cancelled or the whole line is suspended
+            const isRailType = (routeType === 0 || routeType === 1 || routeType === 2);
+            const tripCancelled = isTripCancelledInRealtime(attrs.trip_id, realtimeLookup);
+            // A rail trip on a line with zero active realtime vehicles is "line suspended"
+            const lineSuspended = isRailType && lineStatusCache.fetchedAt > 0 && !isRailRouteRunning(attrs.route_id) && !tripCancelled;
+            // Override status for cancelled trips
+            if (tripCancelled) {
+                status = 'Cancelled';
             }
 
             return {
                 stopName: stop.stopName,
+                stopCode: stop.stopCode || stop.stopId || '',
                 route: routeLabel,
                 destination: attrs.trip_headsign || attrs.stop_headsign || '—',
                 details: details,
@@ -1801,7 +2579,23 @@
                 occupancy: realtimeOccupancy || null,
                 time: expectedTime || departureTime,
                 scheduledTime: departureTime,
-                expectedTime: expectedTime
+                expectedTime: expectedTime,
+                tripId: attrs.trip_id || '',
+                routeId: attrs.route_id || '',
+                routeType: routeType,
+                modeIcon: modeIcon,
+                modeLabel: modeLabel,
+                apiRouteColor: apiRouteColor,
+                routeLongName: routeLongName,
+                congestionInfo: congestionInfo,
+                schedRelInfo: schedRelInfo,
+                vehicleDistance: vehicleDistance,
+                vehicleLabel: vehicleLabel,
+                wheelchairAccessible: wheelchairAccessible,
+                bikesAllowed: bikesAllowed,
+                isTerminus: Number(attrs.pickup_type) === 1,
+                isCancelled: tripCancelled,
+                lineSuspended: lineSuspended
             };
         }
 
@@ -1816,8 +2610,12 @@
             const hasLiveTracking = !!realtimeData?.hasLiveData || !!occupancy;
 
             const destination = movement.destinationDisplay || movement.destination_display || movement.stopDisplay || '—';
+            const routeId = movement.route_id || '';
+            const routeInfo = routeDetailsCache.get(routeId);
+            const routeType = routeInfo?.routeType ?? 3;
             return {
                 stopName,
+                stopCode: '',
                 route: movement.route_short_name || movement.route_long_name || movement.route_id || '—',
                 destination,
                 details: destination !== '—' ? destination : stopName,
@@ -1826,7 +2624,22 @@
                 occupancy: occupancy,
                 time,
                 scheduledTime,
-                expectedTime
+                expectedTime,
+                tripId: movement.tripId || movement.trip_id || '',
+                routeId: routeId,
+                routeType: routeType,
+                modeIcon: getModeIcon(routeType),
+                modeLabel: getModeLabel(routeType),
+                apiRouteColor: routeInfo?.routeColor || null,
+                routeLongName: routeInfo?.longName || '',
+                congestionInfo: realtimeData ? getCongestionInfo(realtimeData.congestionLevel) : null,
+                schedRelInfo: realtimeData?.scheduleRelationship != null
+                    ? getScheduleRelationshipInfo(realtimeData.scheduleRelationship) : null,
+                vehicleDistance: null,
+                vehicleLabel: realtimeData?.vehicleLabel || null,
+                wheelchairAccessible: null,
+                bikesAllowed: null,
+                isTerminus: false
             };
         }
 
@@ -1922,9 +2735,12 @@
 
         async function fetchDeparturesForStop(stop) {
             const key = stop.stopCode;
-            state.departureData[key] = { status: 'loading', rows: [] };
-            renderSelectedStops();
-            renderBoard();
+            const isFirstLoad = !state.departureData[key] || state.departureData[key].rows.length === 0;
+            if (isFirstLoad) {
+                state.departureData[key] = { status: 'loading', rows: [] };
+                renderSelectedStops();
+                renderBoard();
+            }
 
             if (stop.departures && stop.stopCode && !/^[0-9]+$/.test(stop.stopCode)) {
                 state.departureData[key] = { status: 'ready', rows: transformFallbackDepartures(stop), updatedAt: Date.now() };
@@ -1953,15 +2769,23 @@
                     fetchRealtimeVehicleLookup().catch(() => new Map())
                 ]);
                 if (!response.ok) {
+                    // A 404 means the stop has no scheduled trips at all (common during timetable transitions)
+                    // Treat it as "0 trips found" so disruption detection can still work
+                    if (response.status === 404) {
+                        if (!state.selectedStops.some(item => item.stopCode === key)) return;
+                        state.departureData[key] = { status: 'ready', rows: [], updatedAt: Date.now() };
+                        updateLastUpdated(state.departureData[key].updatedAt);
+                        scheduleRender();
+                        return;
+                    }
                     throw new Error(`HTTP ${response.status}`);
                 }
                 const json = await response.json();
                 const tripData = (json.data || []);
-                console.log(`Fetched ${tripData.length} trips for stop ${stopId}`);
-                
-                console.log(`Platform cache has ${stopPlatformCache.size} entries before mapping departures`);
+
                 const rows = tripData
                     .map(trip => mapStopTripToRow(trip, stop, realtimeLookup))
+                    .filter(Boolean)
                     .filter(row => row.time && row.time.getTime() >= Date.now() - 60000)
                     .sort((a, b) => (a.time?.getTime() || 0) - (b.time?.getTime() || 0));
 
@@ -1976,7 +2800,9 @@
                     state.departureData[key] = { status: 'error', error: error.message, rows: [] };
                 }
             }
-            renderBoard();
+            scheduleRender();
+            // Enrich with trip details (wheelchair, bikes) after a short delay
+            setTimeout(enrichDeparturesWithTripDetails, 1500);
         }
 
         function refreshAllDepartures() {
@@ -1991,7 +2817,9 @@
                     stopName: stop.stopName,
                     displayName: stop.displayName || '',
                     parentStation: stop.parentStation || '',
-                    platformCode: stop.platformCode || ''
+                    platformCode: stop.platformCode || '',
+                    stopLat: stop.stopLat || null,
+                    stopLon: stop.stopLon || null
                 }));
                 localStorage.setItem(SELECTED_STOPS_STORAGE_KEY, JSON.stringify(stopsToStore));
             } catch (error) {
@@ -2016,7 +2844,9 @@
                 stop.platformCode = stop.platformCode || attrs.platform_code || '';
                 stop.parentStation = stop.parentStation || attrs.parent_station || '';
                 stop.locationType = attrs.location_type;
-                console.log(`Stop ${stop.stopName}: platformCode="${stop.platformCode}", locationType=${attrs.location_type}, parentStation="${stop.parentStation}"`);
+                stop.stopLat = attrs.stop_lat || stop.stopLat || null;
+                stop.stopLon = attrs.stop_lon || stop.stopLon || null;
+
                 
                 // If this is a parent station or has a parent, fetch child stops
                 if (attrs.location_type === 1 || stop.parentStation) {
@@ -2064,7 +2894,7 @@
                     const platform = attrs.platform_code || '';
                     if (stopId) {
                         stopPlatformCache.set(stopId, platform);
-                        console.log(`Cached platform: ${stopId} -> "${platform}"`);
+
                     }
                 });
             } catch (error) {
@@ -2087,7 +2917,9 @@
                         stopName: stop.stopName,
                         displayName: stop.displayName || stop.stopName,
                         parentStation: stop.parentStation || '',
-                        platformCode: stop.platformCode || ''
+                        platformCode: stop.platformCode || '',
+                        stopLat: stop.stopLat || null,
+                        stopLon: stop.stopLon || null
                     }));
 
                 state.selectedStops.forEach(stop => {
@@ -2140,20 +2972,189 @@
         }
 
         function getDepartureRows() {
-            const rows = state.selectedStops.flatMap(stop => {
+            let rows = state.selectedStops.flatMap(stop => {
                 const data = state.departureData[stop.stopCode];
-                return data && data.rows ? data.rows.map(row => ({ ...row, stopName: stop.stopName })) : [];
+                return data && data.rows ? data.rows.map(row => ({ ...row, stopName: stop.stopName, stopCode: row.stopCode || stop.stopCode || '' })) : [];
             });
+            // Hide departures from lines that aren't running at all today
+            // (but keep individually cancelled trips — they show as 'Cancelled')
+            rows = rows.filter(row => !row.lineSuspended);
+            if (!state.showTerminusArrivals) {
+                rows = rows.filter(row => !row.isTerminus);
+            }
             return rows.sort((a, b) => (a.time?.getTime() || 0) - (b.time?.getTime() || 0));
         }
 
+        // Collect suspended rail lines that affect currently-watched stops
+        function getSuspendedLinesForWatchedStops() {
+            const suspendedLines = new Map(); // routeId -> { routeId, shortName, longName, color, reason }
+            state.selectedStops.forEach(stop => {
+                const data = state.departureData[stop.stopCode];
+                if (!data || !data.rows) return;
+                // Path 1: Traditional detection — rows exist but some have lineSuspended flag
+                data.rows.forEach(row => {
+                    if (row.lineSuspended && row.routeId && !suspendedLines.has(row.routeId)) {
+                        const routeInfo = routeDetailsCache.get(row.routeId);
+                        const shortName = routeInfo?.shortName || row.route || row.routeId;
+                        const longName = routeInfo?.longName || '';
+                        const routeColor = row.apiRouteColor || getRouteColor(row.route);
+                        const reason = getLineAlertReason(row.routeId);
+                        suspendedLines.set(row.routeId, {
+                            routeId: row.routeId,
+                            shortName: getRouteLabel(shortName),
+                            longName: longName,
+                            color: routeColor,
+                            reason: reason,
+                            stationStopCode: stop.stopCode
+                        });
+                    }
+                });
+                // Path 2: Zero-trip train station detection — GTFS has no scheduled trips at all
+                // This handles the scenario where the timetable itself has been cleared (e.g. CRL transition)
+                const zeroTripDisruptions = detectZeroTripStationDisruptions(stop);
+                zeroTripDisruptions.forEach(d => {
+                    if (!suspendedLines.has(d.routeId)) {
+                        suspendedLines.set(d.routeId, { ...d, stationStopCode: stop.stopCode });
+                    }
+                });
+            });
+            const result = Array.from(suspendedLines.values());
+            return result;
+        }
+
+        // Build OOS section HTML (reusable across empty-state and departure-list paths)
+        function buildOosHtml() {
+            if (!state.showOutOfService || outOfServiceVehicles.length === 0) return '';
+            const railOOS = outOfServiceVehicles.filter(v =>
+                v.routeType == null || v.routeType === 0 || v.routeType === 1 || v.routeType === 2
+            );
+            if (railOOS.length === 0) return '';
+            // Compute distance to closest watched stop for each OOS vehicle, then filter to within 1km
+            const OOS_MAX_DISTANCE_KM = 1.0;
+            const oosWithDistance = railOOS.map(vehicle => {
+                let closestStop = null;
+                let minDist = Infinity;
+                if (vehicle.position?.lat != null) {
+                    state.selectedStops.forEach(stop => {
+                        if (stop.stopLat == null) return;
+                        const dist = haversineDistance(vehicle.position.lat, vehicle.position.lng, stop.stopLat, stop.stopLon);
+                        if (dist < minDist) { minDist = dist; closestStop = stop; }
+                    });
+                }
+                return { vehicle, closestStop, minDist };
+            }).filter(item => item.minDist <= OOS_MAX_DISTANCE_KM);
+            if (oosWithDistance.length === 0) return '';
+            const trainIcon = getModeIcon(2);
+            const routeColor = '#9ca3af';
+            const routeBg = 'rgba(156, 163, 175, 0.12)';
+            const routeBorder = 'rgba(156, 163, 175, 0.25)';
+            let html = `<div class="oos-section"><div class="oos-section-header">Out-of-Service Rail Vehicles Nearby (${oosWithDistance.length})</div><div class="departure-list">`;
+            oosWithDistance.forEach(({ vehicle, closestStop, minDist }) => {
+                let nearbyHtml = '';
+                if (closestStop) {
+                    nearbyHtml = `<span class="vehicle-distance">${formatDistance(minDist)} from ${getPrettyStopName(closestStop)}</span>`;
+                } else if (vehicle.position?.lat != null) {
+                    nearbyHtml = `<span class="vehicle-distance">${vehicle.position.lat.toFixed(4)}, ${vehicle.position.lng.toFixed(4)}</span>`;
+                }
+                const safeLabel = String(vehicle.vehicleLabel).replace(/</g, '&lt;');
+                const cancelledTag = vehicle.cancelledTrip ? ' (cancelled trip)' : '';
+                html += `<div class="departure-card oos-card">
+                    <div class="departure-row">
+                        <div class="departure-route" style="background:${routeBg}; color:${routeColor}; border: 1px solid ${routeBorder};"><span class="mode-icon" title="Train">${trainIcon}</span>OOS</div>
+                        <div class="departure-info">
+                            <h3>Out of Service${cancelledTag}</h3>
+                            <p>Vehicle: ${safeLabel}${vehicle.routeShortName ? ` &middot; Route ${vehicle.routeShortName}` : ''}</p>
+                        </div>
+                        <div class="departure-time">
+                            <span class="departure-time-main" style="color:var(--muted)">&mdash;</span>
+                        </div>
+                    </div>
+                    <div class="departure-meta">
+                        <div class="departure-meta-primary">
+                            <span class="departure-status status-oos">Out of Service</span>
+                            ${nearbyHtml}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            html += '</div></div>';
+            return html;
+        }
+
+        // Build HTML for a single disruption notice (with optional rail replacement bus button)
+        function buildDisruptionNoticeHtml(line, showRbButton = true) {
+            const safeShortName = String(line.shortName).replace(/</g, '&lt;');
+            const safeLongName = String(line.longName).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const safeReason = line.reason ? String(line.reason).replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+            const rbRouteId = RAIL_TO_RB_MAP[line.routeId] || '';
+            const stationCode = line.stationStopCode || '';
+            const busIcon = getModeIcon(3);
+            const rbButtonHtml = (showRbButton && stationCode) ? `<button class="disruption-rb-btn" data-station-code="${stationCode}" data-route-id="${line.routeId}" data-rb-route="${rbRouteId}" onclick="handleAddRbStop(this)">
+                <span class="rb-icon">${busIcon}</span> Track rail replacement buses
+            </button>` : '';
+            return `<div class="line-disruption-notice">
+                <div class="disruption-icon" style="background:${line.color}">${safeShortName}</div>
+                <div class="disruption-content">
+                    <div class="disruption-title">🚫 ${safeShortName} Line — Trains not running</div>
+                    <div class="disruption-body">${safeLongName ? safeLongName + ' — ' : ''}No active trains detected on this line. Scheduled services have been removed from the departure board.</div>
+                    ${safeReason ? `<div class="disruption-reason">${safeReason}</div>` : ''}
+                    ${rbButtonHtml}
+                </div>
+            </div>`;
+        }
+
+        // Handle click on "Track rail replacement buses" button
+        async function handleAddRbStop(btn) {
+            const stationCode = btn.dataset.stationCode;
+            const routeId = btn.dataset.routeId;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Searching for bus stops…';
+
+            // Find the station stop object
+            const station = state.selectedStops.find(s => s.stopCode === stationCode);
+            if (!station) {
+                btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Station not found';
+                return;
+            }
+
+            const result = await findRailReplacementBusStops(station);
+            if (result.stops.length === 0) {
+                btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> No replacement bus stops found nearby';
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Track rail replacement buses';
+                }, 5000);
+                return;
+            }
+
+            // Add found RB bus stops to the watch list
+            let addedCount = 0;
+            result.stops.forEach(rbStop => {
+                if (stopIsSelected(rbStop)) return;
+                addStop(rbStop, true); // preserveSearch=true to avoid clearing search
+                addedCount++;
+            });
+
+            if (addedCount > 0) {
+                btn.innerHTML = `<span class="rb-icon">${getModeIcon(3)}</span> ✓ Added ${addedCount} replacement bus stop${addedCount > 1 ? 's' : ''}`;
+                btn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+                btn.style.color = '#34d399';
+            } else {
+                btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Bus stops already tracked';
+            }
+        }
+
+        let lastRenderFingerprint = '';
         function renderBoard() {
             const selected = state.selectedStops;
             watchCount.textContent = `Watching ${selected.length} stop${selected.length === 1 ? '' : 's'}`;
 
             if (selected.length === 0) {
                 departureCount.textContent = '0 upcoming departures';
-                replaceBoardBodyContent('<div class="empty-state">Add one or more stops to see live departures.</div>');
+                if (lastRenderFingerprint !== 'empty') {
+                    replaceBoardBodyContent('<div class="empty-state">Add one or more stops to see live departures.</div>');
+                    lastRenderFingerprint = 'empty';
+                }
                 return;
             }
 
@@ -2162,6 +3163,13 @@
             const errorStops = selected.filter(stop => state.departureData[stop.stopCode]?.status === 'error');
 
             departureCount.textContent = `${departures.length} upcoming departures`;
+
+            // Build fingerprint from departure data to skip redundant DOM rebuilds
+            const fingerprint = departures.map(d => `${d.tripId}|${d.status}|${d.time?.getTime()|| 0}|${d.occupancy?.label || ''}`).join(';')
+                + `|L${loadingStops.length}|E${errorStops.length}|X${[...expandedTripIds].join(',')}`
+                + `|T${state.showTerminusArrivals}|O${state.showOutOfService}|OC${outOfServiceVehicles.length}|LS${lineStatusCache.fetchedAt}|SA${serviceAlertsCache.fetchedAt}`;
+            if (fingerprint === lastRenderFingerprint) return;
+            lastRenderFingerprint = fingerprint;
 
             if (departures.length === 0 && loadingStops.length > 0) {
                 replaceBoardBodyContent('<div class="empty-state">Loading live departures…</div>');
@@ -2174,21 +3182,56 @@
             }
 
             if (departures.length === 0) {
-                replaceBoardBodyContent('<div class="empty-state">No departures found for the selected stops.</div>');
+                // Even with no active departures, still show disruption notices if lines are suspended
+                const suspendedCheck = getSuspendedLinesForWatchedStops();
+                const oosHtml = buildOosHtml();
+                let emptyContent = '';
+                if (suspendedCheck.length > 0) {
+                    emptyContent += '<div class="line-disruptions">';
+                    const rbButtonShown = new Set(); // only show one RB button per station
+                    suspendedCheck.forEach(line => {
+                        const showRbBtn = line.stationStopCode && !rbButtonShown.has(line.stationStopCode);
+                        if (showRbBtn) rbButtonShown.add(line.stationStopCode);
+                        emptyContent += buildDisruptionNoticeHtml(line, showRbBtn);
+                    });
+                    emptyContent += '</div>';
+                }
+                emptyContent += oosHtml;
+                if (!suspendedCheck.length && !oosHtml) {
+                    emptyContent += '<div class="empty-state">No departures found for the selected stops.</div>';
+                } else {
+                    emptyContent += '<div class="empty-state">No other departures found for the selected stops.</div>';
+                }
+                replaceBoardBodyContent(emptyContent);
                 return;
             }
 
             const list = document.createElement('div');
             list.className = 'departure-list';
 
+            // Render line disruption notices at the top
+            const suspendedLines = getSuspendedLinesForWatchedStops();
+            if (suspendedLines.length > 0) {
+                const disruptionPanel = document.createElement('div');
+                disruptionPanel.className = 'line-disruptions';
+                const rbBtnShown = new Set();
+                disruptionPanel.innerHTML = suspendedLines.map(line => {
+                    const showRb = line.stationStopCode && !rbBtnShown.has(line.stationStopCode);
+                    if (showRb) rbBtnShown.add(line.stationStopCode);
+                    return buildDisruptionNoticeHtml(line, showRb);
+                }).join('');
+                list.appendChild(disruptionPanel);
+            }
+
             departures.forEach(dep => {
                 const card = document.createElement('div');
-                card.className = 'departure-card';
+                card.className = 'departure-card' + (dep.isCancelled ? ' cancelled-card' : '');
+                card.dataset.tripId = dep.tripId || '';
                 const hasLiveTracking = !!dep.expectedTime;
                 const timeLabel = formatDepartureTimeLabel(dep.time, dep.scheduledTime, dep.expectedTime, hasLiveTracking);
                 const scheduledLabel = formatClockTimeLabel(dep.scheduledTime || dep.expectedTime || dep.time);
                 const routeLabel = getRouteLabel(dep.route);
-                const routeColor = getRouteColor(dep.route);
+                const routeColor = dep.apiRouteColor || getRouteColor(dep.route);
                 const routeBackground = hexToRgba(routeColor, 0.18);
                 const routeBorder = hexToRgba(routeColor, 0.33);
                 const normalizedStatus = (dep.status || '').toLowerCase();
@@ -2202,12 +3245,32 @@
                     ? `<span class="occupancy-chip ${dep.occupancy.className}">${renderOccupancyMeter(dep.occupancy.percent)}<span>${dep.occupancy.label}</span></span>`
                     : '';
 
+                // New feature HTML fragments
+                const modeIconHtml = dep.modeIcon ? `<span class="mode-icon" title="${dep.modeLabel || ''}">${dep.modeIcon}</span>` : '';
+                const congestionHtml = dep.congestionInfo
+                    ? `<span class="congestion-chip ${dep.congestionInfo.className}">${dep.congestionInfo.label}</span>` : '';
+                const schedBadgeHtml = dep.schedRelInfo
+                    ? `<span class="schedule-badge ${dep.schedRelInfo.className}">${dep.schedRelInfo.label}</span>` : '';
+                const terminusBadgeHtml = dep.isTerminus
+                    ? `<span class="terminus-badge">Arriving only</span>` : '';
+                const distanceHtml = dep.vehicleDistance
+                    ? `<span class="vehicle-distance">${dep.vehicleDistance}</span>` : '';
+                const vesselHtml = (dep.routeType === 4 && dep.vehicleLabel)
+                    ? `<span class="vessel-name">Vessel: ${dep.vehicleLabel}</span>` : '';
+
+                let accessHtml = '';
+                if (dep.wheelchairAccessible === 1) accessHtml += '<span title="Wheelchair accessible">Accessible</span>';
+                if (dep.bikesAllowed === 1) accessHtml += '<span title="Bikes allowed">Bikes</span>';
+                if (accessHtml) accessHtml = `<span class="access-icons">${accessHtml}</span>`;
+
+                const expandBtnHtml = dep.tripId ? `<button class="departure-expand-btn" data-trip-id="${dep.tripId}">View journey ▸</button>` : '';
+
                 card.innerHTML = `
                     <div class="departure-row">
-                        <div class="departure-route" style="background:${routeBackground}; color:${routeColor}; border: 1px solid ${routeBorder};">${routeLabel}</div>
+                        <div class="departure-route" style="background:${routeBackground}; color:${routeColor}; border: 1px solid ${routeBorder};">${modeIconHtml}${routeLabel}</div>
                         <div class="departure-info">
                             <h3>${dep.details}</h3>
-                            <p>${dep.destination}</p>
+                            <p>${dep.destination}${dep.routeLongName && dep.routeLongName !== dep.destination ? ` <span class="route-long-name" style="opacity:0.6">· ${dep.routeLongName}</span>` : ''}</p>
                         </div>
                         <div class="departure-time">
                             <span class="departure-time-main">${timeLabel}</span>
@@ -2216,18 +3279,66 @@
                     </div>
                     <div class="departure-meta">
                         <div class="departure-meta-primary">
-                            <span class="departure-platform">Platform ${dep.platform || '—'}</span>
+                            <span class="departure-platform">${dep.platform && dep.platform !== '—' ? `Platform ${dep.platform}` : (dep.stopName ? `Stop: ${getPrettyStopName({stopName: dep.stopName})}${dep.stopCode ? ` (#${dep.stopCode})` : ''}` : '—')}</span>
+                            ${dep.platform && dep.platform !== '—' && dep.stopName ? `<span class="departure-stop-name">${getPrettyStopName({stopName: dep.stopName})}${dep.stopCode ? ` (#${dep.stopCode})` : ''}</span>` : ''}
                             ${occupancyHtml}
+                            ${congestionHtml}
+                            ${accessHtml}
+                            ${vesselHtml}
+                            ${distanceHtml}
                         </div>
                         <div class="departure-meta-secondary">
+                            ${terminusBadgeHtml}
+                            ${schedBadgeHtml}
                             ${statusHtml}
+                            ${expandBtnHtml}
                         </div>
                     </div>
                 `;
                 list.appendChild(card);
             });
 
+            // Render out-of-service rail vehicles (using shared helper)
+            const oosHtmlBlock = buildOosHtml();
+            if (oosHtmlBlock) {
+                list.insertAdjacentHTML('beforeend', oosHtmlBlock);
+            }
+
+            // Save scroll positions of expanded journeys before DOM swap
+            const savedScrollPositions = new Map();
+            if (expandedTripIds.size > 0) {
+                const oldJourneys = boardBody.querySelectorAll('.departure-card[data-expanded="true"] .trip-journey');
+                oldJourneys.forEach(el => {
+                    const card = el.closest('.departure-card');
+                    if (card?.dataset.tripId) savedScrollPositions.set(card.dataset.tripId, el.scrollTop);
+                });
+            }
+
             replaceBoardBodyContent(list);
+
+            // Restore any previously expanded trip journeys
+            if (expandedTripIds.size > 0) {
+                const cards = boardBody.querySelectorAll('.departure-card[data-trip-id]');
+                cards.forEach(card => {
+                    const tripId = card.dataset.tripId;
+                    if (!tripId || !expandedTripIds.has(tripId)) return;
+                    const expandedContent = buildTripExpandedContent(tripId);
+                    if (expandedContent) {
+                        card.insertAdjacentHTML('beforeend', expandedContent);
+                        card.setAttribute('data-expanded', 'true');
+                        const btn = card.querySelector('.departure-expand-btn');
+                        if (btn) btn.textContent = 'Hide journey \u25BE';
+                        // Restore scroll position
+                        const savedScroll = savedScrollPositions.get(tripId);
+                        if (savedScroll != null) {
+                            const journeyEl = card.querySelector('.trip-journey');
+                            if (journeyEl) journeyEl.scrollTop = savedScroll;
+                        }
+                    } else {
+                        expandedTripIds.delete(tripId);
+                    }
+                });
+            }
 
             if (loadingStops.length > 0 || errorStops.length > 0) {
                 const note = document.createElement('p');
@@ -2317,13 +3428,447 @@
             lastUpdated.textContent = `Last updated at ${value.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
         }
 
+        // ═══════════════════════════════════════════════════════
+        // NEW FEATURE FUNCTIONS
+        // ═══════════════════════════════════════════════════════
+
+        // --- Mode Icon helpers ---
+        function getModeIcon(routeType) {
+            const c = 'currentColor';
+            switch (routeType) {
+                case 0: // Tram
+                case 1: // Subway
+                case 2: // Train — pointed nose, overhead wire
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 18l-1.5 3M17 18l1.5 3" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><rect x="5" y="4" width="14" height="14" rx="2.5" stroke="${c}" stroke-width="1.8"/><path d="M5 13h14" stroke="${c}" stroke-width="1.4"/><circle cx="8.5" cy="15.5" r="1" fill="${c}"/><circle cx="15.5" cy="15.5" r="1" fill="${c}"/><rect x="8" y="6.5" width="3" height="3.5" rx="0.8" fill="${c}" opacity="0.35"/><rect x="13" y="6.5" width="3" height="3.5" rx="0.8" fill="${c}" opacity="0.35"/><line x1="12" y1="1" x2="12" y2="4" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="9" y1="1" x2="15" y2="1" stroke="${c}" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+                case 4: // Ferry — wave + hull
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><path d="M5 15l1.5-6h11l1.5 6" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/><rect x="10" y="5" width="4" height="4" rx="0.5" stroke="${c}" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="5" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+                case 3: // Bus — tall front, big windshield, round top
+                default:
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="16" rx="3.5" stroke="${c}" stroke-width="1.8"/><path d="M4 12h16" stroke="${c}" stroke-width="1.4"/><rect x="6" y="5.5" width="12" height="4" rx="1.2" fill="${c}" opacity="0.25"/><circle cx="8" cy="21" r="1.3" fill="${c}"/><circle cx="16" cy="21" r="1.3" fill="${c}"/><line x1="8" y1="19" x2="8" y2="19.7" stroke="${c}" stroke-width="1.5"/><line x1="16" y1="19" x2="16" y2="19.7" stroke="${c}" stroke-width="1.5"/><line x1="2.5" y1="8" x2="4" y2="8" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="20" y1="8" x2="21.5" y2="8" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+            }
+        }
+        function getModeLabel(routeType) {
+            switch (routeType) {
+                case 0: return 'Tram'; case 1: return 'Subway'; case 2: return 'Train';
+                case 3: return 'Bus'; case 4: return 'Ferry'; default: return 'Transit';
+            }
+        }
+
+        // --- SVG vehicle icons for journey view ---
+        function getVehicleSvgIcon(routeType) {
+            const color = '#60a5fa';
+            switch (routeType) {
+                case 0: // Tram
+                case 1: // Subway
+                case 2: // Train — overhead wire + pantograph, window dividers, headlights
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 18l-1.5 3M17 18l1.5 3" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/><rect x="5" y="4" width="14" height="14" rx="2.5" stroke="${color}" stroke-width="2"/><path d="M5 13h14" stroke="${color}" stroke-width="1.5"/><circle cx="8.5" cy="15.5" r="1.2" fill="${color}"/><circle cx="15.5" cy="15.5" r="1.2" fill="${color}"/><rect x="8" y="6.5" width="3" height="3.5" rx="0.8" fill="${color}" opacity="0.4"/><rect x="13" y="6.5" width="3" height="3.5" rx="0.8" fill="${color}" opacity="0.4"/><line x1="12" y1="1" x2="12" y2="4" stroke="${color}" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="1" x2="15" y2="1" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+                case 4: // Ferry
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke="${color}" stroke-width="2" stroke-linecap="round"/><path d="M5 15l1.5-6h11l1.5 6" stroke="${color}" stroke-width="2" stroke-linejoin="round"/><rect x="10" y="5" width="4" height="4" rx="0.5" stroke="${color}" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="5" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+                case 3: // Bus — big windshield, side mirrors, distinct from train
+                default:
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="16" rx="3.5" stroke="${color}" stroke-width="2"/><path d="M4 12h16" stroke="${color}" stroke-width="1.5"/><rect x="6" y="5.5" width="12" height="4" rx="1.2" fill="${color}" opacity="0.35"/><circle cx="8" cy="21.5" r="1.5" fill="${color}"/><circle cx="16" cy="21.5" r="1.5" fill="${color}"/><line x1="8" y1="19" x2="8" y2="20" stroke="${color}" stroke-width="1.5"/><line x1="16" y1="19" x2="16" y2="20" stroke="${color}" stroke-width="1.5"/><line x1="2.5" y1="8" x2="4" y2="8" stroke="${color}" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="8" x2="21.5" y2="8" stroke="${color}" stroke-width="2" stroke-linecap="round"/></svg>`;
+            }
+        }
+
+        // --- Congestion Level ---
+        function getCongestionInfo(level) {
+            switch (level) {
+                case 1: return { label: 'Smooth traffic', className: 'cong-low' };
+                case 2: return { label: 'Stop & go', className: 'cong-med' };
+                case 3: return { label: 'Heavy traffic', className: 'cong-high' };
+                case 4: return { label: 'Severe congestion', className: 'cong-high' };
+                default: return null;
+            }
+        }
+
+        // --- Schedule Relationship ---
+        function getScheduleRelationshipInfo(relationship) {
+            switch (relationship) {
+                case 1: return { label: 'Extra service', className: 'sched-added' };
+                case 2: return { label: 'Unscheduled', className: 'sched-unscheduled' };
+                case 3: return { label: 'Canceled', className: 'sched-canceled' };
+                default: return null;
+            }
+        }
+
+        // --- Haversine Distance ---
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const toRad = deg => deg * Math.PI / 180;
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+        function formatDistance(km) {
+            if (km < 1) return `${Math.round(km * 1000)}m away`;
+            return `${km.toFixed(1)}km away`;
+        }
+
+        // --- Fetch All Routes (for colors, types, and long names) ---
+        async function fetchAllRoutes() {
+            if (routeDetailsCache.size > 0) return;
+            try {
+                const response = await fetch(`${API_BASE}/gtfs/v3/routes`, {
+                    headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                (json.data || []).forEach(item => {
+                    const a = item.attributes || {};
+                    routeDetailsCache.set(a.route_id, {
+                        routeId: a.route_id,
+                        shortName: a.route_short_name || '',
+                        longName: a.route_long_name || '',
+                        routeType: a.route_type,
+                        routeColor: a.route_color ? `#${a.route_color}` : null,
+                        routeTextColor: a.route_text_color ? `#${a.route_text_color}` : null,
+                        agencyId: a.agency_id || ''
+                    });
+                });
+
+            } catch (err) {
+                console.warn('Failed to fetch routes:', err);
+            }
+        }
+
+        // --- Fetch Trip Details (wheelchair, bikes) ---
+        async function fetchTripDetails(tripId) {
+            if (!tripId) return null;
+            if (tripDetailsCache.has(tripId)) return tripDetailsCache.get(tripId);
+            try {
+                const response = await fetch(`${API_BASE}/gtfs/v3/trips/${encodeURIComponent(tripId)}`, {
+                    headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) return null;
+                const json = await response.json();
+                const a = (json.data && json.data.attributes) || {};
+                const details = {
+                    wheelchairAccessible: a.wheelchair_accessible,
+                    bikesAllowed: a.bikes_allowed,
+                    blockId: a.block_id, shapeId: a.shape_id
+                };
+                tripDetailsCache.set(tripId, details);
+                return details;
+            } catch (err) { return null; }
+        }
+
+        // --- Fetch Trip Journey (stop times + stop names) ---
+        async function fetchTripJourney(tripId) {
+            if (!tripId) return [];
+            const cacheKey = `journey_${tripId}`;
+            if (tripStopTimesCache.has(cacheKey)) return tripStopTimesCache.get(cacheKey);
+            try {
+                const [timesResp, stopsResp] = await Promise.all([
+                    fetch(`${API_BASE}/gtfs/v3/trips/${encodeURIComponent(tripId)}/stoptimes`, {
+                        headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                    }),
+                    fetch(`${API_BASE}/gtfs/v3/trips/${encodeURIComponent(tripId)}/stops`, {
+                        headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                    })
+                ]);
+                const timesJson = timesResp.ok ? await timesResp.json() : { data: [] };
+                const stopsJson = stopsResp.ok ? await stopsResp.json() : { data: [] };
+
+                const stopNameMap = new Map();
+                const stopLatLonMap = new Map();
+                const stopsData = Array.isArray(stopsJson.data) ? stopsJson.data : stopsJson.data ? [stopsJson.data] : [];
+                stopsData.forEach(item => {
+                    const a = item.attributes || {};
+                    stopNameMap.set(a.stop_id, a.stop_name || a.stop_id);
+                    if (a.stop_lat != null && a.stop_lon != null) {
+                        stopLatLonMap.set(a.stop_id, { lat: a.stop_lat, lon: a.stop_lon });
+                    }
+                });
+
+                const journey = (timesJson.data || []).map(item => {
+                    const a = item.attributes || {};
+                    const coords = stopLatLonMap.get(a.stop_id);
+                    return {
+                        stopId: a.stop_id,
+                        stopName: stopNameMap.get(a.stop_id) || a.stop_id,
+                        stopSequence: a.stop_sequence,
+                        arrivalTime: a.arrival_time,
+                        departureTime: a.departure_time,
+                        stopHeadsign: a.stop_headsign,
+                        stopLat: coords?.lat || null,
+                        stopLon: coords?.lon || null
+                    };
+                }).sort((a, b) => a.stopSequence - b.stopSequence);
+
+                tripStopTimesCache.set(cacheKey, journey);
+                return journey;
+            } catch (err) { return []; }
+        }
+
+        function renderTripJourney(journey, currentStopId, vehiclePosition, routeType) {
+            if (!journey || journey.length === 0) return '<div class="trip-journey"><em>Journey details unavailable.</em></div>';
+
+            const vehicleSvg = getVehicleSvgIcon(routeType != null ? routeType : 3);
+
+            // Determine where the vehicle is between stops
+            let vehicleBetweenIndex = -1; // insert indicator AFTER this index
+            if (vehiclePosition && vehiclePosition.lat != null) {
+                // Find the two adjacent stops the vehicle is closest to being between
+                let bestIndex = -1;
+                let bestScore = Infinity;
+                for (let i = 0; i < journey.length - 1; i++) {
+                    const s1 = journey[i];
+                    const s2 = journey[i + 1];
+                    if (s1.stopLat == null || s2.stopLat == null) continue;
+                    const d1 = haversineDistance(vehiclePosition.lat, vehiclePosition.lng, s1.stopLat, s1.stopLon);
+                    const d2 = haversineDistance(vehiclePosition.lat, vehiclePosition.lng, s2.stopLat, s2.stopLon);
+                    const segLen = haversineDistance(s1.stopLat, s1.stopLon, s2.stopLat, s2.stopLon);
+                    // Score: how close the vehicle is to being on this segment
+                    const score = (d1 + d2) - segLen;
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestIndex = i;
+                    }
+                }
+                // Only show if reasonably close to the route (within ~2km deviation)
+                if (bestIndex >= 0 && bestScore < 2) {
+                    vehicleBetweenIndex = bestIndex;
+                }
+            }
+
+            const stopsHtml = journey.map((stop, idx) => {
+                const isCurrent = stop.stopId === currentStopId;
+                const isPassed = vehicleBetweenIndex >= 0 && idx <= vehicleBetweenIndex;
+                const timeStr = stop.departureTime || stop.arrivalTime || '';
+                const formattedTime = /^\d{2}:\d{2}/.test(timeStr) ? timeStr.slice(0, 5) : '';
+                let classes = 'trip-stop-item';
+                if (isCurrent) classes += ' current-stop';
+                if (isPassed && !isCurrent) classes += ' stop-passed';
+                let itemHtml = `<div class="${classes}">
+                    <span class="stop-dot"></span>
+                    <span>${stop.stopName}</span>
+                    <span class="trip-stop-time">${formattedTime}</span>
+                </div>`;
+                // Insert vehicle indicator after this stop if vehicle is between this and next
+                if (idx === vehicleBetweenIndex) {
+                    itemHtml += `<div class="trip-vehicle-indicator">
+                        <span class="vehicle-marker">${vehicleSvg}</span>
+                        <span class="vehicle-line"></span>
+                        <span>Vehicle is here</span>
+                    </div>`;
+                }
+                return itemHtml;
+            }).join('');
+            return `<div class="trip-journey">
+                <div class="trip-journey-header"><span>Full journey (${journey.length} stops)</span></div>
+                ${stopsHtml}
+            </div>`;
+        }
+
+        // --- Ferry Positions ---
+        async function fetchFerryPositions() {
+            const cacheTtlMs = 30 * 1000;
+            if ((Date.now() - ferryPositionCache.fetchedAt) < cacheTtlMs) return ferryPositionCache.vessels;
+            try {
+                const response = await fetch(REALTIME_FERRY_POSITIONS_URL, {
+                    headers: { 'Ocp-Apim-Subscription-Key': REALTIME_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                ferryPositionCache.vessels = json.response || [];
+                ferryPositionCache.fetchedAt = Date.now();
+
+                return ferryPositionCache.vessels;
+            } catch (err) {
+                console.warn('Ferry positions unavailable:', err);
+                return ferryPositionCache.vessels;
+            }
+        }
+
+        // --- Service Alerts ---
+        function renderServiceAlerts(alerts) {
+            if (!alertsPanel) return;
+            if (!alerts || alerts.length === 0) { alertsPanel.innerHTML = ''; return; }
+            // Only show alerts relevant to routes the user is watching at their specific stops
+            const watchedRouteIds = new Set();
+            state.selectedStops.forEach(stop => {
+                const data = state.departureData[stop.stopCode];
+                if (data?.rows) data.rows.forEach(row => { if (row.routeId) watchedRouteIds.add(row.routeId); });
+            });
+            // Exclude routes that already have disruption notices (avoid duplication)
+            const suspendedRouteIds = new Set();
+            try {
+                getSuspendedLinesForWatchedStops().forEach(line => suspendedRouteIds.add(line.routeId));
+            } catch (_) {}
+            const relevantAlerts = alerts.filter(alertEntity => {
+                const a = alertEntity.alert || {};
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                // Skip alerts with no specific route (system-wide) — too noisy
+                if (entities.length === 0) return false;
+                // Only show if it affects a watched route that doesn't already have a disruption notice
+                return entities.some(e => e.route_id && watchedRouteIds.has(e.route_id) && !suspendedRouteIds.has(e.route_id));
+            });
+            if (relevantAlerts.length === 0) { alertsPanel.innerHTML = ''; return; }
+            alertsPanel.innerHTML = relevantAlerts.slice(0, 5).map(alertEntity => {
+                const a = alertEntity.alert || {};
+                const headerText = a.header_text?.translation?.text
+                    || (Array.isArray(a.header_text?.translation) ? a.header_text.translation[0]?.text : '')
+                    || 'Service Alert';
+                const descText = a.description_text?.translation?.text
+                    || (Array.isArray(a.description_text?.translation) ? a.description_text.translation[0]?.text : '')
+                    || '';
+                const safeHeader = headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const safeDesc = descText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                const routeTags = entities.filter(e => e.route_id).map(e => {
+                    const ri = routeDetailsCache.get(e.route_id);
+                    return `<span class="alert-route-tag">${getRouteLabel(ri?.shortName || e.route_id)}</span>`;
+                }).join('');
+                return `<div class="alert-item">
+                    <span class="alert-icon">!</span>
+                    <div class="alert-content">
+                        <div class="alert-header">${safeHeader}</div>
+                        ${safeDesc ? `<div class="alert-body">${safeDesc}</div>` : ''}
+                        ${routeTags ? `<div class="alert-routes">${routeTags}</div>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // --- Calendar / Holiday Check ---
+        async function checkCalendarForToday() {
+            if (!calendarWarning) return;
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+            try {
+                const dateStr = today.toISOString().split('T')[0];
+                const response = await fetch(`${API_BASE}/gtfs/v3/versions?filter[date]=${dateStr}`, {
+                    headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                const versions = json.data || [];
+                if (versions.length > 0) {
+                    const attrs = versions[0].attributes || {};
+                    const feedEnd = attrs.feed_end_date;
+                    if (feedEnd) {
+                        const endDate = new Date(feedEnd.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+                        const daysLeft = Math.round((endDate - today) / (1000 * 60 * 60 * 24));
+                        if (daysLeft < 0) {
+                            calendarWarning.innerHTML = `<div class="calendar-notice"><span class="cal-icon">i</span> Timetable data may be outdated. The current GTFS feed expired ${Math.abs(daysLeft)} day${Math.abs(daysLeft) !== 1 ? 's' : ''} ago.</div>`;
+                            return;
+                        } else if (daysLeft <= 7) {
+                            calendarWarning.innerHTML = `<div class="calendar-notice"><span class="cal-icon">i</span> Current timetable expires in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}. Schedule changes may be coming soon.</div>`;
+                            return;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Calendar check failed:', err);
+            }
+
+            if (isWeekend) {
+                calendarWarning.innerHTML = `<div class="calendar-notice"><span class="cal-icon">i</span> Weekend timetable in effect — services may run less frequently.</div>`;
+            } else {
+                calendarWarning.innerHTML = '';
+            }
+        }
+
+        // --- Build expanded content for a trip from caches ---
+        function buildTripExpandedContent(tripId) {
+            let html = '';
+            const allDepartures = getDepartureRows();
+            const depData = allDepartures.find(d => d.tripId === tripId);
+            let detailHtml = '';
+            if (depData?.vehicleLabel) {
+                const safeLabel = String(depData.vehicleLabel).replace(/</g, '&lt;');
+                detailHtml += `<div class="trip-detail-vehicle"><strong>Vehicle:</strong> ${safeLabel}</div>`;
+            }
+            if (depData?.routeId) {
+                const routeAlerts = getAlertsForRoute(depData.routeId);
+                if (routeAlerts.length > 0) {
+                    detailHtml += routeAlerts.slice(0, 3).map(ae => {
+                        const a = ae.alert || {};
+                        const headerText = a.header_text?.translation?.text
+                            || (Array.isArray(a.header_text?.translation) ? a.header_text.translation[0]?.text : '')
+                            || 'Service Alert';
+                        const descText = a.description_text?.translation?.text
+                            || (Array.isArray(a.description_text?.translation) ? a.description_text.translation[0]?.text : '')
+                            || '';
+                        const safeHeader = headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        const safeDesc = descText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        return `<div class="trip-detail-alert"><span class="alert-icon">!</span> <strong>${safeHeader}</strong>${safeDesc ? ` — ${safeDesc}` : ''}</div>`;
+                    }).join('');
+                }
+            }
+            if (detailHtml) html += `<div class="trip-detail-info">${detailHtml}</div>`;
+            const cacheKey = `journey_${tripId}`;
+            const journey = tripStopTimesCache.get(cacheKey);
+            if (journey && journey.length > 0) {
+                const currentStopIds = state.selectedStops.map(s => s.stopId);
+                const currentStopId = currentStopIds.find(sid => journey.some(j => j.stopId === sid)) || '';
+                // Look up vehicle position from realtime cache
+                const tripKey = normalizeTripKey(tripId);
+                const realtimeData = realtimeVehicleCache.byTrip.get(tripKey);
+                const vehiclePosition = realtimeData?.position || null;
+                const routeType = depData?.routeType ?? 3;
+                html += renderTripJourney(journey, currentStopId, vehiclePosition, routeType);
+            }
+            return html;
+        }
+
+        // --- Get alerts for a specific route ---
+        function getAlertsForRoute(routeId) {
+            if (!routeId || serviceAlertsCache.alerts.length === 0) return [];
+            return serviceAlertsCache.alerts.filter(alertEntity => {
+                const a = alertEntity.alert || {};
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                return entities.some(e => e.route_id === routeId);
+            });
+        }
+
+        // --- Render scheduling (coalesce rapid renders) ---
+        let renderPending = null;
+        function scheduleRender() {
+            if (renderPending) return;
+            renderPending = requestAnimationFrame(() => {
+                renderPending = null;
+                renderBoard();
+            });
+        }
+
+        // --- Enrich departures with trip details (wheelchair, bikes) ---
+        function enrichDeparturesWithTripDetails() {
+            const allRows = getDepartureRows();
+            const uniqueTripIds = [...new Set(allRows.filter(r => r.tripId).map(r => r.tripId))];
+            const uncached = uniqueTripIds.filter(id => !tripDetailsCache.has(id));
+            if (uncached.length === 0) return;
+            const batch = uncached.slice(0, 10);
+            Promise.all(batch.map(fetchTripDetails)).then(() => {
+                scheduleRender();
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Restore toggle state from localStorage
+            try {
+                const savedTerminus = localStorage.getItem(TERMINUS_TOGGLE_KEY);
+                if (savedTerminus !== null) state.showTerminusArrivals = savedTerminus !== 'false';
+                const savedOOS = localStorage.getItem(OOS_TOGGLE_KEY);
+                if (savedOOS !== null) state.showOutOfService = savedOOS === 'true';
+            } catch (_) {}
+            if (toggleTerminus) toggleTerminus.checked = state.showTerminusArrivals;
+            if (toggleOOS) toggleOOS.checked = state.showOutOfService;
+
             restoreSelectedStops();
             renderSearchList('');
             renderSelectedStops();
             renderBoard();
             updateLiveTime();
             updateLastUpdated();
+
+            // Initialize new features
+            fetchAllRoutes();
+            checkCalendarForToday();
+            fetchFerryPositions();
 
             if (state.selectedStops.length > 0) {
                 Promise.all(state.selectedStops.map(fetchStopDetails)).then(updatedStops => {
@@ -2332,6 +3877,8 @@
                     renderSelectedStops();
                     renderBoard();
                     refreshAllDepartures();
+                    // Enrich with trip details after departures load
+                    setTimeout(enrichDeparturesWithTripDetails, 3000);
                 }).catch(() => {
                     refreshAllDepartures();
                 });
@@ -2341,8 +3888,14 @@
             refreshTimer = setInterval(() => {
                 if (state.selectedStops.length > 0) {
                     refreshAllDepartures();
+                    // Re-render alerts with latest data
+                    renderServiceAlerts(serviceAlertsCache.alerts);
                 }
             }, 30000);
+            // Refresh ferry positions periodically
+            setInterval(fetchFerryPositions, 60000);
+            // Periodically enrich trip details for visible departures
+            setInterval(enrichDeparturesWithTripDetails, 30000);
         });
 
         clearButton.addEventListener('click', clearStops);
@@ -2398,6 +3951,67 @@
         });
 
         fullscreenToggle.addEventListener('click', toggleFullscreen);
+
+        // --- Toggle handlers ---
+        if (toggleTerminus) {
+            toggleTerminus.addEventListener('change', () => {
+                state.showTerminusArrivals = toggleTerminus.checked;
+                try { localStorage.setItem(TERMINUS_TOGGLE_KEY, String(state.showTerminusArrivals)); } catch (_) {}
+                lastRenderFingerprint = '';
+                renderBoard();
+            });
+        }
+        if (toggleOOS) {
+            toggleOOS.addEventListener('change', () => {
+                state.showOutOfService = toggleOOS.checked;
+                try { localStorage.setItem(OOS_TOGGLE_KEY, String(state.showOutOfService)); } catch (_) {}
+                lastRenderFingerprint = '';
+                renderBoard();
+            });
+        }
+
+        // --- Trip Journey click handler ---
+        boardBody.addEventListener('click', async event => {
+            const expandBtn = event.target.closest('.departure-expand-btn');
+            if (!expandBtn) return;
+            event.preventDefault();
+            const tripId = expandBtn.dataset.tripId;
+            if (!tripId) return;
+
+            const card = expandBtn.closest('.departure-card');
+            if (!card) return;
+
+            // Toggle off if already expanded
+            const existingJourney = card.querySelector('.trip-journey');
+            if (existingJourney) {
+                existingJourney.remove();
+                const existingDetail = card.querySelector('.trip-detail-info');
+                if (existingDetail) existingDetail.remove();
+                card.removeAttribute('data-expanded');
+                expandBtn.textContent = 'View journey \u25B8';
+                expandedTripIds.delete(tripId);
+                return;
+            }
+
+            expandBtn.textContent = 'Loading\u2026';
+
+            // Fetch trip details and journey in parallel
+            await Promise.all([
+                fetchTripJourney(tripId),
+                fetchTripDetails(tripId)
+            ]);
+
+            // Use shared helper to build content from cache
+            const expandedContent = buildTripExpandedContent(tripId);
+            if (expandedContent) {
+                card.insertAdjacentHTML('beforeend', expandedContent);
+                card.setAttribute('data-expanded', 'true');
+                expandBtn.textContent = 'Hide journey \u25BE';
+                expandedTripIds.add(tripId);
+            } else {
+                expandBtn.textContent = 'View journey \u25B8';
+            }
+        });
     </script>
 </body>
 </html>
