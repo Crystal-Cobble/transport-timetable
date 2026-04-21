@@ -1,1171 +1,95 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auckland Transport Departure Board</title>
-    <style>
-        :root {
-            color-scheme: dark;
-            --bg: #061226;
-            --panel: rgba(13, 33, 61, 0.92);
-            --panel-strong: rgba(7, 18, 34, 0.98);
-            --border: rgba(255,255,255,0.12);
-            --text: #f8fbff;
-            --muted: #9fb7d2;
-            --accent: #4fd1c5;
-            --danger: #ffb16d;
-            --success: #7ee787;
-            --error: #ff7b7b;
-            --shadow: 0 28px 80px rgba(0,0,0,0.35);
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Inter, system-ui, sans-serif;
-            color: var(--text);
-            background: radial-gradient(circle at top left, rgba(25, 132, 199, 0.18), transparent 22%),
-                        linear-gradient(180deg, #08131f 0%, #0b1e3a 100%);
-        }
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at center, rgba(79, 209, 197, 0.05), transparent 25%),
-                        radial-gradient(circle at 15% 15%, rgba(255,255,255,0.08), transparent 0 16%);
-            pointer-events: none;
-        }
-        .page {
-            width: min(1200px, calc(100% - 2rem));
-            margin: 0 auto;
-            padding: 2rem 0 3rem;
-        }
-        header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 1rem;
-            align-items: flex-end;
-            margin-bottom: 2rem;
-        }
-        .hero {
-            max-width: 42rem;
-        }
-        .hero h1 {
-            margin: 0 0 0.75rem;
-            font-size: clamp(2.3rem, 4vw, 3.6rem);
-            line-height: 1.05;
-        }
-        .hero p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-        .status-card {
-            background: rgba(8, 17, 36, 0.9);
-            border: 1px solid var(--border);
-            padding: 1.3rem 1.4rem;
-            border-radius: 1.4rem;
-            min-width: 18rem;
-            box-shadow: var(--shadow);
-        }
-        .status-card span {
-            display: block;
-        }
-        .status-card .label {
-            font-size: 0.85rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-        }
-        .status-card .value {
-            margin-top: 0.85rem;
-            font-size: clamp(2.1rem, 4vw, 3rem);
-            font-weight: 800;
-            letter-spacing: 0.03em;
-        }
-        .status-card .subnote {
-            margin-top: 0.45rem;
-            color: rgba(255,255,255,0.68);
-            font-size: 0.82rem;
-            line-height: 1.4;
-        }
-        .controls {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 1.75rem;
-        }
-        .controls-panel {
-            display: grid;
-            gap: 1rem;
-            padding: 1.3rem 1.4rem;
-            border-radius: 1.5rem;
-            border: 1px solid var(--border);
-            background: var(--panel);
-            box-shadow: var(--shadow);
-        }
-        .field-row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 0.85rem;
-            align-items: end;
-        }
-        .search-box {
-            position: relative;
-        }
-        .search-dropdown {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: calc(100% + 0.65rem);
-            background: rgba(8, 17, 36, 0.98);
-            border: 1px solid rgba(255,255,255,0.14);
-            border-radius: 1rem;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
-            max-height: 18rem;
-            overflow-y: auto;
-            z-index: 10;
-        }
-        .search-dropdown.hidden { display: none; }
-        .search-item {
-            padding: 0.95rem 1rem;
-            cursor: pointer;
-            color: var(--text);
-            white-space: normal;
-            transition: background 0.18s ease;
-        }
-        .search-item:hover {
-            background: rgba(255,255,255,0.08);
-        }
-        .board-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-        .button-fullscreen {
-            background: #5c96ff;
-            color: #fff;
-        }
-        .button-fullscreen:hover {
-            background: #4f85e1;
-        }
-        .fullscreen-mode .button-fullscreen {
-            background: rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.8);
-            border: 1px solid rgba(255,255,255,0.14);
-            box-shadow: none;
-            opacity: 0.82;
-        }
-        .fullscreen-mode .button-fullscreen:hover {
-            background: rgba(255,255,255,0.14);
-            opacity: 1;
-        }
-        .board-table tbody tr:hover td {
-            background: rgba(255,255,255,0.06);
-        }
-        .fullscreen-mode {
-            overflow: hidden;
-        }
-        body.fullscreen-mode .page {
-            position: fixed;
-            inset: 0;
-            width: 100vw;
-            height: 100vh;
-            margin: 0;
-            padding: 1.5rem;
-            overflow: auto;
-            background: var(--bg);
-        }
-        body.fullscreen-mode header,
-        body.fullscreen-mode .controls {
-            display: none;
-        }
-        body.fullscreen-mode .board {
-            min-height: calc(100vh - 3.5rem);
-            border-radius: 0;
-            padding: 1.5rem;
-        }
-        body.fullscreen-mode .board-header {
-            margin-bottom: 1rem;
-        }
-        body.fullscreen-mode .board-actions {
-            justify-content: space-between;
-        }
-        label {
-            font-size: 0.95rem;
-            color: var(--muted);
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 1rem 1rem;
-            border-radius: 0.95rem;
-            border: 1px solid rgba(255,255,255,0.16);
-            background: rgba(255,255,255,0.04);
-            color: var(--text);
-            font-size: 1rem;
-        }
-        input[type="text"]:focus {
-            outline: 2px solid rgba(79, 209, 197, 0.65);
-            border-color: rgba(79, 209, 197, 0.45);
-        }
-        button {
-            border: none;
-            cursor: pointer;
-            border-radius: 0.95rem;
-            padding: 1rem 1.25rem;
-            font-weight: 700;
-            font-size: 0.98rem;
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
-        button:hover { transform: translateY(-1px); }
-        .button-add {
-            color: #071924;
-            background: #7ce8d0;
-        }
-        .button-clear {
-            color: var(--text);
-            background: rgba(255,255,255,0.08);
-        }
-        .button-clear:hover { background: rgba(255,255,255,0.16); }
-        .selected-stops {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        .stop-menu {
-            position: relative;
-        }
-        .stop-menu summary {
-            list-style: none;
-        }
-        .stop-menu summary::-webkit-details-marker {
-            display: none;
-        }
-        .stop-menu-button {
-            width: 100%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
-            padding: 0.9rem 1rem;
-            border-radius: 1rem;
-            border: 1px solid rgba(255,255,255,0.14);
-            background: rgba(255,255,255,0.05);
-            color: var(--text);
-            font-weight: 700;
-        }
-        .stop-menu-button::after {
-            content: "▾";
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-        .stop-menu[open] .stop-menu-button::after {
-            content: "▴";
-        }
-        .stop-menu-panel {
-            margin-top: 0.65rem;
-            padding: 0.9rem;
-            border-radius: 1rem;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(8, 17, 36, 0.96);
-            box-shadow: 0 18px 40px rgba(0,0,0,0.24);
-            display: grid;
-            gap: 0.75rem;
-        }
-        .stop-menu-actions {
-            display: flex;
-            justify-content: flex-end;
-        }
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.65rem;
-            padding: 0.75rem 1rem;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: var(--text);
-            font-size: 0.98rem;
-        }
-        .chip button {
-            width: 2rem;
-            height: 2rem;
-            padding: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.08);
-            color: var(--text);
-            font-weight: 700;
-        }
-        .chip button:hover { background: rgba(255,255,255,0.15); }
-        .board {
-            position: relative;
-            background: linear-gradient(180deg, rgba(7, 18, 33, 0.96), rgba(8, 22, 44, 0.94));
-            border: 1px solid rgba(255,255,255,0.16);
-            border-radius: 2rem;
-            padding: 1.2rem;
-            box-shadow: 0 40px 110px rgba(0,0,0,0.35);
-            overflow: hidden;
-            backdrop-filter: blur(16px);
-        }
-        .board::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 20% 15%, rgba(79, 209, 197, 0.12), transparent 22%),
-                radial-gradient(circle at 85% 10%, rgba(96, 165, 250, 0.12), transparent 22%);
-            pointer-events: none;
-            opacity: 0.86;
-        }
-        .board > * {
-            position: relative;
-            z-index: 1;
-        }
-        #board-body {
-            position: relative;
-        }
-        .board-header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .board-header h2 {
-            margin: 0;
-            font-size: clamp(1.75rem, 2.5vw, 2.4rem);
-            letter-spacing: -0.02em;
-        }
-        .board-header .note {
-            margin-top: 0.35rem;
-            color: rgba(255,255,255,0.72);
-            font-size: 0.95rem;
-        }
-        .board-stats {
-            display: flex;
-            align-items: flex-end;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-        .board-actions {
-            display: grid;
-            gap: 0.5rem;
-            align-items: end;
-            justify-items: end;
-            text-align: right;
-        }
-        .departure-list {
-            display: grid;
-            gap: 0.7rem;
-        }
-        .departure-card {
-            display: grid;
-            gap: 0.7rem;
-            padding: 1rem 1rem;
-            border-radius: 1.3rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 18px 40px rgba(0,0,0,0.14);
-            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-        }
-        .departure-card:hover {
-            transform: translateY(-1px);
-            background: rgba(255,255,255,0.07);
-            border-color: rgba(255,255,255,0.16);
-        }
-        .departure-row {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-        .departure-route {
-            min-width: 4.3rem;
-            padding: 0.75rem 0.9rem;
-            border-radius: 1.1rem;
-            background: rgba(79, 209, 197, 0.16);
-            color: #e9fbff;
-            font-size: 1.2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            letter-spacing: 0.08em;
-        }
-        .departure-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .departure-info h3 {
-            margin: 0;
-            font-size: 1.3rem;
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-            font-weight: 700;
-        }
-        .departure-info p {
-            margin: 0.35rem 0 0;
-            color: rgba(255,255,255,0.72);
-            font-size: 0.9rem;
-        }
-        .departure-meta {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.5rem;
-            color: rgba(255,255,255,0.68);
-            font-size: 0.88rem;
-        }
-        .departure-time {
-            display: grid;
-            justify-items: end;
-            gap: 0.35rem;
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #fff;
-        }
-        .departure-time-main {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #fff;
-        }
-        .departure-time-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.38rem 0.62rem;
-            border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.76);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-        }
-        .departure-meta-primary,
-        .departure-meta-secondary {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .departure-platform {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            font-weight: 700;
-        }
-        .departure-stop-name {
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.78rem;
-            color: rgba(255,255,255,0.55);
-            font-weight: 500;
-        }
-        .departure-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.55rem 0.9rem;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            background: rgba(255,255,255,0.08);
-            color: #e9fbff;
-        }
-        .departure-status::before {
-            content: "";
-            width: 0.7rem;
-            height: 0.7rem;
-            border-radius: 50%;
-            background: currentColor;
-            opacity: 0.85;
-        }
-        .departure-status.status-on { color: #7ee787; background: rgba(126, 231, 135, 0.12); }
-        .departure-status.status-board { color: #93c5fd; background: rgba(147, 197, 253, 0.12); }
-        .departure-status.status-delay { color: #ffcc7d; background: rgba(255, 190, 117, 0.14); }
-        .departure-status.status-ahead { color: #7dd3fc; background: rgba(125, 211, 252, 0.16); }
-        .departure-status.status-cancel { color: #ff9ca4; background: rgba(255, 156, 164, 0.14); }
-        .occupancy-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.45rem 0.8rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            background: rgba(255,255,255,0.08);
-            color: #e9fbff;
-        }
-        .occupancy-meter {
-            display: inline-flex;
-            gap: 0.15rem;
-            align-items: flex-end;
-        }
-        .occupancy-meter span {
-            width: 0.28rem;
-            height: 0.7rem;
-            border-radius: 999px;
-            background: currentColor;
-            opacity: 0.22;
-        }
-        .occupancy-meter span.filled {
-            opacity: 0.95;
-        }
-        .occupancy-chip.low { color: #7ee787; background: rgba(126, 231, 135, 0.12); }
-        .occupancy-chip.medium { color: #fbbf24; background: rgba(251, 191, 36, 0.14); }
-        .occupancy-chip.high { color: #fb7185; background: rgba(251, 113, 133, 0.16); }
-        .occupancy-chip.unknown { color: #93c5fd; background: rgba(147, 197, 253, 0.12); }
-        .board-table {
-            width: 100%;
-            border-collapse: collapse;
-            overflow: hidden;
-        }
-        .board-table thead {
-            border-bottom: 1px solid rgba(255,255,255,0.16);
-        }
-        .board-table th,
-        .board-table td {
-            text-align: left;
-            padding: 1rem 1rem;
-            font-size: 0.98rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-        .board-table th {
-            color: var(--muted);
-            font-size: 0.85rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-        .board-table tr:nth-child(even) td {
-            background: rgba(255,255,255,0.03);
-        }
-        .route-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 3.2rem;
-            padding: 0.55rem 0.9rem;
-            border-radius: 999px;
-            background: rgba(79, 209, 197, 0.14);
-            color: #e9fbff;
-            font-weight: 800;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            font-size: 0.95rem;
-        }
-        .status-chip {
-            display: inline-flex;
-            padding: 0.45rem 0.7rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-        .status-on { background: rgba(45, 172, 119, 0.18); color: #9becc6; }
-        .status-delay { background: rgba(245, 135, 104, 0.2); color: #ffd7b2; }
-        .status-board { background: rgba(98, 107, 255, 0.18); color: #dcdcff; }
-        .status-cancel { background: rgba(255, 116, 116, 0.18); color: #ffd1d1; }
-        .empty-state {
-            margin: 2rem 0;
-            padding: 1.8rem;
-            border-radius: 1.2rem;
-            background: rgba(255,255,255,0.05);
-            color: var(--muted);
-            text-align: center;
-        }
-        .note {
-            margin-top: 0.25rem;
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-        /* Service Alerts */
-        .alerts-panel { display: grid; gap: 0.65rem; margin-bottom: 1.25rem; }
-        .alerts-panel:empty { display: none; }
-        .alert-item {
-            display: flex; align-items: flex-start; gap: 0.85rem;
-            padding: 1rem 1.2rem; border-radius: 1.2rem;
-            border: 1px solid rgba(255, 177, 109, 0.25);
-            background: rgba(255, 177, 109, 0.08);
-            color: var(--text); font-size: 0.92rem; line-height: 1.5;
-        }
-        .alert-item .alert-icon { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: rgba(255, 177, 109, 0.2); color: #ffb16d; font-weight: 900; font-size: 0.8rem; flex-shrink: 0; }
-        .alert-item .alert-content { flex: 1; min-width: 0; }
-        .alert-item .alert-header { font-weight: 700; margin-bottom: 0.25rem; }
-        .alert-item .alert-body { color: rgba(255,255,255,0.72); font-size: 0.85rem; }
-        .alert-item .alert-routes { margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.35rem; }
-        .alert-item .alert-route-tag {
-            padding: 0.2rem 0.55rem; border-radius: 999px;
-            background: rgba(255,255,255,0.1); font-size: 0.75rem; font-weight: 700;
-        }
-        /* Calendar Warning */
-        .calendar-warning { margin-bottom: 1rem; }
-        .calendar-warning:empty { display: none; }
-        .calendar-notice {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding: 0.85rem 1.1rem; border-radius: 1.1rem;
-            border: 1px solid rgba(147, 197, 253, 0.2);
-            background: rgba(147, 197, 253, 0.08);
-            font-size: 0.88rem; color: #93c5fd;
-        }
-        .calendar-notice .cal-icon { display: inline-flex; align-items: center; justify-content: center; width: 1.3rem; height: 1.3rem; border-radius: 50%; background: rgba(147, 197, 253, 0.2); font-weight: 900; font-size: 0.7rem; }
-        /* Mode icons */
-        .mode-icon {
-            display: inline-flex; align-items: center; justify-content: center;
-            margin-right: 0.3rem; opacity: 0.85;
-        }
-        .mode-icon svg {
-            width: 1em; height: 1em; vertical-align: middle;
-        }
-        /* Trip journey expandable */
-        .trip-journey {
-            margin-top: 0.5rem; padding: 0.65rem 0.85rem;
-            border-radius: 0.9rem; background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            max-height: 16rem; overflow-y: auto;
-        }
-        .trip-journey-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 0.4rem; margin-bottom: 0.4rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            font-size: 0.78rem; font-weight: 700; color: var(--muted);
-            text-transform: uppercase; letter-spacing: 0.08em;
-        }
-        .trip-stop-item {
-            display: flex; align-items: center; gap: 0.55rem;
-            padding: 0.35rem 0; font-size: 0.82rem; color: rgba(255,255,255,0.72);
-        }
-        .trip-stop-item.current-stop { color: var(--accent); font-weight: 700; }
-        .trip-stop-item .stop-dot {
-            width: 0.5rem; height: 0.5rem; border-radius: 50%;
-            background: rgba(255,255,255,0.25); flex-shrink: 0;
-        }
-        .trip-stop-item.current-stop .stop-dot {
-            background: var(--accent); box-shadow: 0 0 6px var(--accent);
-        }
-        .trip-stop-item.vehicle-here { position: relative; }
-        .trip-vehicle-indicator {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.25rem 0; font-size: 0.72rem; font-weight: 700;
-            color: #60a5fa;
-        }
-        .trip-vehicle-indicator .vehicle-marker {
-            width: 1.3rem; height: 1.3rem;
-            flex-shrink: 0; animation: vehiclePulse 2s ease-in-out infinite;
-            display: inline-flex; align-items: center; justify-content: center;
-        }
-        .trip-vehicle-indicator .vehicle-marker svg {
-            width: 1.1rem; height: 1.1rem;
-            filter: drop-shadow(0 0 4px rgba(96,165,250,0.6));
-        }
-        .trip-vehicle-indicator .vehicle-line {
-            flex: 1; height: 1px; background: rgba(96,165,250,0.3);
-        }
-        @keyframes vehiclePulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.3); }
-        }
-        .trip-stop-item.stop-passed { opacity: 0.45; }
-        .trip-stop-time { margin-left: auto; font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
-        .departure-card[data-expanded="true"] { border-color: rgba(79, 209, 197, 0.3); }
-        .departure-expand-btn {
-            background: none; border: none; color: var(--muted);
-            font-size: 0.78rem; padding: 0.35rem 0.6rem; border-radius: 0.6rem;
-            cursor: pointer; font-weight: 600; transition: color 0.15s;
-        }
-        .departure-expand-btn:hover { color: var(--accent); transform: none; }
-        /* Access icons */
-        .access-icons { display: inline-flex; gap: 0.3rem; align-items: center; font-size: 0.82rem; opacity: 0.75; }
-        .access-icons span { display: inline-flex; align-items: center; padding: 0.15rem 0.4rem; border-radius: 0.4rem; background: rgba(255,255,255,0.08); font-size: 0.72rem; font-weight: 600; }
-        /* Congestion chip */
-        .congestion-chip {
-            display: inline-flex; align-items: center; gap: 0.3rem;
-            padding: 0.3rem 0.6rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700;
-        }
-        .congestion-chip.cong-low { color: #7ee787; background: rgba(126, 231, 135, 0.1); }
-        .congestion-chip.cong-med { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
-        .congestion-chip.cong-high { color: #fb7185; background: rgba(251, 113, 133, 0.12); }
-        /* Schedule badge */
-        .schedule-badge {
-            display: inline-flex; align-items: center; gap: 0.25rem;
-            padding: 0.25rem 0.55rem; border-radius: 999px;
-            font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
-        }
-        .schedule-badge.sched-added { color: #7ee787; background: rgba(126, 231, 135, 0.12); }
-        .schedule-badge.sched-canceled { color: #ff9ca4; background: rgba(255, 156, 164, 0.14); }
-        .schedule-badge.sched-unscheduled { color: #93c5fd; background: rgba(147, 197, 253, 0.12); }
-        /* Vehicle distance */
-        .vehicle-distance { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; color: var(--muted); }
-        .vehicle-distance::before { content: ''; width: 0.35rem; height: 0.35rem; border-radius: 50%; background: currentColor; opacity: 0.5; }
-        /* Ferry vessel */
-        .vessel-name { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--muted); font-style: italic; }
-        .trip-detail-info { padding: 0.5rem 0.75rem; margin-top: 0.4rem; border-radius: 0.8rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
-        .trip-detail-vehicle { font-size: 0.8rem; color: rgba(255,255,255,0.7); padding: 0.25rem 0; }
-        .trip-detail-alert { font-size: 0.78rem; color: #ffb16d; padding: 0.2rem 0; display: flex; align-items: center; gap: 0.4rem; }
-        .trip-detail-alert .alert-icon { width: 1.1rem; height: 1.1rem; font-size: 0.65rem; }
-        /* Toggle switches */
-        .board-toggles { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
-        .toggle-label {
-            display: inline-flex; align-items: center; gap: 0.45rem;
-            font-size: 0.82rem; color: var(--muted); cursor: pointer; user-select: none;
-        }
-        .toggle-label input[type="checkbox"] {
-            appearance: none; -webkit-appearance: none;
-            width: 2.4rem; height: 1.3rem; border-radius: 999px;
-            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.16);
-            position: relative; cursor: pointer; transition: background 0.2s, border-color 0.2s;
-            flex-shrink: 0;
-        }
-        .toggle-label input[type="checkbox"]::after {
-            content: ''; position: absolute; top: 0.15rem; left: 0.15rem;
-            width: 0.9rem; height: 0.9rem; border-radius: 50%;
-            background: rgba(255,255,255,0.5); transition: transform 0.2s, background 0.2s;
-        }
-        .toggle-label input[type="checkbox"]:checked {
-            background: rgba(79, 209, 197, 0.35); border-color: rgba(79, 209, 197, 0.5);
-        }
-        .toggle-label input[type="checkbox"]:checked::after {
-            transform: translateX(1.1rem); background: var(--accent);
-        }
-        /* Out of service */
-        .oos-section { margin-top: 1rem; }
-        .oos-section-header {
-            display: flex; align-items: center; gap: 0.5rem;
-            margin-bottom: 0.6rem; font-size: 0.85rem; font-weight: 700;
-            color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
-        }
-        .oos-section-header::before {
-            content: ''; width: 0.55rem; height: 0.55rem; border-radius: 50%;
-            background: #9ca3af; opacity: 0.7;
-        }
-        .departure-card.oos-card {
-            border-color: rgba(156, 163, 175, 0.2); background: rgba(156, 163, 175, 0.05); opacity: 0.8;
-        }
-        .departure-card.oos-card:hover { opacity: 0.95; border-color: rgba(156, 163, 175, 0.3); }
-        .departure-status.status-oos { color: #9ca3af; background: rgba(156, 163, 175, 0.14); }
-        /* Line disruption notices */
-        .line-disruptions { display: grid; gap: 0.55rem; margin-bottom: 0.85rem; }
-        .line-disruptions:empty { display: none; }
-        .line-disruption-notice {
-            display: flex; align-items: flex-start; gap: 0.75rem;
-            padding: 0.9rem 1.1rem; border-radius: 1.1rem;
-            border: 1px solid rgba(255, 107, 107, 0.25);
-            background: rgba(255, 107, 107, 0.06);
-            font-size: 0.88rem; line-height: 1.45;
-        }
-        .line-disruption-notice .disruption-icon {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 2rem; height: 2rem; border-radius: 0.6rem;
-            font-weight: 900; font-size: 0.75rem; flex-shrink: 0;
-            color: #fff; letter-spacing: 0.04em;
-        }
-        .line-disruption-notice .disruption-content { flex: 1; min-width: 0; }
-        .line-disruption-notice .disruption-title { font-weight: 700; margin-bottom: 0.2rem; }
-        .line-disruption-notice .disruption-body { color: rgba(255,255,255,0.68); font-size: 0.82rem; }
-        .line-disruption-notice .disruption-reason { margin-top: 0.25rem; color: rgba(255, 177, 109, 0.9); font-size: 0.8rem; font-style: italic; }
-        /* Rail replacement bus button in disruption notices */
-        .disruption-rb-btn {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            margin-top: 0.55rem; padding: 0.4rem 0.85rem;
-            border: 1px solid rgba(79, 209, 197, 0.35); border-radius: 0.7rem;
-            background: rgba(79, 209, 197, 0.1); color: #4fd1c5;
-            font-size: 0.78rem; font-weight: 600; cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-        }
-        .disruption-rb-btn:hover { background: rgba(79, 209, 197, 0.2); border-color: rgba(79, 209, 197, 0.55); }
-        .disruption-rb-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .disruption-rb-btn .rb-icon { display: inline-flex; width: 1rem; height: 1rem; }
-        .disruption-rb-btn .rb-icon svg { width: 100%; height: 100%; }
-        /* Cancelled departure card */
-        .departure-card.cancelled-card { opacity: 0.55; }
-        .departure-card.cancelled-card .departure-time-main { text-decoration: line-through; color: var(--muted); }
-        /* Terminus badge */
-        .terminus-badge {
-            display: inline-flex; align-items: center; gap: 0.3rem;
-            padding: 0.25rem 0.55rem; border-radius: 999px;
-            font-size: 0.72rem; font-weight: 700;
-            color: #c084fc; background: rgba(192, 132, 252, 0.12);
-            text-transform: uppercase; letter-spacing: 0.04em;
-        }
-        @media (max-width: 800px) {
-            .page {
-                width: min(100%, calc(100% - 1rem));
-                padding: 0.75rem 0 1.2rem;
-            }
-            header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.6rem;
-                margin-bottom: 0.8rem;
-            }
-            .hero h1 {
-                font-size: clamp(1.6rem, 7vw, 2.2rem);
-                margin-bottom: 0.25rem;
-            }
-            .hero p {
-                font-size: 0.85rem;
-                line-height: 1.4;
-            }
-            .status-card {
-                min-width: auto;
-                padding: 0.75rem 0.85rem;
-                border-radius: 1rem;
-            }
-            .status-card .value {
-                margin-top: 0.35rem;
-                font-size: clamp(1.5rem, 7vw, 2rem);
-            }
-            .status-card .subnote {
-                font-size: 0.72rem;
-            }
-            .controls {
-                margin-bottom: 0.75rem;
-            }
-            .controls-panel {
-                padding: 0.75rem;
-                border-radius: 1rem;
-                gap: 0.6rem;
-            }
-            .field-row {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-            }
-            .button-clear,
-            .button-fullscreen {
-                width: 100%;
-            }
-            .selected-stops {
-                display: grid;
-                gap: 0.4rem;
-            }
-            .stop-menu-button {
-                padding: 0.65rem 0.75rem;
-                border-radius: 0.85rem;
-                font-size: 0.85rem;
-            }
-            .stop-menu-panel {
-                padding: 0.6rem;
-                gap: 0.5rem;
-            }
-            .chip {
-                width: 100%;
-                justify-content: space-between;
-                padding: 0.6rem 0.75rem;
-                border-radius: 0.85rem;
-                font-size: 0.85rem;
-            }
-            .board {
-                padding: 0.7rem;
-                border-radius: 1.1rem;
-            }
-            .board-header {
-                gap: 0.5rem;
-                margin-bottom: 0.6rem;
-            }
-            .board-header h2 {
-                font-size: 1.25rem;
-            }
-            .board-header .note {
-                display: none;
-            }
-            .board-actions {
-                width: 100%;
-                justify-items: stretch;
-                text-align: left;
-            }
-            .board-stats {
-                display: flex;
-                gap: 0.4rem;
-                width: 100%;
-            }
-            .board-stats span {
-                padding: 0.45rem 0.6rem;
-                border-radius: 0.75rem;
-                border: 1px solid rgba(255,255,255,0.1);
-                background: rgba(255,255,255,0.05);
-                color: #dcecff;
-                font-size: 0.72rem;
-                flex: 1;
-            }
-            .departure-list {
-                gap: 0.45rem;
-            }
-            .departure-card {
-                padding: 0.6rem 0.65rem;
-                border-radius: 0.9rem;
-                gap: 0.3rem;
-            }
-            .departure-row {
-                display: grid;
-                grid-template-columns: auto 1fr auto;
-                align-items: center;
-                gap: 0.5rem;
-            }
-            .departure-route {
-                min-width: 2.8rem;
-                padding: 0.4rem 0.5rem;
-                font-size: 0.88rem;
-                border-radius: 0.75rem;
-            }
-            .departure-info h3 {
-                font-size: 0.92rem;
-                line-height: 1.15;
-            }
-            .departure-info p {
-                margin-top: 0.15rem;
-                font-size: 0.72rem;
-            }
-            /* Hide route long name on mobile */
-            .route-long-name { display: none; }
-            .departure-time {
-                grid-column: auto;
-                width: auto;
-                justify-items: end;
-                align-self: center;
-                padding-top: 0;
-                gap: 0.15rem;
-            }
-            .departure-time-main {
-                font-size: 0.95rem;
-                line-height: 1;
-            }
-            .departure-time-pill {
-                padding: 0.18rem 0.38rem;
-                font-size: 0.58rem;
-            }
-            .departure-meta {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.3rem;
-                font-size: 0.7rem;
-                padding-top: 0;
-            }
-            .departure-meta-primary,
-            .departure-meta-secondary {
-                display: contents;
-            }
-            /* Hide less essential meta on mobile */
-            .congestion-chip,
-            .access-icons,
-            .vehicle-distance,
-            .vessel-name,
-            .schedule-badge,
-            .departure-stop-name { display: none; }
-            /* Show them again when journey view is expanded */
-            .departure-card[data-expanded="true"] .congestion-chip,
-            .departure-card[data-expanded="true"] .access-icons,
-            .departure-card[data-expanded="true"] .vehicle-distance,
-            .departure-card[data-expanded="true"] .vessel-name,
-            .departure-card[data-expanded="true"] .schedule-badge,
-            .departure-card[data-expanded="true"] .route-long-name,
-            .departure-card[data-expanded="true"] .departure-stop-name { display: revert; }
-            .departure-platform {
-                font-size: 0.7rem;
-                line-height: 1;
-            }
-            .departure-status,
-            .occupancy-chip {
-                padding: 0.22rem 0.42rem;
-                border-radius: 0.7rem;
-                font-size: 0.65rem;
-                line-height: 1;
-            }
-            .departure-status::before {
-                width: 0.35rem;
-                height: 0.35rem;
-            }
-            .occupancy-meter span {
-                width: 0.15rem;
-                height: 0.4rem;
-            }
-            .departure-expand-btn {
-                font-size: 0.68rem;
-                padding: 0.2rem 0.4rem;
-            }
-            .board-table th,
-            .board-table td {
-                padding: 0.7rem;
-            }
-            .board-toggles { width: 100%; justify-content: flex-start; gap: 0.4rem; }
-            .toggle-label { font-size: 0.72rem; }
-        }
-
-        @media (max-width: 520px) {
-            .page {
-                width: min(100%, calc(100% - 0.75rem));
-                padding-top: 0.6rem;
-            }
-            .hero h1 {
-                font-size: 1.5rem;
-            }
-            .hero p {
-                font-size: 0.78rem;
-            }
-            .controls-panel,
-            .board {
-                padding: 0.55rem;
-            }
-            input[type="text"] {
-                padding: 0.7rem 0.75rem;
-                font-size: 0.9rem;
-            }
-            .board-header {
-                gap: 0.35rem;
-            }
-            .board-header h2 {
-                font-size: 1.1rem;
-            }
-            .board-actions {
-                grid-template-columns: 1fr auto;
-                align-items: center;
-                justify-items: stretch;
-                gap: 0.3rem;
-            }
-            .board-stats {
-                gap: 0.25rem;
-            }
-            .board-stats span {
-                padding: 0.35rem 0.4rem;
-                font-size: 0.62rem;
-                border-radius: 0.6rem;
-            }
-            .button-fullscreen {
-                width: auto;
-                min-height: 0;
-                padding: 0.35rem 0.55rem;
-                font-size: 0.65rem;
-                border-radius: 0.65rem;
-                white-space: nowrap;
-            }
-            .controls-panel {
-                gap: 0.5rem;
-            }
-            .stop-menu-button {
-                padding: 0.55rem 0.65rem;
-                font-size: 0.8rem;
-            }
-            .stop-menu-panel {
-                padding: 0.5rem;
-            }
-            .chip {
-                padding: 0.5rem 0.65rem;
-                font-size: 0.8rem;
-            }
-            .departure-list {
-                gap: 0.35rem;
-            }
-            .departure-card {
-                padding: 0.45rem 0.5rem;
-                gap: 0.25rem;
-                border-radius: 0.8rem;
-            }
-            .departure-row {
-                gap: 0.35rem;
-            }
-            .departure-route {
-                min-width: 0;
-                width: auto;
-                padding: 0.3rem 0.4rem;
-                font-size: 0.78rem;
-                border-radius: 0.65rem;
-                letter-spacing: 0.04em;
-            }
-            .departure-info h3 {
-                font-size: 0.85rem;
-                line-height: 1.1;
-            }
-            .departure-info p {
-                font-size: 0.65rem;
-                margin-top: 0.1rem;
-            }
-            .departure-time-main {
-                font-size: 0.85rem;
-            }
-            .departure-time-pill {
-                padding: 0.15rem 0.32rem;
-                font-size: 0.52rem;
-            }
-            .departure-meta {
-                gap: 0.2rem;
-                font-size: 0.62rem;
-            }
-            .departure-platform {
-                font-size: 0.62rem;
-            }
-            .departure-status,
-            .occupancy-chip {
-                padding: 0.18rem 0.32rem;
-                font-size: 0.58rem;
-                border-radius: 0.55rem;
-            }
-            .departure-status::before {
-                width: 0.28rem;
-                height: 0.28rem;
-            }
-            .occupancy-meter {
-                gap: 0.08rem;
-            }
-            .occupancy-meter span {
-                width: 0.12rem;
-                height: 0.28rem;
-            }
-            .departure-expand-btn {
-                font-size: 0.6rem;
-                padding: 0.15rem 0.3rem;
-            }
-            .board-toggles { gap: 0.25rem; }
-            .toggle-label { font-size: 0.65rem; gap: 0.3rem; }
-            .toggle-label input[type="checkbox"] { width: 2rem; height: 1.1rem; }
-            .toggle-label input[type="checkbox"]::after { width: 0.7rem; height: 0.7rem; }
-            .toggle-label input[type="checkbox"]:checked::after { transform: translateX(0.9rem); }
-            .oos-section-header { font-size: 0.72rem; }
-            .terminus-badge { font-size: 0.6rem; padding: 0.18rem 0.4rem; }
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/theme-light.css">
+    <link rel="stylesheet" href="css/theme-contrast.css">
+    <link rel="stylesheet" href="css/theme-at-classic.css">
+    <link rel="stylesheet" href="css/theme-kids-light.css">
+    <link rel="stylesheet" href="css/theme-kids-dark.css">
 </head>
 <body>
     <div class="page">
         <header>
             <div class="hero">
-                <h1>Auckland Transport departure board</h1>
-                <p>Search stops, add multiple locations, and monitor upcoming departures in one place. This is a separate departure board file to keep the existing layout untouched.</p>
-                <a href="live.html" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.75rem;padding:0.55rem 1.1rem;border-radius:0.85rem;background:rgba(79,209,197,0.14);border:1px solid rgba(79,209,197,0.3);color:#4fd1c5;font-weight:700;font-size:0.9rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(79,209,197,0.25)'" onmouseout="this.style.background='rgba(79,209,197,0.14)'">&#127758; Open Live Map</a>
-            </div>
-            <div class="status-card">
-                <span class="label">Live board</span>
-                <span class="value" id="live-time">00:00</span>
-                <span class="subnote" id="last-updated">Last updated at --:--:--</span>
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
+                    <div style="display:flex;align-items:center;gap:1rem;">
+<!--                        <svg class="at-logo" id="at-logo" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-label="Auckland Transport">
+                            <circle cx="30" cy="30" r="29" fill="#e31c23"/>
+                            <circle cx="30" cy="30" r="29" fill="none" stroke="white" stroke-width="3"/>
+                            <text x="30" y="42" text-anchor="middle" fill="white" font-family="'Nunito','Arial Black',sans-serif" font-weight="900" font-size="26" letter-spacing="-0.5">AT</text>
+                        </svg>-->
+                        <div class="hero-copy">
+                            <p class="kia-ora-greeting">Kia ora, Auckland!</p>
+                            <h1 id="hero-title">Auckland Transport</h1>
+                            <p class="hero-subtitle" id="hero-subtitle">DEPARTURE BOARD</p>
+                            <div class="hero-meta-row">
+                                <span class="hero-location" id="hero-location">Choose a stop to get started</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-right">
+                        <div class="kids-hero-stats" aria-live="polite">
+                            <div class="kids-hero-time" id="hero-live-time-compact">00:00 pm</div>
+                            <div class="kids-hero-date" id="hero-live-date-compact">--</div>
+                            <div class="kids-hero-weather"><span id="hero-weather-icon"></span> <span id="hero-weather-temp">--°C</span></div>
+                        </div>
+                        <a href="live.html" class="kids-hero-map-link" id="kids-hero-map-link">Open Live Map</a>
+                        <div class="kids-hero-decor" aria-hidden="true">
+                            <span class="kids-sun"></span>
+                            <span class="kids-tile"></span>
+                        </div>
+                        <button class="theme-btn" id="theme-btn" type="button" title="Change theme">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
 
+        <div class="stats-bar">
+            <div class="stats-bar-left">
+                <span class="stat-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <strong id="watch-count">0</strong> Selected stop</span>
+                <span class="stat-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <strong id="live-time">00:00:00 pm</strong> Live Time</span>
+                <span class="stat-item stat-date"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <span id="live-date">--</span></span>
+                <span class="stat-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> <span id="last-updated">Updated --s ago</span></span>
+            </div>
+            <div id="weather-widget" class="weather-widget" aria-live="polite"></div>
+            <a href="live.html" class="nav-link-btn" id="live-map-link">Open Live Map</a>
+        </div>
+
         <section class="controls">
             <div class="controls-panel">
-                <div class="field-row">
+                <div class="search-stop-grid">
                     <div class="search-box">
-                        <label for="stop-search">Search stop name</label>
-                        <input type="text" id="stop-search" placeholder="Type a stop name or location" autocomplete="off" aria-haspopup="listbox" aria-expanded="false" />
+                        <label for="stop-search">Search stop</label>
+                        <div class="search-input-wrap">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="stop-search" placeholder="Search stop name or location" autocomplete="off" aria-haspopup="listbox" aria-expanded="false" />
+                        </div>
                         <div class="search-dropdown hidden" id="search-dropdown" role="listbox" aria-label="Stop suggestions"></div>
                     </div>
-                </div>
-                <details class="stop-menu" id="stop-menu">
-                    <summary class="stop-menu-button">
-                        <span id="stop-menu-label">Selected stops</span>
-                    </summary>
-                    <div class="stop-menu-panel">
-                        <div class="selected-stops" id="selected-stops" aria-live="polite"></div>
-                        <div class="stop-menu-actions">
-                            <button class="button-clear" id="clear-stops-btn" type="button">Clear all stops</button>
+                    <details class="stop-menu" id="stop-menu">
+                        <summary>
+                            <label class="stop-menu-top-label">Selected stop</label>
+                            <div class="stop-menu-button">
+                                <span id="stop-menu-label">0 selected stops</span>
+                            </div>
+                        </summary>
+                        <div class="stop-menu-panel">
+                            <div class="selected-stops" id="selected-stops" aria-live="polite"></div>
+                            <div class="stop-menu-actions">
+                                <button class="button-clear" id="clear-stops-btn" type="button">Clear all stops</button>
+                            </div>
                         </div>
-                    </div>
-                </details>
+                    </details>
+                </div>
             </div>
         </section>
 
@@ -1174,15 +98,14 @@
 
         <section class="board">
             <div class="board-header">
-                <div>
-                    <h2>Departures</h2>
-                    <p class="note">Search and pin multiple stops, then switch to fullscreen for a focused departure board.</p>
+                <div class="board-header-left">
+                    <div>
+                        <h2 id="board-title">Departures</h2>
+                        <p class="note" id="board-note">Search and pin multiple stops, then switch to fullscreen for a focused departure board.</p>
+                    </div>
                 </div>
                 <div class="board-actions">
-                    <div class="board-stats">
-                        <span id="watch-count">Watching 0 stops</span>
-                        <span id="departure-count">0 upcoming departures</span>
-                    </div>
+                    <button class="kids-favorite-btn" id="kids-favorite-btn" type="button">☆ Favourite this stop</button>
                     <div class="board-toggles">
                         <label class="toggle-label"><input type="checkbox" id="toggle-terminus" checked /> Show terminus arrivals</label>
                         <label class="toggle-label"><input type="checkbox" id="toggle-oos" /> Show out-of-service trains</label>
@@ -1194,6 +117,107 @@
                 <div class="empty-state" id="empty-state">Add one or more stops to see live departures.</div>
             </div>
         </section>
+        <span id="departure-count" style="display:none">0 upcoming departures</span>
+
+        <!-- Promotional banner matching AT display board reference -->
+<!--        <div class="promo-banner" id="promo-banner" data-variant="a">
+            <div class="promo-layout promo-layout-a">
+                <div class="promo-mascot" hidden="true">
+                    <svg class="promo-bird" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" hidden="true">
+                        <ellipse cx="40" cy="50" rx="22" ry="20" fill="#1a3a6b"/>
+                        <circle cx="40" cy="28" r="16" fill="#1a3a6b"/>
+                        <circle cx="34" cy="24" r="5" fill="white"/>
+                        <circle cx="34" cy="24" r="3" fill="#1a3a6b"/>
+                        <circle cx="46" cy="24" r="5" fill="white"/>
+                        <circle cx="46" cy="24" r="3" fill="#1a3a6b"/>
+                        <ellipse cx="40" cy="35" rx="6" ry="4" fill="#e31c23"/>
+                        <path d="M18 45 Q10 35 14 28 Q18 38 22 42 Z" fill="#2b4f8e"/>
+                        <path d="M62 45 Q70 35 66 28 Q62 38 58 42 Z" fill="#2b4f8e"/>
+                        <line x1="33" y1="70" x2="33" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="47" y1="70" x2="47" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="28" y1="76" x2="38" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="42" y1="76" x2="52" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                    <div class="promo-thanks">
+                        <strong>Thanks for catching the bus!</strong>
+                        <span>He waka eke noa – we're all on this journey together.</span>
+                    </div>
+                </div>
+                <div class="promo-tip">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                    <div>
+                        <strong>Tag on, tag off</strong>
+                        <span>Use your AT HOP card or contactless payment for the best fare.</span>
+                    </div>
+                </div>
+                <div class="promo-plan">
+                    <strong>Plan your trip</strong>
+                    <a href="https://at.govt.nz" target="_blank" rel="noopener noreferrer" class="promo-link">→ AT.govt.nz</a>
+                </div>
+            </div>
+
+            <div class="promo-layout promo-layout-b">
+                <div class="promo-mascot">
+                    <svg class="promo-bird" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="10" y="22" width="60" height="36" rx="12" fill="#1e528f"/>
+                        <rect x="16" y="28" width="24" height="12" rx="3" fill="#9fd4ff"/>
+                        <rect x="44" y="28" width="20" height="12" rx="3" fill="#9fd4ff"/>
+                        <circle cx="26" cy="60" r="8" fill="#123055"/>
+                        <circle cx="54" cy="60" r="8" fill="#123055"/>
+                        <circle cx="26" cy="60" r="3" fill="#fff"/>
+                        <circle cx="54" cy="60" r="3" fill="#fff"/>
+                        <path d="M66 26 L74 32 L66 38" fill="#fda4af"/>
+                    </svg>
+                    <div class="promo-thanks">
+                        <strong id="promo-b-title">Need help planning?</strong>
+                        <span id="promo-b-body">Get trip alerts, platform updates and stop notices in one place.</span>
+                    </div>
+                </div>
+                <div class="promo-tip">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9h18"/><path d="M3 15h18"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>
+                    <div>
+                        <strong id="promo-b-tip-title">Save this stop</strong>
+                        <span id="promo-b-tip-body">Keep your favourite stop pinned so departures load instantly.</span>
+                    </div>
+                </div>
+                <div class="promo-plan promo-plan-stack">
+                    <div class="promo-plan-main">
+                        <strong id="promo-b-plan-title">Plan your journey</strong>
+                        <a href="https://at.govt.nz" target="_blank" rel="noopener noreferrer" class="promo-link">→ AT.govt.nz</a>
+                    </div>
+                    <div class="promo-qr" aria-hidden="true"></div>
+                    <div class="promo-support">
+                        <strong id="promo-b-help-title">Need help?</strong>
+                        <span id="promo-b-help-body">Call 09 366 6400</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+    <div class="theme-menu" id="theme-menu">
+        <div class="theme-menu-backdrop" id="theme-menu-backdrop"></div>
+        <div class="theme-menu-panel">
+            <div class="theme-menu-title">Theme</div>
+            <button class="theme-option" data-theme="default" type="button">
+                <span class="theme-swatch" style="background:#061226;"></span> Default
+            </button>
+            <button class="theme-option" data-theme="light" type="button">
+                <span class="theme-swatch" style="background:#f0f4f8;border-color:rgba(0,0,0,0.2);"></span> Light
+            </button>
+            <button class="theme-option" data-theme="contrast" type="button">
+                <span class="theme-swatch" style="background:#000;border-color:#fff;"></span> High Contrast
+            </button>
+            <button class="theme-option" data-theme="at-classic" type="button">
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#2b6cb0 50%,#e8eef4 50%);border-color:rgba(0,0,0,0.2);"></span> AT Classic
+            </button>
+<!--<button class="theme-option" data-theme="kids-light" type="button" hidden>
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#8ed6ff 0%,#ffe493 50%,#ff9fc9 100%);border-color:rgba(0,0,0,0.15);"></span> Kids Light
+            </button>
+            <button class="theme-option" data-theme="kids-dark" type="button" hidden>
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#101b4d 0%,#6d47ff 45%,#19d3ff 100%);border-color:rgba(255,255,255,0.22);"></span> Kids Dark
+            </button>-->
+        </div>
     </div>
 
     <script>
@@ -1204,6 +228,38 @@
         const REALTIME_TRIP_UPDATES_URL = `${API_BASE}/realtime/legacy/tripupdates`;
         const SELECTED_STOPS_STORAGE_KEY = 'at-departure-board-selected-stops';
         const REALTIME_COMBINED_URL = `${API_BASE}/realtime/legacy`;
+
+        // ── Theme menu ──
+        const THEMES = {
+            default: {}  // Uses :root defaults
+        };
+
+        function applyTheme(name) {
+            document.documentElement.setAttribute('data-theme', name);
+            localStorage.setItem('at-theme', name);
+            document.querySelectorAll('.theme-option').forEach(o => {
+                o.classList.toggle('active', o.dataset.theme === name);
+            });
+        }
+
+        // Apply saved theme on load
+        const savedTheme = localStorage.getItem('at-theme') || 'default';
+        applyTheme(savedTheme);
+
+        (function() {
+            const themeBtn = document.getElementById('theme-btn');
+            const themeMenu = document.getElementById('theme-menu');
+            const themeBackdrop = document.getElementById('theme-menu-backdrop');
+            themeBtn.addEventListener('click', () => themeMenu.classList.toggle('open'));
+            themeBackdrop.addEventListener('click', () => themeMenu.classList.remove('open'));
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    applyTheme(opt.dataset.theme);
+                    updateKidsThemeContent();
+                    themeMenu.classList.remove('open');
+                });
+            });
+        })();
         const REALTIME_SERVICE_ALERTS_URL = `${API_BASE}/realtime/legacy/servicealerts`;
         const REALTIME_FERRY_POSITIONS_URL = `${API_BASE}/realtime/legacy/ferrypositions`;
         const TERMINUS_TOGGLE_KEY = 'at-departure-board-show-terminus';
@@ -1270,7 +326,8 @@
             searchError: null,
             searchQuery: '',
             showTerminusArrivals: true,
-            showOutOfService: false
+            showOutOfService: false,
+            showAllDepartures: false
         };
 
         let searchRequestId = 0;
@@ -1378,8 +435,28 @@
         const fullscreenToggle = document.getElementById('fullscreen-toggle');
         const selectedStopsContainer = document.getElementById('selected-stops');
         const boardBody = document.getElementById('board-body');
+        const heroTitle = document.getElementById('hero-title');
+        const heroSubtitle = document.getElementById('hero-subtitle');
+        const boardTitle = document.getElementById('board-title');
+        const boardNote = document.getElementById('board-note');
+        const kidsFavoriteBtn = document.getElementById('kids-favorite-btn');
         const liveTime = document.getElementById('live-time');
         const lastUpdated = document.getElementById('last-updated');
+        const heroLocation = document.getElementById('hero-location');
+        const heroLiveTimeCompact = document.getElementById('hero-live-time-compact');
+        const heroLiveDateCompact = document.getElementById('hero-live-date-compact');
+        const heroWeatherIcon = document.getElementById('hero-weather-icon');
+        const heroWeatherTemp = document.getElementById('hero-weather-temp');
+        const atLogo = document.getElementById('at-logo');
+        const kidsHeroMapLink = document.getElementById('kids-hero-map-link');
+        const liveMapLink = document.getElementById('live-map-link');
+        const promoBTitle = document.getElementById('promo-b-title');
+        const promoBBody = document.getElementById('promo-b-body');
+        const promoBTipTitle = document.getElementById('promo-b-tip-title');
+        const promoBTipBody = document.getElementById('promo-b-tip-body');
+        const promoBPlanTitle = document.getElementById('promo-b-plan-title');
+        const promoBHelpTitle = document.getElementById('promo-b-help-title');
+        const promoBHelpBody = document.getElementById('promo-b-help-body');
         const watchCount = document.getElementById('watch-count');
         const departureCount = document.getElementById('departure-count');
         const alertsPanel = document.getElementById('alerts-panel');
@@ -2721,7 +1798,7 @@
             // Only show "X min" countdown for live-tracked departures within 60 minutes
             if (hasLiveTracking && minutesAway <= 60) {
                 if (minutesAway <= 0) return 'Now';
-                return `${minutesAway} min`;
+                return `<span class="time-num">${minutesAway}</span><span class="time-unit"> min</span>`;
             }
             
             // Otherwise show scheduled clock time
@@ -2932,11 +2009,166 @@
             }
         }
 
+        function updateKidsHeroSummary() {
+            if (!heroLocation) return;
+            const themeName = document.documentElement.getAttribute('data-theme');
+            const isKidsTheme = themeName === 'kids-light' || themeName === 'kids-dark';
+            if (state.selectedStops.length === 0) {
+                heroLocation.textContent = isKidsTheme ? 'Pin a few stops to build your board' : 'Choose a stop to get started';
+                return;
+            }
+
+            if (state.selectedStops.length === 1) {
+                const stop = state.selectedStops[0];
+                heroLocation.textContent = isKidsTheme
+                    ? 'Watching 1 stop'
+                    : `${stop.stopName} (${stop.stopCode})`;
+                return;
+            }
+
+            const firstStop = state.selectedStops[0];
+            heroLocation.textContent = `${state.selectedStops.length} selected stops · starting with ${firstStop.stopName}`;
+        }
+
+        function updateKidsThemeContent() {
+            const themeName = document.documentElement.getAttribute('data-theme');
+            const isKidsTheme = themeName === 'kids-light' || themeName === 'kids-dark';
+            const firstStop = state.selectedStops[0];
+            const promoBanner = document.getElementById('promo-banner');
+
+            document.documentElement.dataset.kidsLightSelected = themeName === 'kids-light' && firstStop ? 'true' : 'false';
+
+            if (heroTitle && heroSubtitle) {
+                if (themeName === 'kids-light') {
+                    heroTitle.textContent = 'Kia ora, Auckland!';
+                    heroSubtitle.textContent = firstStop ? getPrettyStopName(firstStop) : 'Choose your favourite stop';
+                } else if (themeName === 'kids-dark') {
+                    heroTitle.textContent = 'Auckland Bus Departures';
+                    heroSubtitle.textContent = firstStop ? getPrettyStopName(firstStop) : 'Choose your favourite stop';
+                } else {
+                    heroTitle.textContent = 'Auckland Transport';
+                    heroSubtitle.textContent = 'DEPARTURE BOARD';
+                }
+            }
+
+            if (atLogo) {
+                if (themeName === 'kids-light') {
+                    atLogo.setAttribute('viewBox', '0 0 72 72');
+                    atLogo.innerHTML = `<image href="images/placeholder images for kids theme/at-auckland-transport-logo-png_seeklogo-434920.png" x="0" y="0" width="72" height="72" preserveAspectRatio="xMidYMid meet"/>`;
+                } else {
+                    atLogo.setAttribute('viewBox', '0 0 60 60');
+                    atLogo.innerHTML = `
+                        <circle cx="30" cy="30" r="29" fill="#e31c23"/>
+                        <circle cx="30" cy="30" r="29" fill="none" stroke="white" stroke-width="3"/>
+                        <text x="30" y="42" text-anchor="middle" fill="white" font-family="'Nunito','Arial Black',sans-serif" font-weight="900" font-size="26" letter-spacing="-0.5">AT</text>
+                    `;
+                }
+            }
+
+            // Swap hero decoration illustration
+            const kidsHeroDecor = document.querySelector('.kids-hero-decor');
+            if (kidsHeroDecor) {
+                if (themeName === 'kids-light') {
+                    kidsHeroDecor.innerHTML = `<img src="images/placeholder images for kids theme/31b2eda0-19db-4393-aea5-2f286ee4196d.png" alt="" aria-hidden="true" class="kids-hero-scene-img">`;
+                } else {
+                    kidsHeroDecor.innerHTML = `<span class="kids-sun"></span><span class="kids-tile"></span>`;
+                }
+            }
+
+            // Swap promo bus mascot to cute bus image in kids-light
+            const promoBirdEl = document.querySelector('.promo-layout-b .promo-bird');
+            if (promoBirdEl) {
+                if (themeName === 'kids-light') {
+                    promoBirdEl.setAttribute('viewBox', '0 0 120 102');
+                    promoBirdEl.innerHTML = `<image href="images/placeholder images for kids theme/df38f687-f751-4856-b540-0dfd2994e72e.png" x="0" y="0" width="120" height="102" preserveAspectRatio="xMidYMid meet"/>`;
+                } else {
+                    promoBirdEl.setAttribute('viewBox', '0 0 80 80');
+                    promoBirdEl.innerHTML = `
+                        <rect x="10" y="22" width="60" height="36" rx="12" fill="#1e528f"/>
+                        <rect x="16" y="28" width="24" height="12" rx="3" fill="#9fd4ff"/>
+                        <rect x="44" y="28" width="20" height="12" rx="3" fill="#9fd4ff"/>
+                        <circle cx="26" cy="60" r="8" fill="#123055"/>
+                        <circle cx="54" cy="60" r="8" fill="#123055"/>
+                        <circle cx="26" cy="60" r="3" fill="#fff"/>
+                        <circle cx="54" cy="60" r="3" fill="#fff"/>
+                        <path d="M66 26 L74 32 L66 38" fill="#fda4af"/>
+                    `;
+                }
+            }
+
+            if (boardTitle) {
+                boardTitle.textContent = isKidsTheme ? 'Next buses' : 'Departures';
+            }
+
+            if (boardNote) {
+                boardNote.textContent = isKidsTheme
+                    ? 'Search and pin multiple stops, then switch to fullscreen for a friendly next-buses board.'
+                    : 'Search and pin multiple stops, then switch to fullscreen for a focused departure board.';
+            }
+
+            if (kidsFavoriteBtn) {
+                kidsFavoriteBtn.hidden = !isKidsTheme || !firstStop;
+                if (firstStop) {
+                    kidsFavoriteBtn.textContent = isKidsTheme ? '☆ Favourite this stop' : `☆ Favourite ${firstStop.stopName}`;
+                }
+            }
+
+            if (liveMapLink) {
+                liveMapLink.textContent = isKidsTheme ? 'Open Live Map' : 'Open Live Map';
+            }
+
+            if (kidsHeroMapLink) {
+                kidsHeroMapLink.hidden = true;
+            }
+
+            if (promoBanner) {
+                if (themeName === 'kids-light') {
+                    promoBanner.setAttribute('data-variant', 'b');
+                    promoBanner.dataset.forcedVariant = 'kids-light';
+                } else if (promoBanner.dataset.forcedVariant === 'kids-light') {
+                    delete promoBanner.dataset.forcedVariant;
+                    chooseRandomPromoVariant();
+                }
+            }
+
+            if (themeName === 'kids-light') {
+                if (promoBTitle) promoBTitle.textContent = 'Thanks for catching the bus!';
+                if (promoBBody) promoBBody.textContent = 'He waka eke noa - we\'re all on this journey together.';
+                if (promoBTipTitle) promoBTipTitle.textContent = 'Tag on, tag off';
+                if (promoBTipBody) promoBTipBody.textContent = 'Use your AT HOP card or contactless payment for the best fare.';
+                if (promoBPlanTitle) promoBPlanTitle.textContent = 'Plan your journey';
+                if (promoBHelpTitle) promoBHelpTitle.textContent = 'Need help?';
+                if (promoBHelpBody) promoBHelpBody.textContent = 'Call 09 366 6400';
+            } else {
+                if (promoBTitle) promoBTitle.textContent = 'Need help planning?';
+                if (promoBBody) promoBBody.textContent = 'Get trip alerts, platform updates and stop notices in one place.';
+                if (promoBTipTitle) promoBTipTitle.textContent = 'Save this stop';
+                if (promoBTipBody) promoBTipBody.textContent = 'Keep your favourite stop pinned so departures load instantly.';
+                if (promoBPlanTitle) promoBPlanTitle.textContent = 'Plan your journey';
+                if (promoBHelpTitle) promoBHelpTitle.textContent = 'Need help?';
+                if (promoBHelpBody) promoBHelpBody.textContent = 'Call 09 366 6400';
+            }
+        }
+
+        function getKidsThemeRouteColor(route) {
+            const code = String(route || '').trim().toUpperCase().replace(/\s+/g, '');
+            if (code === 'NX1' || code === '923') return '#7C3AED';
+            if (code === 'NX2' || code === '18') return '#14B8A6';
+            if (code === '938') return '#D946A8';
+            if (code === '27T' || code === 'INNERLINK' || code === 'INN' || code === '27H') return '#84B632';
+            if (code === '120' || code === 'AIR' || code === 'AIRPORTLINK') return '#FF5A47';
+            if (code === '20' || code === '75' || code === '814' || code.startsWith('RB')) return '#F97316';
+            if (code.startsWith('WX')) return '#0891B2';
+            return getRouteColor(route);
+        }
+
         function renderSelectedStops() {
             selectedStopsContainer.innerHTML = '';
             stopMenuLabel.textContent = state.selectedStops.length === 0
                 ? 'Selected stops'
                 : `${state.selectedStops.length} selected stop${state.selectedStops.length === 1 ? '' : 's'}`;
+            updateKidsHeroSummary();
+            updateKidsThemeContent();
             if (state.selectedStops.length === 0) {
                 selectedStopsContainer.innerHTML = '<span class="note">No stops selected yet.</span>';
                 return;
@@ -3095,7 +2327,7 @@
             return `<div class="line-disruption-notice">
                 <div class="disruption-icon" style="background:${line.color}">${safeShortName}</div>
                 <div class="disruption-content">
-                    <div class="disruption-title">🚫 ${safeShortName} Line — Trains not running</div>
+                    <div class="disruption-title">${safeShortName} Line — Trains not running</div>
                     <div class="disruption-body">${safeLongName ? safeLongName + ' — ' : ''}No active trains detected on this line. Scheduled services have been removed from the departure board.</div>
                     ${safeReason ? `<div class="disruption-reason">${safeReason}</div>` : ''}
                     ${rbButtonHtml}
@@ -3147,7 +2379,7 @@
         let lastRenderFingerprint = '';
         function renderBoard() {
             const selected = state.selectedStops;
-            watchCount.textContent = `Watching ${selected.length} stop${selected.length === 1 ? '' : 's'}`;
+            watchCount.textContent = `${selected.length}`;
 
             if (selected.length === 0) {
                 departureCount.textContent = '0 upcoming departures';
@@ -3208,6 +2440,8 @@
 
             const list = document.createElement('div');
             list.className = 'departure-list';
+            const activeTheme = document.documentElement.getAttribute('data-theme');
+            const isKidsTheme = activeTheme === 'kids-light' || activeTheme === 'kids-dark';
 
             // Render line disruption notices at the top
             const suspendedLines = getSuspendedLinesForWatchedStops();
@@ -3223,7 +2457,23 @@
                 list.appendChild(disruptionPanel);
             }
 
-            departures.forEach(dep => {
+            if (isKidsTheme) {
+                const columns = document.createElement('div');
+                columns.className = 'kids-board-columns';
+                columns.innerHTML = `
+                    <span class="kids-board-col kids-board-col-route">Route</span>
+                    <span class="kids-board-col kids-board-col-destination">Destination</span>
+                    <span class="kids-board-col kids-board-col-scheduled">Scheduled</span>
+                    <span class="kids-board-col kids-board-col-due">Due</span>
+                `;
+                list.appendChild(columns);
+            }
+
+            const INITIAL_SHOW = 5;
+            const showAll = state.showAllDepartures || false;
+            const visibleDeps = showAll ? departures : departures.slice(0, INITIAL_SHOW);
+
+            visibleDeps.forEach(dep => {
                 const card = document.createElement('div');
                 card.className = 'departure-card' + (dep.isCancelled ? ' cancelled-card' : '');
                 card.dataset.tripId = dep.tripId || '';
@@ -3231,7 +2481,7 @@
                 const timeLabel = formatDepartureTimeLabel(dep.time, dep.scheduledTime, dep.expectedTime, hasLiveTracking);
                 const scheduledLabel = formatClockTimeLabel(dep.scheduledTime || dep.expectedTime || dep.time);
                 const routeLabel = getRouteLabel(dep.route);
-                const routeColor = dep.apiRouteColor || getRouteColor(dep.route);
+                const routeColor = isKidsTheme ? getKidsThemeRouteColor(dep.route) : (dep.apiRouteColor || getRouteColor(dep.route));
                 const routeBackground = hexToRgba(routeColor, 0.18);
                 const routeBorder = hexToRgba(routeColor, 0.33);
                 const normalizedStatus = (dep.status || '').toLowerCase();
@@ -3245,7 +2495,6 @@
                     ? `<span class="occupancy-chip ${dep.occupancy.className}">${renderOccupancyMeter(dep.occupancy.percent)}<span>${dep.occupancy.label}</span></span>`
                     : '';
 
-                // New feature HTML fragments
                 const modeIconHtml = dep.modeIcon ? `<span class="mode-icon" title="${dep.modeLabel || ''}">${dep.modeIcon}</span>` : '';
                 const congestionHtml = dep.congestionInfo
                     ? `<span class="congestion-chip ${dep.congestionInfo.className}">${dep.congestionInfo.label}</span>` : '';
@@ -3257,6 +2506,14 @@
                     ? `<span class="vehicle-distance">${dep.vehicleDistance}</span>` : '';
                 const vesselHtml = (dep.routeType === 4 && dep.vehicleLabel)
                     ? `<span class="vessel-name">Vessel: ${dep.vehicleLabel}</span>` : '';
+                const dueSignalHtml = dep.expectedTime ? `<span class="departure-due-signal" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13C5 11 7 11 9 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 9C10 6 13 6 16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M11 5C13 3.5 15 3.5 17 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>` : '';
+                const routeStyle = isKidsTheme
+                    ? `background:${routeColor} !important; color:#fff !important; border:none !important;`
+                    : `background:${routeBackground}; color:${routeColor}; border: 1px solid ${routeBorder};`;
+                const timeMainStyle = isKidsTheme ? ` style="color:${routeColor} !important;"` : '';
+                const dueSignalStyledHtml = dep.expectedTime
+                    ? `<span class="departure-due-signal" style="color:${routeColor} !important;" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13C5 11 7 11 9 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 9C10 6 13 6 16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M11 5C13 3.5 15 3.5 17 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>`
+                    : '';
 
                 let accessHtml = '';
                 if (dep.wheelchairAccessible === 1) accessHtml += '<span title="Wheelchair accessible">Accessible</span>';
@@ -3265,16 +2522,22 @@
 
                 const expandBtnHtml = dep.tripId ? `<button class="departure-expand-btn" data-trip-id="${dep.tripId}">View journey ▸</button>` : '';
 
+                card.style.setProperty('--kids-accent', routeColor);
+                card.style.setProperty('--kids-route-color', routeColor);
+                card.style.setProperty('--kids-route-bg', routeBackground);
+                card.style.setProperty('--kids-route-border', routeBorder);
+
                 card.innerHTML = `
                     <div class="departure-row">
-                        <div class="departure-route" style="background:${routeBackground}; color:${routeColor}; border: 1px solid ${routeBorder};">${modeIconHtml}${routeLabel}</div>
+                        <div class="departure-route" style="${routeStyle}">${modeIconHtml}${routeLabel}</div>
                         <div class="departure-info">
                             <h3>${dep.details}</h3>
                             <p>${dep.destination}${dep.routeLongName && dep.routeLongName !== dep.destination ? ` <span class="route-long-name" style="opacity:0.6">· ${dep.routeLongName}</span>` : ''}</p>
                         </div>
                         <div class="departure-time">
-                            <span class="departure-time-main">${timeLabel}</span>
-                            <span class="departure-time-pill">Sched ${scheduledLabel}</span>
+                            <span class="departure-time-pill"><span class="schedule-prefix">Sched</span> ${scheduledLabel}</span>
+                            <span class="departure-time-main"${timeMainStyle}>${timeLabel}</span>
+                            ${dueSignalStyledHtml}
                         </div>
                     </div>
                     <div class="departure-meta">
@@ -3297,6 +2560,21 @@
                 `;
                 list.appendChild(card);
             });
+
+            // "View all departures" button
+            if (departures.length > INITIAL_SHOW) {
+                const viewAllBtn = document.createElement('button');
+                viewAllBtn.className = 'view-all-btn';
+                viewAllBtn.type = 'button';
+                if (showAll) {
+                    viewAllBtn.innerHTML = 'Show fewer departures ▴';
+                    viewAllBtn.addEventListener('click', () => { state.showAllDepartures = false; lastRenderFingerprint = ''; renderBoard(); });
+                } else {
+                    viewAllBtn.innerHTML = `View all departures (${departures.length}) ▾`;
+                    viewAllBtn.addEventListener('click', () => { state.showAllDepartures = true; lastRenderFingerprint = ''; renderBoard(); });
+                }
+                list.appendChild(viewAllBtn);
+            }
 
             // Render out-of-service rail vehicles (using shared helper)
             const oosHtmlBlock = buildOosHtml();
@@ -3328,7 +2606,6 @@
                         card.setAttribute('data-expanded', 'true');
                         const btn = card.querySelector('.departure-expand-btn');
                         if (btn) btn.textContent = 'Hide journey \u25BE';
-                        // Restore scroll position
                         const savedScroll = savedScrollPositions.get(tripId);
                         if (savedScroll != null) {
                             const journeyEl = card.querySelector('.trip-journey');
@@ -3418,14 +2695,64 @@
             setFullscreen(!document.body.classList.contains('fullscreen-mode'));
         }
 
+        let lastUpdatedTimestamp = 0;
         function updateLiveTime() {
             const now = new Date();
             liveTime.textContent = now.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const liveDateEl = document.getElementById('live-date');
+            if (liveDateEl) {
+                liveDateEl.textContent = now.toLocaleDateString('en-NZ', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+            }
+            if (heroLiveTimeCompact) {
+                heroLiveTimeCompact.textContent = now.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' }).toLowerCase();
+            }
+            if (heroLiveDateCompact) {
+                heroLiveDateCompact.textContent = now.toLocaleDateString('en-NZ', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+            }
+            // Update relative "ago" text
+            if (lastUpdatedTimestamp) {
+                const secsAgo = Math.round((Date.now() - lastUpdatedTimestamp) / 1000);
+                lastUpdated.textContent = `Updated ${secsAgo}s ago`;
+            }
         }
 
         function updateLastUpdated(timestamp = Date.now()) {
-            const value = new Date(timestamp);
-            lastUpdated.textContent = `Last updated at ${value.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+            lastUpdatedTimestamp = timestamp;
+            const secsAgo = Math.round((Date.now() - timestamp) / 1000);
+            lastUpdated.textContent = `Updated ${secsAgo}s ago`;
+        }
+
+        async function fetchWeather() {
+            const el = document.getElementById('weather-widget');
+            if (!el) return;
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-36.8485&longitude=174.7633&current=temperature_2m,weathercode&timezone=Pacific%2FAuckland');
+                if (!res.ok) return;
+                const data = await res.json();
+                const temp = Math.round(data.current.temperature_2m);
+                const code = data.current.weathercode;
+                let icon = '';
+                if (code === 0) icon = '';
+                else if (code <= 3) icon = '';
+                else if (code <= 48) icon = '';
+                else if (code <= 67) icon = '';
+                else if (code <= 77) icon = '';
+                else if (code <= 82) icon = '';
+                else icon = '';
+                el.innerHTML = `<span class="weather-icon">${icon}</span><span class="weather-temp">${temp}°C</span>`;
+                if (heroWeatherIcon) heroWeatherIcon.textContent = icon;
+                if (heroWeatherTemp) heroWeatherTemp.textContent = `${temp}°C`;
+            } catch (_) {
+                // Silently fail — weather is non-critical
+            }
+        }
+
+        function chooseRandomPromoVariant() {
+            const promoBanner = document.getElementById('promo-banner');
+            if (!promoBanner) return;
+            const variants = ['a', 'b'];
+            const selected = variants[Math.floor(Math.random() * variants.length)];
+            promoBanner.setAttribute('data-variant', selected);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -3683,52 +3010,8 @@
 
         // --- Service Alerts ---
         function renderServiceAlerts(alerts) {
-            if (!alertsPanel) return;
-            if (!alerts || alerts.length === 0) { alertsPanel.innerHTML = ''; return; }
-            // Only show alerts relevant to routes the user is watching at their specific stops
-            const watchedRouteIds = new Set();
-            state.selectedStops.forEach(stop => {
-                const data = state.departureData[stop.stopCode];
-                if (data?.rows) data.rows.forEach(row => { if (row.routeId) watchedRouteIds.add(row.routeId); });
-            });
-            // Exclude routes that already have disruption notices (avoid duplication)
-            const suspendedRouteIds = new Set();
-            try {
-                getSuspendedLinesForWatchedStops().forEach(line => suspendedRouteIds.add(line.routeId));
-            } catch (_) {}
-            const relevantAlerts = alerts.filter(alertEntity => {
-                const a = alertEntity.alert || {};
-                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
-                // Skip alerts with no specific route (system-wide) — too noisy
-                if (entities.length === 0) return false;
-                // Only show if it affects a watched route that doesn't already have a disruption notice
-                return entities.some(e => e.route_id && watchedRouteIds.has(e.route_id) && !suspendedRouteIds.has(e.route_id));
-            });
-            if (relevantAlerts.length === 0) { alertsPanel.innerHTML = ''; return; }
-            alertsPanel.innerHTML = relevantAlerts.slice(0, 5).map(alertEntity => {
-                const a = alertEntity.alert || {};
-                const headerText = a.header_text?.translation?.text
-                    || (Array.isArray(a.header_text?.translation) ? a.header_text.translation[0]?.text : '')
-                    || 'Service Alert';
-                const descText = a.description_text?.translation?.text
-                    || (Array.isArray(a.description_text?.translation) ? a.description_text.translation[0]?.text : '')
-                    || '';
-                const safeHeader = headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                const safeDesc = descText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
-                const routeTags = entities.filter(e => e.route_id).map(e => {
-                    const ri = routeDetailsCache.get(e.route_id);
-                    return `<span class="alert-route-tag">${getRouteLabel(ri?.shortName || e.route_id)}</span>`;
-                }).join('');
-                return `<div class="alert-item">
-                    <span class="alert-icon">!</span>
-                    <div class="alert-content">
-                        <div class="alert-header">${safeHeader}</div>
-                        ${safeDesc ? `<div class="alert-body">${safeDesc}</div>` : ''}
-                        ${routeTags ? `<div class="alert-routes">${routeTags}</div>` : ''}
-                    </div>
-                </div>`;
-            }).join('');
+            // Alerts are now shown inline on each departure card — clear global panel
+            if (alertsPanel) alertsPanel.innerHTML = '';
         }
 
         // --- Calendar / Holiday Check ---
@@ -3864,6 +3147,7 @@
             renderBoard();
             updateLiveTime();
             updateLastUpdated();
+            chooseRandomPromoVariant();
 
             // Initialize new features
             fetchAllRoutes();
@@ -3885,6 +3169,8 @@
             }
 
             liveClockTimer = setInterval(updateLiveTime, 1000);
+            fetchWeather();
+            setInterval(fetchWeather, 30 * 60 * 1000); // refresh weather every 30 min
             refreshTimer = setInterval(() => {
                 if (state.selectedStops.length > 0) {
                     refreshAllDepartures();
@@ -3903,6 +3189,13 @@
         searchDropdown.addEventListener('mousedown', event => {
             event.preventDefault();
         });
+
+        if (kidsFavoriteBtn) {
+            kidsFavoriteBtn.addEventListener('click', () => {
+                stopMenu.open = true;
+                stopMenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        }
 
         selectedStopsContainer.addEventListener('click', event => {
             const button = event.target.closest('button[data-stop-code]');

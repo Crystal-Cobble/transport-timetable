@@ -86,6 +86,497 @@
             background: rgba(79, 209, 197, 0.25);
         }
 
+        /* Theme menu */
+        .theme-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 0.6rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+        .theme-btn:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+        .theme-btn svg { width: 16px; height: 16px; }
+        .theme-menu {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 9999;
+            display: none;
+        }
+        .theme-menu.open { display: flex; }
+        .theme-menu-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+        }
+        .theme-menu-panel {
+            position: absolute;
+            top: 50px;
+            right: 1rem;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+        }
+        .theme-menu-title {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+        }
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.6rem;
+            border-radius: 0.6rem;
+            border: none;
+            background: none;
+            color: var(--text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            width: 100%;
+            text-align: left;
+        }
+        .theme-option:hover { background: rgba(255,255,255,0.08); }
+        .theme-option.active { background: rgba(79,209,197,0.12); color: var(--accent); }
+        .theme-swatch {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            flex-shrink: 0;
+        }
+        .theme-option.active .theme-swatch { border-color: var(--accent); }
+
+        /* ── Light theme ── */
+        [data-theme="light"] {
+            color-scheme: light;
+            --bg: #f5f7fa;
+            --panel: #ffffff;
+            --border: rgba(0,0,0,0.12);
+            --text: #111827;
+            --muted: #6b7280;
+            --accent: #0d9488;
+        }
+        [data-theme="light"] body { background: #f5f7fa; }
+        [data-theme="light"] .topbar { background: #fff; border-color: #e5e7eb; }
+        [data-theme="light"] .topbar h1 { color: #111827; }
+        [data-theme="light"] .topbar-stat { color: #6b7280; }
+        [data-theme="light"] .topbar-stat strong { color: #0d9488; }
+        [data-theme="light"] .filter-bar { background: #fff; border-color: #e5e7eb; }
+        [data-theme="light"] .filter-bar label { color: #6b7280; }
+        [data-theme="light"] .filter-btn { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+        [data-theme="light"] .filter-btn:hover { background: #e5e7eb; }
+        [data-theme="light"] .filter-btn.active { background: #d1fae5; color: #065f46; border-color: #34d399; }
+        [data-theme="light"] .route-search { background: #f9fafb; color: #111827; border-color: #d1d5db; }
+        [data-theme="light"] .route-search::placeholder { color: #9ca3af; }
+        [data-theme="light"] .route-panel-toggle { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+        [data-theme="light"] .route-panel-toggle:hover { background: #e5e7eb; }
+        [data-theme="light"] .route-panel { background: #fff; border-color: #e5e7eb; }
+        [data-theme="light"] .route-panel-search { background: #f9fafb; color: #111827; border-color: #d1d5db; }
+        [data-theme="light"] .route-panel-actions button { background: #f3f4f6; color: #374151; }
+        [data-theme="light"] .route-panel-actions button:hover { background: #e5e7eb; color: #111827; }
+        [data-theme="light"] .route-chip { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+        [data-theme="light"] .route-chip:hover { background: #e5e7eb; }
+        [data-theme="light"] .route-chip.active { border-color: #0d9488; color: #0d9488; background: #d1fae5; }
+        [data-theme="light"] .map-legend { background: #fff; border-color: #e5e7eb; }
+        [data-theme="light"] .legend-title { color: #6b7280; }
+        [data-theme="light"] .legend-item { color: #374151; }
+        [data-theme="light"] .locate-btn { background: #fff; color: #6b7280; border-color: #d1d5db; }
+        [data-theme="light"] .locate-btn:hover { color: #0d9488; border-color: #0d9488; }
+        [data-theme="light"] .theme-btn { background: #f3f4f6; color: #6b7280; border-color: #d1d5db; }
+        [data-theme="light"] .theme-btn:hover { background: #e5e7eb; color: #111827; }
+        [data-theme="light"] .theme-menu-panel { background: #fff; border-color: #e5e7eb; }
+        [data-theme="light"] .theme-option { color: #374151; }
+        [data-theme="light"] .theme-option:hover { background: #f3f4f6; }
+        [data-theme="light"] .theme-option.active { background: #d1fae5; color: #065f46; }
+        [data-theme="light"] .theme-swatch { border-color: #d1d5db; }
+        [data-theme="light"] .nav-link { background: #d1fae5; border-color: #34d399; color: #065f46; }
+        [data-theme="light"] .nav-link:hover { background: #a7f3d0; }
+        [data-theme="light"] .leaflet-popup-content-wrapper { background: #fff !important; color: #111827 !important; }
+        [data-theme="light"] .leaflet-popup-tip { background: #fff !important; }
+        [data-theme="light"] .popup-section-title { color: #6b7280 !important; }
+        [data-theme="light"] .popup-row { color: #374151 !important; }
+        [data-theme="light"] .loading-overlay { background: rgba(245,247,250,0.9); }
+        [data-theme="light"] .loading-text { color: #6b7280; }
+        [data-theme="light"] .popup-header { border-color: #e5e7eb !important; }
+        [data-theme="light"] .popup-section { border-color: #e5e7eb !important; }
+        [data-theme="light"] .route-panel-search::placeholder { color: #9ca3af; }
+        [data-theme="light"] .rail-line-tooltip { background: #fff !important; color: #111827 !important; border: 1px solid #e5e7eb !important; }
+        [data-theme="light"] .rail-line-tooltip::before { border-top-color: #fff !important; }
+        [data-theme="light"] .loading-spinner { border-color: #e5e7eb; border-top-color: #0d9488; }
+
+        /* ── High Contrast theme ── */
+        [data-theme="contrast"] {
+            color-scheme: dark;
+            --bg: #000000;
+            --panel: #000000;
+            --border: rgba(255,255,255,0.5);
+            --text: #ffffff;
+            --muted: #cccccc;
+            --accent: #00ff99;
+        }
+        [data-theme="contrast"] body { background: #000; }
+        [data-theme="contrast"] .topbar { background: #000; border-color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .filter-bar { background: #000; border-color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .filter-bar label { color: #ccc; }
+        [data-theme="contrast"] .filter-btn { background: #1a1a1a; border-color: rgba(255,255,255,0.4); color: #fff; }
+        [data-theme="contrast"] .filter-btn:hover { background: #333; }
+        [data-theme="contrast"] .filter-btn.active { background: #003322; color: #00ff99; border-color: #00ff99; }
+        [data-theme="contrast"] .route-search { background: #1a1a1a; color: #fff; border-color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .route-search::placeholder { color: #888; }
+        [data-theme="contrast"] .route-panel-toggle { background: #1a1a1a; border-color: rgba(255,255,255,0.4); color: #fff; }
+        [data-theme="contrast"] .route-panel { background: #000; border-color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .route-panel-search { background: #1a1a1a; color: #fff; border-color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .route-panel-actions button { background: #1a1a1a; color: #fff; }
+        [data-theme="contrast"] .route-chip { background: #1a1a1a; border-color: rgba(255,255,255,0.4); color: #fff; }
+        [data-theme="contrast"] .route-chip.active { border-color: #00ff99; color: #00ff99; background: #003322; }
+        [data-theme="contrast"] .map-legend { background: #000; border-color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .locate-btn { background: #000; border-color: rgba(255,255,255,0.4); color: #fff; }
+        [data-theme="contrast"] .theme-btn { background: #1a1a1a; border-color: rgba(255,255,255,0.4); color: #fff; }
+        [data-theme="contrast"] .theme-menu-panel { background: #000; border-color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .theme-option { color: #fff; }
+        [data-theme="contrast"] .theme-option:hover { background: #1a1a1a; }
+        [data-theme="contrast"] .theme-option.active { background: #003322; color: #00ff99; }
+        [data-theme="contrast"] .theme-swatch { border-color: rgba(255,255,255,0.5); }
+        [data-theme="contrast"] .nav-link { background: #1a1a1a; border-color: rgba(255,255,255,0.4); color: #00ff99; }
+        [data-theme="contrast"] .loading-overlay { background: rgba(0,0,0,0.95); }
+        [data-theme="contrast"] .leaflet-popup-content-wrapper { background: #000 !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.4) !important; }
+        [data-theme="contrast"] .leaflet-popup-tip { background: #000 !important; }
+        [data-theme="contrast"] .popup-header { border-color: rgba(255,255,255,0.3) !important; }
+        [data-theme="contrast"] .popup-section { border-color: rgba(255,255,255,0.2) !important; }
+        [data-theme="contrast"] .popup-section-title { color: #ccc !important; }
+        [data-theme="contrast"] .popup-row { color: #fff !important; }
+        [data-theme="contrast"] .route-panel-search::placeholder { color: rgba(255,255,255,0.4); }
+        [data-theme="contrast"] .rail-line-tooltip { background: #000 !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.4) !important; }
+        [data-theme="contrast"] .rail-line-tooltip::before { border-top-color: #000 !important; }
+        [data-theme="contrast"] .loading-spinner { border-color: rgba(255,255,255,0.2); border-top-color: #00ff99; }
+
+        /* ── Classic Auckland Transport theme ── */
+        [data-theme="at-classic"] {
+            color-scheme: dark;
+            --bg: #04070d;
+            --panel: #07101f;
+            --border: #2d4d85;
+            --text: #f4efe1;
+            --muted: #a9b7d2;
+            --accent: #66b7ff;
+        }
+        [data-theme="at-classic"] body {
+            background:
+                radial-gradient(circle at top left, rgba(47, 102, 180, 0.16), transparent 22%),
+                linear-gradient(180deg, #030509 0%, #08101c 100%);
+        }
+        [data-theme="at-classic"] .topbar {
+            background: #05080d;
+            border-color: #284b83;
+            box-shadow: none;
+        }
+        [data-theme="at-classic"] .topbar h1 { color: #f4efe1; }
+        [data-theme="at-classic"] .topbar-stat { color: #a9b7d2; }
+        [data-theme="at-classic"] .topbar-stat strong { color: #fef7e8; }
+        [data-theme="at-classic"] .nav-link {
+            background: #163d7a;
+            border-color: #5d82c0;
+            color: #fef7e8;
+        }
+        [data-theme="at-classic"] .nav-link:hover { background: #19458f; }
+        [data-theme="at-classic"] .theme-btn {
+            background: #0c1832;
+            border-color: #355a99;
+            color: #d7e5ff;
+        }
+        [data-theme="at-classic"] .theme-btn:hover { background: #15284d; color: #fef7e8; }
+        [data-theme="at-classic"] .filter-bar {
+            background: #163d7a;
+            border-color: #355a99;
+        }
+        [data-theme="at-classic"] .filter-bar label { color: rgba(244,239,225,0.78); }
+        [data-theme="at-classic"] .filter-btn,
+        [data-theme="at-classic"] .route-panel-toggle {
+            background: rgba(0,0,0,0.18);
+            color: #eef5ff;
+            border-color: rgba(255,255,255,0.16);
+        }
+        [data-theme="at-classic"] .filter-btn:hover,
+        [data-theme="at-classic"] .route-panel-toggle:hover { background: rgba(0,0,0,0.28); }
+        [data-theme="at-classic"] .filter-btn.active {
+            background: #35d6ef;
+            color: #072040;
+            border-color: #89eefc;
+        }
+        [data-theme="at-classic"] .route-search,
+        [data-theme="at-classic"] .route-panel-search {
+            background: #081224;
+            color: #f4efe1;
+            border-color: #355a99;
+        }
+        [data-theme="at-classic"] .route-search::placeholder,
+        [data-theme="at-classic"] .route-panel-search::placeholder { color: #9eb0d1; }
+        [data-theme="at-classic"] .route-panel {
+            background: #081020;
+            border-color: #284b83;
+        }
+        [data-theme="at-classic"] .route-panel-actions button {
+            background: #0d1730;
+            color: #d7e5ff;
+            border-color: #355a99;
+        }
+        [data-theme="at-classic"] .route-panel-actions button:hover { background: #15284d; }
+        [data-theme="at-classic"] .route-chip {
+            background: rgba(0,0,0,0.18);
+            color: #eef5ff;
+            border-color: rgba(255,255,255,0.16);
+        }
+        [data-theme="at-classic"] .route-chip:hover { background: rgba(0,0,0,0.28); }
+        [data-theme="at-classic"] .route-chip.active {
+            border-color: #89eefc;
+            color: #072040;
+            background: #35d6ef;
+        }
+        [data-theme="at-classic"] .map-legend,
+        [data-theme="at-classic"] .locate-btn {
+            background: #081224;
+            border-color: #355a99;
+            box-shadow: none;
+        }
+        [data-theme="at-classic"] .legend-title { color: #9eb0d1; }
+        [data-theme="at-classic"] .legend-item { color: #eef5ff; }
+        [data-theme="at-classic"] .locate-btn { color: #d7e5ff; }
+        [data-theme="at-classic"] .locate-btn:hover { color: #89eefc; border-color: #89eefc; }
+        [data-theme="at-classic"] .theme-menu-panel {
+            background: #081224;
+            border-color: #355a99;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+            border-radius: 0.75rem;
+        }
+        [data-theme="at-classic"] .theme-menu-title { color: #93a7ca; }
+        [data-theme="at-classic"] .theme-option { color: #eef5ff; }
+        [data-theme="at-classic"] .theme-option:hover { background: rgba(102,183,255,0.12); }
+        [data-theme="at-classic"] .theme-option.active { background: rgba(102,183,255,0.18); color: #82c7ff; }
+        [data-theme="at-classic"] .theme-swatch { border-color: rgba(255,255,255,0.24); }
+        [data-theme="at-classic"] .leaflet-popup-content-wrapper {
+            background: linear-gradient(180deg, #163d7a 0%, #08142b 100%) !important;
+            color: #f4efe1 !important;
+            border: 1px solid #355a99 !important;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.35) !important;
+        }
+        [data-theme="at-classic"] .leaflet-popup-tip { background: #08142b !important; }
+        [data-theme="at-classic"] .popup-section-title { color: #9eb0d1 !important; }
+        [data-theme="at-classic"] .popup-row { color: #d7e5ff !important; }
+        [data-theme="at-classic"] .popup-row strong,
+        [data-theme="at-classic"] .popup-header strong { color: #fef7e8 !important; }
+        [data-theme="at-classic"] .loading-overlay { background: rgba(3,5,9,0.9); }
+        [data-theme="at-classic"] .loading-text { color: #b7c4dc; }
+        [data-theme="at-classic"] .popup-header { border-color: rgba(255,255,255,0.12) !important; }
+        [data-theme="at-classic"] .popup-section { border-color: rgba(255,255,255,0.08) !important; }
+        [data-theme="at-classic"] .rail-line-tooltip {
+            background: #081224 !important;
+            color: #eef5ff !important;
+            border: 1px solid #355a99 !important;
+        }
+        [data-theme="at-classic"] .rail-line-tooltip::before { border-top-color: #081224 !important; }
+        [data-theme="at-classic"] .loading-spinner { border-color: rgba(255,255,255,0.16); border-top-color: #35d6ef; }
+
+        /* ── Kids Light theme ── */
+        [data-theme="kids-light"] {
+            color-scheme: light;
+            --bg: #bfe8ff;
+            --panel: rgba(255,251,244,0.94);
+            --border: rgba(75,140,229,0.2);
+            --text: #24345d;
+            --muted: #5d78a8;
+            --accent: #38a7ff;
+        }
+        [data-theme="kids-light"] body {
+            background:
+                radial-gradient(circle at 15% 16%, rgba(255,255,255,0.75), transparent 10%),
+                radial-gradient(circle at 82% 14%, rgba(255,255,255,0.7), transparent 9%),
+                linear-gradient(180deg, #97d5ff 0%, #dff5ff 100%);
+        }
+        [data-theme="kids-light"] .topbar {
+            background: linear-gradient(135deg, rgba(34,62,118,0.96), rgba(26,79,160,0.92));
+            border-color: rgba(75,140,229,0.24);
+        }
+        [data-theme="kids-light"] .topbar h1,
+        [data-theme="kids-light"] .topbar-stat strong { color: #fffdf7; }
+        [data-theme="kids-light"] .topbar-stat { color: rgba(255,255,255,0.82); }
+        [data-theme="kids-light"] .nav-link {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.24);
+            color: #fffdf7;
+        }
+        [data-theme="kids-light"] .nav-link:hover { background: rgba(255,255,255,0.26); }
+        [data-theme="kids-light"] .theme-btn {
+            background: rgba(255,255,255,0.16);
+            border-color: rgba(255,255,255,0.22);
+            color: #fffdf7;
+        }
+        [data-theme="kids-light"] .filter-bar,
+        [data-theme="kids-light"] .route-panel,
+        [data-theme="kids-light"] .map-legend,
+        [data-theme="kids-light"] .theme-menu-panel,
+        [data-theme="kids-light"] .locate-btn {
+            background: rgba(255,251,244,0.96);
+            border-color: rgba(75,140,229,0.2);
+        }
+        [data-theme="kids-light"] .filter-bar label,
+        [data-theme="kids-light"] .legend-title,
+        [data-theme="kids-light"] .route-panel-count,
+        [data-theme="kids-light"] .popup-section-title { color: #5d78a8 !important; }
+        [data-theme="kids-light"] .filter-btn,
+        [data-theme="kids-light"] .route-panel-toggle,
+        [data-theme="kids-light"] .route-chip,
+        [data-theme="kids-light"] .route-panel-actions button {
+            background: rgba(224,242,255,0.84);
+            border-color: rgba(75,140,229,0.18);
+            color: #31529c;
+        }
+        [data-theme="kids-light"] .filter-btn:hover,
+        [data-theme="kids-light"] .route-panel-toggle:hover,
+        [data-theme="kids-light"] .route-chip:hover,
+        [data-theme="kids-light"] .route-panel-actions button:hover { background: rgba(205,233,255,0.96); }
+        [data-theme="kids-light"] .filter-btn.active,
+        [data-theme="kids-light"] .route-chip.active {
+            background: linear-gradient(135deg, #ffe07f, #ffb7d2);
+            border-color: rgba(255,160,201,0.3);
+            color: #8b3f7c;
+        }
+        [data-theme="kids-light"] .route-search,
+        [data-theme="kids-light"] .route-panel-search {
+            background: #fff;
+            border-color: rgba(75,140,229,0.22);
+            color: #24345d;
+        }
+        [data-theme="kids-light"] .route-search::placeholder,
+        [data-theme="kids-light"] .route-panel-search::placeholder { color: #7993bf; }
+        [data-theme="kids-light"] .legend-item,
+        [data-theme="kids-light"] .popup-row,
+        [data-theme="kids-light"] .loading-text { color: #35559d !important; }
+        [data-theme="kids-light"] .leaflet-popup-content-wrapper {
+            background: rgba(255,251,244,0.97) !important;
+            color: #24345d !important;
+            border: 1px solid rgba(75,140,229,0.2) !important;
+        }
+        [data-theme="kids-light"] .leaflet-popup-tip { background: rgba(255,251,244,0.97) !important; }
+        [data-theme="kids-light"] .popup-header,
+        [data-theme="kids-light"] .popup-section { border-color: rgba(75,140,229,0.14) !important; }
+        [data-theme="kids-light"] .rail-line-tooltip {
+            background: rgba(255,251,244,0.97) !important;
+            color: #31529c !important;
+            border: 1px solid rgba(75,140,229,0.2) !important;
+        }
+        [data-theme="kids-light"] .rail-line-tooltip::before { border-top-color: rgba(255,251,244,0.97) !important; }
+        [data-theme="kids-light"] .loading-overlay { background: rgba(191,232,255,0.82); }
+        [data-theme="kids-light"] .loading-spinner { border-color: rgba(75,140,229,0.18); border-top-color: #38a7ff; }
+
+        /* ── Kids Dark theme ── */
+        [data-theme="kids-dark"] {
+            color-scheme: dark;
+            --bg: #10173b;
+            --panel: rgba(13, 22, 60, 0.94);
+            --border: rgba(111,137,255,0.24);
+            --text: #f6f7ff;
+            --muted: #b5c1ff;
+            --accent: #31d5ff;
+        }
+        [data-theme="kids-dark"] body {
+            background:
+                radial-gradient(circle at 14% 16%, rgba(255,214,90,0.18), transparent 8%),
+                radial-gradient(circle at 82% 16%, rgba(255,105,180,0.18), transparent 10%),
+                linear-gradient(180deg, #0c1240 0%, #101d56 100%);
+        }
+        [data-theme="kids-dark"] .topbar {
+            background: linear-gradient(135deg, rgba(13,22,60,0.97), rgba(28,74,152,0.94));
+            border-color: rgba(104,136,255,0.22);
+        }
+        [data-theme="kids-dark"] .topbar h1,
+        [data-theme="kids-dark"] .topbar-stat strong { color: #f6f7ff; }
+        [data-theme="kids-dark"] .topbar-stat { color: #c0cbff; }
+        [data-theme="kids-dark"] .nav-link {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.16);
+            color: #f6f7ff;
+        }
+        [data-theme="kids-dark"] .nav-link:hover { background: rgba(255,255,255,0.14); }
+        [data-theme="kids-dark"] .theme-btn {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.16);
+            color: #f6f7ff;
+        }
+        [data-theme="kids-dark"] .filter-bar,
+        [data-theme="kids-dark"] .route-panel,
+        [data-theme="kids-dark"] .map-legend,
+        [data-theme="kids-dark"] .theme-menu-panel,
+        [data-theme="kids-dark"] .locate-btn {
+            background: rgba(13,22,60,0.95);
+            border-color: rgba(111,137,255,0.24);
+        }
+        [data-theme="kids-dark"] .filter-bar label,
+        [data-theme="kids-dark"] .legend-title,
+        [data-theme="kids-dark"] .route-panel-count,
+        [data-theme="kids-dark"] .popup-section-title { color: #b5c1ff !important; }
+        [data-theme="kids-dark"] .filter-btn,
+        [data-theme="kids-dark"] .route-panel-toggle,
+        [data-theme="kids-dark"] .route-chip,
+        [data-theme="kids-dark"] .route-panel-actions button {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.14);
+            color: #eef2ff;
+        }
+        [data-theme="kids-dark"] .filter-btn:hover,
+        [data-theme="kids-dark"] .route-panel-toggle:hover,
+        [data-theme="kids-dark"] .route-chip:hover,
+        [data-theme="kids-dark"] .route-panel-actions button:hover { background: rgba(255,255,255,0.14); }
+        [data-theme="kids-dark"] .filter-btn.active,
+        [data-theme="kids-dark"] .route-chip.active {
+            background: linear-gradient(135deg, #4fd9ff, #8c6dff);
+            border-color: rgba(140,109,255,0.36);
+            color: #fff;
+        }
+        [data-theme="kids-dark"] .route-search,
+        [data-theme="kids-dark"] .route-panel-search {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.14);
+            color: #f6f7ff;
+        }
+        [data-theme="kids-dark"] .route-search::placeholder,
+        [data-theme="kids-dark"] .route-panel-search::placeholder { color: #aebcff; }
+        [data-theme="kids-dark"] .legend-item,
+        [data-theme="kids-dark"] .popup-row,
+        [data-theme="kids-dark"] .loading-text { color: #eef2ff !important; }
+        [data-theme="kids-dark"] .leaflet-popup-content-wrapper {
+            background: linear-gradient(180deg, rgba(31,61,141,0.96), rgba(14,23,60,0.96)) !important;
+            color: #f6f7ff !important;
+            border: 1px solid rgba(111,137,255,0.24) !important;
+        }
+        [data-theme="kids-dark"] .leaflet-popup-tip { background: rgba(14,23,60,0.96) !important; }
+        [data-theme="kids-dark"] .popup-header,
+        [data-theme="kids-dark"] .popup-section { border-color: rgba(255,255,255,0.08) !important; }
+        [data-theme="kids-dark"] .rail-line-tooltip {
+            background: rgba(13,22,60,0.96) !important;
+            color: #eef2ff !important;
+            border: 1px solid rgba(111,137,255,0.24) !important;
+        }
+        [data-theme="kids-dark"] .rail-line-tooltip::before { border-top-color: rgba(13,22,60,0.96) !important; }
+        [data-theme="kids-dark"] .loading-overlay { background: rgba(12,18,64,0.9); }
+        [data-theme="kids-dark"] .loading-spinner { border-color: rgba(255,255,255,0.14); border-top-color: #31d5ff; }
+
         /* Filters */
         .filter-bar {
             display: flex;
@@ -329,6 +820,7 @@
         .popup-type-badge.type-bus { background: rgba(59,130,246,0.15); color: #60a5fa; }
         .popup-type-badge.type-train { background: rgba(245,158,11,0.15); color: #fbbf24; }
         .popup-type-badge.type-ferry { background: rgba(139,92,246,0.15); color: #a78bfa; }
+        .popup-type-badge.type-boat { background: rgba(156,163,175,0.15); color: #9ca3af; }
         .popup-section {
             margin-top: 0.4rem;
             padding-top: 0.35rem;
@@ -392,6 +884,62 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { color: var(--muted); font-size: 0.95rem; }
+
+        /* Locate button */
+        .locate-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+        .locate-btn:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+        .locate-btn.active {
+            color: #3b82f6;
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59,130,246,0.3);
+        }
+        .locate-btn.error {
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+        .locate-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .user-location-dot {
+            width: 16px;
+            height: 16px;
+            background: #3b82f6;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(59,130,246,0.6);
+        }
+        .user-location-ring {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
         /* Legend */
         .map-legend {
@@ -572,6 +1120,9 @@
         <div class="topbar-right">
             <span class="topbar-stat" id="vehicle-count">Vehicles: <strong>0</strong></span>
             <span class="topbar-stat" id="last-update">Updated: <strong>--:--</strong></span>
+            <button class="theme-btn" id="theme-btn" type="button" title="Change theme">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
             <a href="index.html" class="nav-link" aria-label="Go to departure board">&#8592; <span class="nav-link-text">Departure Board</span></a>
         </div>
     </div>
@@ -586,6 +1137,9 @@
         </button>
         <button class="filter-btn active" data-type="ferry" type="button">
             <span class="dot" style="background:#8b5cf6;"></span> Ferries
+        </button>
+        <button class="filter-btn" data-type="boat" type="button">
+            <span class="dot" style="background:#9ca3af;"></span> Boats
         </button>
         <button class="filter-btn" id="rail-lines-btn" type="button">
             <span class="dot" style="background:linear-gradient(135deg,#97C93D,#D52923,#FDB913,#00AEEF);"></span> Rail Lines
@@ -621,6 +1175,7 @@
         <div class="legend-item"><span style="display:inline-flex;width:0.9rem;height:0.9rem;color:#3b82f6;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM18 11H6V6h12v5z"/></svg></span> Bus</div>
         <div class="legend-item"><span style="display:inline-flex;width:0.9rem;height:0.9rem;color:#f59e0b;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-6H6V6h5v5zm2 0V6h5v5h-5zm3.5 6c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></span> Train</div>
         <div class="legend-item"><span style="display:inline-flex;width:0.9rem;height:0.9rem;color:#8b5cf6;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v-2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.34-.42-.6-.5L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.42c-.26.08-.48.26-.6.5s-.14.52-.05.78L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z"/></svg></span> Ferry</div>
+        <div class="legend-item"><span style="display:inline-flex;width:0.9rem;height:0.9rem;color:#9ca3af;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v-2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.34-.42-.6-.5L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.42c-.26.08-.48.26-.6.5s-.14.52-.05.78L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z"/></svg></span> Boat</div>
         <div id="rail-lines-legend" style="display:none;">
             <div class="legend-title" style="margin-top:0.4rem;">Rail lines</div>
             <div class="legend-item"><span class="legend-dot" style="background:#97C93D;"></span> Western</div>
@@ -630,6 +1185,41 @@
             <div class="legend-item" id="crl-legend-item" style="display:none;"><span class="legend-dot" style="background:#9B59B6;border-style:dashed;"></span> CRL Tunnel</div>
         </div>
     </div>
+
+    <div class="theme-menu" id="theme-menu">
+        <div class="theme-menu-backdrop" id="theme-menu-backdrop"></div>
+        <div class="theme-menu-panel">
+            <div class="theme-menu-title">Theme</div>
+            <button class="theme-option" data-theme="default" type="button">
+                <span class="theme-swatch" style="background:#061226;"></span> Default
+            </button>
+            <button class="theme-option" data-theme="light" type="button">
+                <span class="theme-swatch" style="background:#f0f4f8;border-color:rgba(0,0,0,0.2);"></span> Light
+            </button>
+            <button class="theme-option" data-theme="contrast" type="button">
+                <span class="theme-swatch" style="background:#000;border-color:#fff;"></span> High Contrast
+            </button>
+            <button class="theme-option" data-theme="at-classic" type="button">
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#2b6cb0 50%,#e8eef4 50%);border-color:rgba(0,0,0,0.2);"></span> AT Classic
+            </button>
+            <button class="theme-option" data-theme="kids-light" type="button">
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#8ed6ff 0%,#ffe493 50%,#ff9fc9 100%);border-color:rgba(0,0,0,0.15);"></span> Kids Light
+            </button>
+            <button class="theme-option" data-theme="kids-dark" type="button">
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#101b4d 0%,#6d47ff 45%,#19d3ff 100%);border-color:rgba(255,255,255,0.22);"></span> Kids Dark
+            </button>
+        </div>
+    </div>
+
+    <button class="locate-btn" id="locate-btn" type="button" title="Centre on my location">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="12" y1="2" x2="12" y2="6"/>
+            <line x1="12" y1="18" x2="12" y2="22"/>
+            <line x1="2" y1="12" x2="6" y2="12"/>
+            <line x1="18" y1="12" x2="22" y2="12"/>
+        </svg>
+    </button>
 
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-spinner"></div>
@@ -656,6 +1246,26 @@
         ];
         // Rail route prefixes (main lines + rail replacement bus)
         const RAIL_ROUTE_PREFIXES = ['STH', 'EAST', 'WEST', 'ONE', 'HUIA', 'RBS', 'RBE', 'RBW', 'RBO', 'RBM'];
+
+        // Known ferry vessel names (case-insensitive match)
+        const KNOWN_FERRY_VESSELS = new Set([
+            'waitemata 1', 'waitematā 1', 'waitemata 2', 'waitematā 2',
+            'te waiarohia', 'te komiti', 'starflyte', 'discovery v', 'wanderer', 'tiri kat',
+            'tuhi rapa', 'island explorer', 'discovery iv', 'ngarapa', 'ngārapa',
+            'kermadec', 'korora', 'kororā', 'torea', 'tōrea', 'te maki',
+            'discovery vii', 'discovery vi', 'te kotuku', 'te kōtuku',
+            'ika kakahi', 'ika kākahi', 'kekeno', 'takahe', 'takahē',
+            'adventurer', 'tiger cat', 'harbour cat', 'osprey',
+            'centurion', 'spirit', 'serenity', 'clipper i',
+            'sea quest', 'seabridge', 'seacat', 'seaway ii', 'island navigator',
+            'clipper v', 'clipper iv', 'clipper iii', 'clipper ii',
+            'te wai ora', 'te waipiki'
+        ]);
+
+        function isKnownFerry(vehicleLabel) {
+            if (!vehicleLabel) return false;
+            return KNOWN_FERRY_VESSELS.has(vehicleLabel.toLowerCase().trim());
+        }
 
         // Sets built from GTFS static data
         const trainRouteIds = new Set();
@@ -715,7 +1325,7 @@
         // ── State ──
         let markers = new Map(); // vehicleId -> Leaflet marker
         let vehicleData = []; // raw entity array
-        let activeFilters = { bus: true, train: true, ferry: true };
+        let activeFilters = { bus: true, train: true, ferry: true, boat: false };
         let routeSearchQuery = '';
         const activeRoutes = new Map(); // shortName -> true/false
 
@@ -731,11 +1341,29 @@
         }).setView([-36.8485, 174.7633], 12);
 
         // Dark-themed tiles from CartoDB
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        const TILE_URLS = {
+            default: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+            light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+            contrast: 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
+            'at-classic': 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            'kids-light': 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            'kids-dark': 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+        };
+        let currentTileLayer = L.tileLayer(TILE_URLS[localStorage.getItem('at-theme') || 'default'], {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
             subdomains: 'abcd',
             maxZoom: 19
         }).addTo(map);
+
+        function switchTileLayer(themeName) {
+            const url = TILE_URLS[themeName] || TILE_URLS.default;
+            map.removeLayer(currentTileLayer);
+            currentTileLayer = L.tileLayer(url, {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+        }
 
         // ── Helpers ──
         // Auckland train unit name prefixes (AM/AMP = AM class EMU, ADL/ADK = older DMU, SA = Strand/diesel)
@@ -795,9 +1423,17 @@
             return 'bus';
         }
 
+        function getDisplayType(type, routeId, vehicleLabel) {
+            if (type !== 'ferry') return type;
+            const hasRoute = !!routeId && routeId !== '';
+            if (isKnownFerry(vehicleLabel) || hasRoute) return 'ferry';
+            return 'boat';
+        }
+
         function getVehicleColor(type) {
             if (type === 'train') return '#f59e0b';
             if (type === 'ferry') return '#8b5cf6';
+            if (type === 'boat') return '#9ca3af';
             return '#3b82f6';
         }
 
@@ -812,7 +1448,7 @@
 
         function getTypeIcon(type) {
             if (type === 'train') return ICON_TRAIN;
-            if (type === 'ferry') return ICON_FERRY;
+            if (type === 'ferry' || type === 'boat') return ICON_FERRY;
             return ICON_BUS;
         }
 
@@ -861,17 +1497,18 @@
             const pos = v.position || {};
             const routeId = trip.route_id || '';
             const type = getVehicleType(routeId, pos.latitude, pos.longitude, veh.id, veh.label);
+            const displayType = getDisplayType(type, routeId, veh.label);
             const shortName = getRouteShortName(routeId);
-            const color = getVehicleColor(type);
-            const typeName = type.charAt(0).toUpperCase() + type.slice(1);
-            const icon = getTypeIcon(type);
+            const color = getVehicleColor(displayType);
+            const icon = getTypeIcon(displayType);
             const longName = routeLongNameMap.get(routeId) || '';
+            const typeName = displayType.charAt(0).toUpperCase() + displayType.slice(1);
 
             let html = `<div>`;
             // Header: route pill + type badge
             html += `<div class="popup-header">`;
             html += `<span class="popup-route" style="background:${color}30;color:${color};border:1px solid ${color}60;">${escapeHtml(shortName)}</span>`;
-            html += `<span class="popup-type-badge type-${type}"><span style="display:inline-flex;width:0.85rem;height:0.85rem;">${icon}</span>${typeName}</span>`;
+            html += `<span class="popup-type-badge type-${displayType}"><span style="display:inline-flex;width:0.85rem;height:0.85rem;">${icon}</span>${typeName}</span>`;
             html += `</div>`;
             if (longName) html += `<div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;">${escapeHtml(longName)}</div>`;
 
@@ -1000,7 +1637,9 @@
             if (!isInAucklandRegion(v.position.latitude, v.position.longitude)) return false;
             const routeId = v.trip?.route_id || '';
             const type = getVehicleType(routeId, v.position.latitude, v.position.longitude, v.vehicle?.id, v.vehicle?.label);
-            if (!activeFilters[type]) return false;
+            const dType = getDisplayType(type, routeId, v.vehicle?.label);
+            if (!activeFilters[type] && dType !== 'boat') return false;
+            if (dType === 'boat' && !activeFilters.boat) return false;
             const shortName = getRouteShortName(routeId);
             // Route panel toggle filter
             if (activeRoutes.size > 0 && activeRoutes.has(shortName) && !activeRoutes.get(shortName)) return false;
@@ -1027,6 +1666,7 @@
 
                 const routeId = v.trip?.route_id || '';
                 const type = getVehicleType(routeId, lat, lng, v.vehicle?.id, v.vehicle?.label);
+                const dType = getDisplayType(type, routeId, v.vehicle?.label);
                 const show = shouldShow(entity);
                 const bearing = v.position.bearing ? parseFloat(v.position.bearing) : null;
                 const speed = v.position.speed != null ? parseFloat(v.position.speed) : null;
@@ -1034,13 +1674,13 @@
                 if (markers.has(vehicleId)) {
                     const m = markers.get(vehicleId);
                     m.setLatLng([lat, lng]);
-                    m.setIcon(createVehicleIcon(type, bearing, speed));
+                    m.setIcon(createVehicleIcon(dType, bearing, speed));
                     m.setPopupContent(buildPopup(entity));
                     if (show && !map.hasLayer(m)) m.addTo(map);
                     else if (!show && map.hasLayer(m)) map.removeLayer(m);
                 } else {
                     if (!show) continue;
-                    const m = L.marker([lat, lng], { icon: createVehicleIcon(type, bearing, speed) })
+                    const m = L.marker([lat, lng], { icon: createVehicleIcon(dType, bearing, speed) })
                         .bindPopup(buildPopup(entity), { maxWidth: getPopupMaxWidth() });
                     m.addTo(map);
                     markers.set(vehicleId, m);
@@ -1070,9 +1710,10 @@
                         const lng = v.position.longitude;
                         const routeId = v.trip?.route_id || '';
                         const type = getVehicleType(routeId, lat, lng, v.vehicle?.id, v.vehicle?.label);
+                        const dType = getDisplayType(type, routeId, v.vehicle?.label);
                         const bearing = v.position.bearing ? parseFloat(v.position.bearing) : null;
                         const speed = v.position.speed != null ? parseFloat(v.position.speed) : null;
-                        const newM = L.marker([lat, lng], { icon: createVehicleIcon(type, bearing, speed) })
+                        const newM = L.marker([lat, lng], { icon: createVehicleIcon(dType, bearing, speed) })
                             .bindPopup(buildPopup(entity), { maxWidth: getPopupMaxWidth() });
                         newM.addTo(map);
                         markers.set(vehicleId, newM);
@@ -1213,6 +1854,98 @@
             setInterval(refresh, REFRESH_INTERVAL);
             setInterval(fetchCombinedFeed, 60000); // every 60s
         }
+
+        // ── User location ──
+        let userMarker = null;
+        let watchId = null;
+        const locateBtn = document.getElementById('locate-btn');
+
+        function createUserIcon() {
+            return L.divIcon({
+                className: '',
+                iconSize: [16, 16],
+                iconAnchor: [8, 8],
+                html: '<div style="position:relative;"><div class="user-location-ring"></div><div class="user-location-dot"></div></div>'
+            });
+        }
+
+        function updateUserLocation(pos) {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            if (userMarker) {
+                userMarker.setLatLng([lat, lng]);
+            } else {
+                userMarker = L.marker([lat, lng], { icon: createUserIcon(), zIndexOffset: 9999 })
+                    .bindPopup('You are here')
+                    .addTo(map);
+            }
+        }
+
+        locateBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                locateBtn.classList.add('error');
+                return;
+            }
+            locateBtn.classList.remove('error');
+            locateBtn.classList.add('active');
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    updateUserLocation(pos);
+                    map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+                },
+                (err) => {
+                    console.warn('Geolocation error:', err);
+                    locateBtn.classList.remove('active');
+                    locateBtn.classList.add('error');
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+
+            // Start watching position if not already
+            if (!watchId) {
+                watchId = navigator.geolocation.watchPosition(
+                    (pos) => updateUserLocation(pos),
+                    () => {},
+                    { enableHighAccuracy: true }
+                );
+            }
+        });
+
+        // ── Theme menu ──
+        const THEMES = {
+            default: {}  // Uses :root defaults
+        };
+
+        function applyTheme(name) {
+            document.documentElement.setAttribute('data-theme', name);
+            localStorage.setItem('at-theme', name);
+            document.querySelectorAll('.theme-option').forEach(o => {
+                o.classList.toggle('active', o.dataset.theme === name);
+            });
+            switchTileLayer(name);
+        }
+
+        // Apply saved theme on load
+        const savedTheme = localStorage.getItem('at-theme') || 'default';
+        applyTheme(savedTheme);
+
+        const themeBtn = document.getElementById('theme-btn');
+        const themeMenu = document.getElementById('theme-menu');
+        const themeBackdrop = document.getElementById('theme-menu-backdrop');
+
+        themeBtn.addEventListener('click', () => {
+            themeMenu.classList.toggle('open');
+        });
+        themeBackdrop.addEventListener('click', () => {
+            themeMenu.classList.remove('open');
+        });
+        document.querySelectorAll('.theme-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                applyTheme(opt.dataset.theme);
+                themeMenu.classList.remove('open');
+            });
+        });
 
         // ── Filter buttons ──
         document.querySelectorAll('.filter-btn[data-type]').forEach(btn => {

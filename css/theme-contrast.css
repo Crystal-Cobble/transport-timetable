@@ -1,0 +1,65 @@
+﻿/* ── High Contrast theme ── */
+[data-theme="contrast"] {
+    color-scheme: dark;
+    --bg: #000000;
+    --panel: #000000;
+    --panel-strong: #000000;
+    --border: rgba(255,255,255,0.5);
+    --text: #ffffff;
+    --muted: #cccccc;
+    --accent: #00ff99;
+    --danger: #ff6600;
+    --success: #00ff66;
+    --error: #ff3333;
+    --shadow: none;
+}
+[data-theme="contrast"] body {
+    background: #000;
+}
+[data-theme="contrast"] body::before { background: none; }
+[data-theme="contrast"] .stats-bar { background: #000; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .controls-panel { background: #000; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .board { background: #000; border-color: rgba(255,255,255,0.4); backdrop-filter: none; box-shadow: none; }
+[data-theme="contrast"] .board::before { display: none; }
+[data-theme="contrast"] .departure-card { background: #0a0a0a; border-color: rgba(255,255,255,0.3); box-shadow: none; }
+[data-theme="contrast"] .departure-card:hover { background: #1a1a1a; border-color: rgba(255,255,255,0.5); }
+[data-theme="contrast"] .board-header .note { color: #ccc; }
+[data-theme="contrast"] .departure-time-pill { color: #fff; background: #1a1a1a; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .route-pill { background: rgba(0,255,153,0.15); color: #00ff99; }
+[data-theme="contrast"] .board-table thead { border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .board-table th, [data-theme="contrast"] .board-table td { border-color: rgba(255,255,255,0.15); }
+[data-theme="contrast"] .departure-expand-btn { background: #1a1a1a; color: #fff; }
+[data-theme="contrast"] .departure-expand-btn:hover { background: #333; }
+[data-theme="contrast"] .button-clear { background: #1a1a1a; color: #fff; }
+[data-theme="contrast"] .button-clear:hover { background: #333; }
+[data-theme="contrast"] .view-all-btn { background: #1a1a1a; color: #fff; }
+[data-theme="contrast"] .view-all-btn:hover { background: #333; }
+[data-theme="contrast"] .chip { background: #1a1a1a; }
+[data-theme="contrast"] .fullscreen-btn { background: #00ff99; color: #000; }
+[data-theme="contrast"] .nav-link-btn { background: #1a1a1a; border-color: rgba(255,255,255,0.4); color: #fff; }
+[data-theme="contrast"] .theme-btn { background: #1a1a1a; border-color: rgba(255,255,255,0.4); color: #fff; }
+[data-theme="contrast"] .theme-menu-panel { background: #000; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .theme-option { color: #fff; }
+[data-theme="contrast"] .theme-option:hover { background: #1a1a1a; }
+[data-theme="contrast"] .theme-option.active { background: #003322; color: #00ff99; }
+[data-theme="contrast"] .theme-swatch { border-color: rgba(255,255,255,0.5); }
+[data-theme="contrast"] .search-dropdown { background: #000; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .stop-menu summary { background: #0a0a0a; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] #stop-search { background: #1a1a1a; color: #fff; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .departure-status.status-on { color: #00ff66; background: #003311; }
+[data-theme="contrast"] .departure-status.status-delay { color: #ffcc00; background: #332200; }
+[data-theme="contrast"] .departure-status.status-cancel { color: #ff3333; background: #330000; }
+[data-theme="contrast"] .departure-status.status-board { color: #66bbff; background: #001133; }
+[data-theme="contrast"] .departure-status.status-ahead { color: #66ddff; background: #001122; }
+[data-theme="contrast"] .cancelled-row { background: #1a0000; }
+[data-theme="contrast"] .expanded-journey-row { background: #0a0a0a; }
+[data-theme="contrast"] .stop-menu-panel { background: #000; border-color: rgba(255,255,255,0.4); box-shadow: none; }
+[data-theme="contrast"] .stop-menu-button { background: #0a0a0a; border-color: rgba(255,255,255,0.4); }
+[data-theme="contrast"] .chip { border-color: rgba(255,255,255,0.3); }
+[data-theme="contrast"] .chip button { background: #333; }
+[data-theme="contrast"] .trip-journey { background: #0a0a0a; border-color: rgba(255,255,255,0.3); }
+[data-theme="contrast"] .trip-journey-header { border-color: rgba(255,255,255,0.3); }
+[data-theme="contrast"] .trip-stop-item .stop-dot { background: rgba(255,255,255,0.5); }
+[data-theme="contrast"] .departure-card[data-expanded="true"] { border-color: #00ff99; }
+[data-theme="contrast"] .access-icons span { background: #1a1a1a; }
+

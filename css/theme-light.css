@@ -1,0 +1,95 @@
+﻿/* ── Light theme ── */
+[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f5f7fa;
+    --panel: #ffffff;
+    --panel-strong: #ffffff;
+    --border: #e5e7eb;
+    --text: #111827;
+    --muted: #6b7280;
+    --accent: #0d9488;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --error: #dc2626;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+[data-theme="light"] body {
+    background: #f5f7fa;
+}
+[data-theme="light"] body::before { background: none; }
+[data-theme="light"] .hero h1 { color: #111827; }
+[data-theme="light"] .hero-subtitle { color: #0d9488; }
+[data-theme="light"] .stats-bar { background: #fff; border-color: #e5e7eb; }
+[data-theme="light"] .nav-link-btn { background: #f3f4f6; color: #111827; border-color: #d1d5db; }
+[data-theme="light"] .nav-link-btn:hover { background: #e5e7eb; }
+[data-theme="light"] .controls-panel { background: #fff; border-color: #e5e7eb; }
+[data-theme="light"] .search-dropdown { background: #fff; border-color: #e5e7eb; }
+[data-theme="light"] .stop-menu summary { background: #fff; border-color: #d1d5db; color: #111827; }
+[data-theme="light"] .button-clear { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+[data-theme="light"] .button-clear:hover { background: #e5e7eb; }
+[data-theme="light"] .board { background: #fff; border-color: #e5e7eb; backdrop-filter: none; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+[data-theme="light"] .board::before { display: none; }
+[data-theme="light"] .departure-card { background: #fff; border-color: #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+[data-theme="light"] .departure-card:hover { background: #f9fafb; border-color: #d1d5db; }
+[data-theme="light"] .board-header .note { color: #6b7280; }
+[data-theme="light"] .departure-info p { color: #6b7280; }
+[data-theme="light"] .departure-meta { color: #6b7280; }
+[data-theme="light"] .departure-time-pill { color: #374151; background: #f3f4f6; border-color: #d1d5db; }
+[data-theme="light"] .departure-stop-name { color: #9ca3af; }
+[data-theme="light"] .departure-status { background: #f3f4f6; color: #374151; }
+[data-theme="light"] .occupancy-chip { background: #f3f4f6; color: #374151; }
+[data-theme="light"] .board-table thead { border-color: #e5e7eb; }
+[data-theme="light"] .board-table th, [data-theme="light"] .board-table td { border-color: #f3f4f6; }
+[data-theme="light"] .board-table tr:nth-child(even) td { background: #f9fafb; }
+[data-theme="light"] .route-pill { background: rgba(13,148,136,0.12); color: #0d9488; }
+[data-theme="light"] .departure-expand-btn { background: #f3f4f6; color: #374151; }
+[data-theme="light"] .departure-expand-btn:hover { background: #e5e7eb; }
+[data-theme="light"] .view-all-btn { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+[data-theme="light"] .view-all-btn:hover { background: #e5e7eb; }
+[data-theme="light"] .chip { background: #f3f4f6; }
+[data-theme="light"] .chip button:hover { background: #e5e7eb; }
+[data-theme="light"] .fullscreen-btn { background: #0d9488; }
+[data-theme="light"] .fullscreen-btn:hover { background: #0f766e; }
+[data-theme="light"] .theme-btn { background: #f3f4f6; color: #6b7280; border-color: #d1d5db; }
+[data-theme="light"] .theme-btn:hover { background: #e5e7eb; color: #111827; }
+[data-theme="light"] .theme-menu-panel { background: #fff; border-color: #e5e7eb; }
+[data-theme="light"] .theme-option { color: #374151; }
+[data-theme="light"] .theme-option:hover { background: #f3f4f6; }
+[data-theme="light"] .theme-option.active { background: #d1fae5; color: #065f46; }
+[data-theme="light"] .theme-swatch { border-color: #d1d5db; }
+[data-theme="light"] .departure-status.status-on { color: #16a34a; background: #dcfce7; }
+[data-theme="light"] .departure-status.status-board { color: #2563eb; background: #dbeafe; }
+[data-theme="light"] .departure-status.status-delay { color: #d97706; background: #fef3c7; }
+[data-theme="light"] .departure-status.status-ahead { color: #0284c7; background: #e0f2fe; }
+[data-theme="light"] .departure-status.status-cancel { color: #dc2626; background: #fee2e2; }
+[data-theme="light"] .cancelled-row { background: #fef2f2; }
+[data-theme="light"] .expanded-journey-row { background: #f9fafb; }
+[data-theme="light"] .expanded-journey-row td { background: #f9fafb; }
+[data-theme="light"] #stop-search { background: #f9fafb; color: #111827; border-color: #d1d5db; }
+[data-theme="light"] .note { color: #6b7280; }
+[data-theme="light"] .toggle-label { color: #374151; }
+[data-theme="light"] .alert-item .alert-body { color: #6b7280; }
+[data-theme="light"] .alert-item { background: #fff7ed; border-color: #fed7aa; }
+[data-theme="light"] .line-disruption-notice { background: #fef2f2; border-color: #fecaca; }
+[data-theme="light"] .line-disruption-notice .disruption-body { color: #6b7280; }
+[data-theme="light"] .disruption-rb-btn { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+[data-theme="light"] .disruption-rb-btn:hover { background: #a7f3d0; border-color: #34d399; }
+[data-theme="light"] .terminus-badge { color: #7c3aed; background: #ede9fe; }
+[data-theme="light"] .occupancy-chip.low { color: #16a34a; background: #dcfce7; }
+[data-theme="light"] .occupancy-chip.medium { color: #d97706; background: #fef3c7; }
+[data-theme="light"] .occupancy-chip.high { color: #dc2626; background: #fee2e2; }
+[data-theme="light"] .stop-menu-panel { background: #fff; border-color: #e5e7eb; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+[data-theme="light"] .stop-menu-button { background: #f9fafb; border-color: #d1d5db; }
+[data-theme="light"] .chip { border-color: #d1d5db; }
+[data-theme="light"] .chip button { background: #e5e7eb; }
+[data-theme="light"] .trip-journey { background: #f9fafb; border-color: #e5e7eb; }
+[data-theme="light"] .trip-journey-header { border-color: #e5e7eb; }
+[data-theme="light"] .trip-stop-item { color: #374151; }
+[data-theme="light"] .trip-stop-item .stop-dot { background: #9ca3af; }
+[data-theme="light"] .trip-stop-item.stop-passed { opacity: 0.5; }
+[data-theme="light"] .departure-time { color: #111827; }
+[data-theme="light"] .departure-time-main { color: #111827; }
+[data-theme="light"] .departure-card[data-expanded="true"] { border-color: rgba(13,148,136,0.4); }
+[data-theme="light"] .access-icons span { background: #f3f4f6; }
+[data-theme="light"] .disruption-reason { color: #b45309; }
+
