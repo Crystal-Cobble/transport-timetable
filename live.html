@@ -1430,11 +1430,26 @@
             return 'boat';
         }
 
-        function getVehicleColor(type) {
-            if (type === 'train') return '#f59e0b';
+        function getRailLineColor(routeId, routeShortName) {
+            const raw = String(routeId || routeShortName || '').trim().toUpperCase();
+            const code = raw.replace(/\s+/g, '');
+            if (/^(EAST|T4|T4EAST)$/.test(code) || code.startsWith('EAST')) return '#FACC15';
+            if (/^(WEST|T2|T2WEST)$/.test(code) || code.startsWith('WEST')) return '#22C55E';
+            if (/^(STH|T3|T3STH)$/.test(code) || code.startsWith('STH')) return '#EF4444';
+            if (/^(ONE|T1|T1ONE)$/.test(code) || code.startsWith('ONE')) return '#3B82F6';
+            return '#9CA3AF';
+        }
+
+        function getVehicleColor(type, routeId = '', vehicleLabel = '') {
+            if (type === 'train') return getRailLineColor(routeId, getRouteShortName(routeId));
             if (type === 'ferry') return '#8b5cf6';
             if (type === 'boat') return '#9ca3af';
             return '#3b82f6';
+        }
+
+        function getVehicleZIndexOffset(type, routeId = '', vehicleLabel = '') {
+            if (type !== 'train') return 0;
+            return getVehicleColor(type, routeId, vehicleLabel) === '#9CA3AF' ? 0 : 1000;
         }
 
         function getRouteShortName(routeId) {
@@ -1452,8 +1467,8 @@
             return ICON_BUS;
         }
 
-        function createVehicleIcon(type, bearing, speed) {
-            const color = getVehicleColor(type);
+        function createVehicleIcon(type, bearing, speed, routeId = '', vehicleLabel = '') {
+            const color = getVehicleColor(type, routeId, vehicleLabel);
             const icon = getTypeIcon(type);
             const isMoving = speed != null && speed > 3 && bearing != null;
             const rotation = bearing ? `transform:rotate(${bearing}deg);` : '';
@@ -1499,7 +1514,7 @@
             const type = getVehicleType(routeId, pos.latitude, pos.longitude, veh.id, veh.label);
             const displayType = getDisplayType(type, routeId, veh.label);
             const shortName = getRouteShortName(routeId);
-            const color = getVehicleColor(displayType);
+            const color = getVehicleColor(displayType, routeId, veh.label);
             const icon = getTypeIcon(displayType);
             const longName = routeLongNameMap.get(routeId) || '';
             const typeName = displayType.charAt(0).toUpperCase() + displayType.slice(1);
@@ -1674,13 +1689,17 @@
                 if (markers.has(vehicleId)) {
                     const m = markers.get(vehicleId);
                     m.setLatLng([lat, lng]);
-                    m.setIcon(createVehicleIcon(dType, bearing, speed));
+                    m.setIcon(createVehicleIcon(dType, bearing, speed, routeId, v.vehicle?.label));
+                    m.setZIndexOffset(getVehicleZIndexOffset(dType, routeId, v.vehicle?.label));
                     m.setPopupContent(buildPopup(entity));
                     if (show && !map.hasLayer(m)) m.addTo(map);
                     else if (!show && map.hasLayer(m)) map.removeLayer(m);
                 } else {
                     if (!show) continue;
-                    const m = L.marker([lat, lng], { icon: createVehicleIcon(dType, bearing, speed) })
+                    const m = L.marker([lat, lng], {
+                        icon: createVehicleIcon(dType, bearing, speed, routeId, v.vehicle?.label),
+                        zIndexOffset: getVehicleZIndexOffset(dType, routeId, v.vehicle?.label)
+                    })
                         .bindPopup(buildPopup(entity), { maxWidth: getPopupMaxWidth() });
                     m.addTo(map);
                     markers.set(vehicleId, m);
@@ -1713,7 +1732,10 @@
                         const dType = getDisplayType(type, routeId, v.vehicle?.label);
                         const bearing = v.position.bearing ? parseFloat(v.position.bearing) : null;
                         const speed = v.position.speed != null ? parseFloat(v.position.speed) : null;
-                        const newM = L.marker([lat, lng], { icon: createVehicleIcon(dType, bearing, speed) })
+                        const newM = L.marker([lat, lng], {
+                            icon: createVehicleIcon(dType, bearing, speed, routeId, v.vehicle?.label),
+                            zIndexOffset: getVehicleZIndexOffset(dType, routeId, v.vehicle?.label)
+                        })
                             .bindPopup(buildPopup(entity), { maxWidth: getPopupMaxWidth() });
                         newM.addTo(map);
                         markers.set(vehicleId, newM);
@@ -1773,7 +1795,7 @@
                 const chip = document.createElement('div');
                 chip.className = 'route-chip' + (activeRoutes.get(r.shortName) !== false ? ' active' : '');
                 chip.dataset.route = r.shortName;
-                const color = getVehicleColor(r.type);
+                const color = getVehicleColor(r.type, r.routeId, r.shortName);
                 chip.innerHTML = `<span class="chip-dot" style="background:${color};"></span>${r.shortName} <span style="font-weight:400;color:var(--muted);font-size:0.65rem;">(${r.count})</span>`;
                 chip.addEventListener('click', () => {
                     const current = activeRoutes.get(r.shortName) !== false;
