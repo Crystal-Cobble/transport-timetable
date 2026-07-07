@@ -1874,7 +1874,7 @@
             overlay.classList.add('hidden');
             // Also refresh combined feed periodically to keep cross-references fresh
             setInterval(refresh, REFRESH_INTERVAL);
-            setInterval(fetchCombinedFeed, 60000); // every 60s
+            setInterval(fetchCombinedFeed, 10000); // every 60s
         }
 
         // ── User location ──
