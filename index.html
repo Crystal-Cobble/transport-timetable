@@ -1772,7 +1772,8 @@
             if (code.startsWith('INN')) return '#56AF31';
             if (code.startsWith('OUT')) return '#F39200';
             if (code.startsWith('CTY') || raw.includes('CITYLINK')) return '#E30613';
-            if (code.startsWith('AIR') || raw.includes('AIRPORTLINK')) return '#F97316';
+            if (code.startsWith('AIR') || raw.includes('AIRPORTLINK')) return '#FFB81C';
+            if (code.startsWith('WAI') || raw.includes('WAIHEKELINK')) return '#80CCD1';
             if (/^(T5|5)$/.test(code) || code.startsWith('T5')) return '#9c2a88';
             if (/^(T6|6)$/.test(code) || code.startsWith('T6')) return '#ffbb00';
             if (code === 'NX1') return '#1D4ED8';
