@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-07-17T19:07:05.214400+00:00",
+  "bbox": "-37.2926,174.3289,-36.3911,175.6288",
+  "categories": {
+    "bike": {
+      "file": "bike.json",
+      "count": 893
+    },
+    "commercial": {
+      "file": "commercial.json",
+      "count": 14307
+    },
+    "culture": {
+      "file": "culture.json",
+      "count": 1979
+    },
+    "recreation": {
+      "file": "recreation.json",
+      "count": 3687
+    },
+    "facilities": {
+      "file": "facilities.json",
+      "count": 4127
+    }
+  }
+}
