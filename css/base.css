@@ -1476,3 +1476,20 @@ button:hover { transform: translateY(-1px); }
 }
 .theme-option.active .theme-swatch { border-color: var(--accent); }
 
+.beta-map-link {
+    padding: 1rem 0 0.25rem;
+    text-align: center;
+    font-size: 0.78rem;
+}
+
+.beta-map-link a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+
+.beta-map-link a:hover,
+.beta-map-link a:focus-visible {
+    color: var(--accent);
+}
+
