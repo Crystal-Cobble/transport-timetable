@@ -1,0 +1,3312 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auckland Transport Departure Board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/theme-light.css">
+    <link rel="stylesheet" href="css/theme-contrast.css">
+    <link rel="stylesheet" href="css/theme-at-classic.css">
+    <link rel="stylesheet" href="css/theme-kids-light.css">
+    <link rel="stylesheet" href="css/theme-kids-dark.css">
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div class="hero">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
+                    <div style="display:flex;align-items:center;gap:1rem;">
+                        <div class="at-brand-mark">
+                            <img src="images/logo-at-operational.svg" alt="Auckland Transport logo" class="at-brand-logo">
+                            <div class="at-brand-copy">
+                                <span class="at-brand-kicker">Auckland Transport</span>
+                                <span class="at-brand-badge">AT Metro</span>
+                            </div>
+                        </div>
+                        <div class="hero-copy">
+                            <p class="kia-ora-greeting">Kia ora, Auckland!</p>
+                            <h1 id="hero-title">Auckland Transport</h1>
+                            <p class="hero-subtitle" id="hero-subtitle">DEPARTURE BOARD</p>
+                            <div class="hero-meta-row">
+                                <span class="hero-location" id="hero-location">Choose a stop to get started</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-right">
+                        <div class="kids-hero-stats" aria-live="polite">
+                            <div class="kids-hero-time" id="hero-live-time-compact">00:00 pm</div>
+                            <div class="kids-hero-date" id="hero-live-date-compact">--</div>
+                            <div class="kids-hero-weather"><span id="hero-weather-icon"></span> <span id="hero-weather-temp">--°C</span></div>
+                        </div>
+                        <a href="live.html" class="kids-hero-map-link" id="kids-hero-map-link">Open Live Map</a>
+                        <div class="kids-hero-decor" aria-hidden="true">
+                            <span class="kids-sun"></span>
+                            <span class="kids-tile"></span>
+                        </div>
+                        <button class="theme-btn" id="theme-btn" type="button" title="Change theme">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stats-bar-left">
+                <span class="stat-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <strong id="watch-count">0</strong> Selected stop</span>
+                <span class="stat-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <strong id="live-time">00:00:00 pm</strong> Live Time</span>
+                <span class="stat-item stat-date"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <span id="live-date">--</span></span>
+                <span class="stat-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> <span id="last-updated">Updated --s ago</span></span>
+            </div>
+            <div id="weather-widget" class="weather-widget" aria-live="polite"></div>
+            <a href="live.html" class="nav-link-btn" id="live-map-link">Open Live Map</a>
+        </div>
+
+        <section class="controls">
+            <div class="controls-panel">
+                <div class="search-stop-grid">
+                    <div class="search-box">
+                        <label for="stop-search">Search stop</label>
+                        <div class="search-input-wrap">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="stop-search" placeholder="Search stop name or location" autocomplete="off" aria-haspopup="listbox" aria-expanded="false" />
+                        </div>
+                        <div class="search-dropdown hidden" id="search-dropdown" role="listbox" aria-label="Stop suggestions"></div>
+                    </div>
+                    <details class="stop-menu" id="stop-menu">
+                        <summary>
+                            <label class="stop-menu-top-label">Selected stop</label>
+                            <div class="stop-menu-button">
+                                <span id="stop-menu-label">0 selected stops</span>
+                            </div>
+                        </summary>
+                        <div class="stop-menu-panel">
+                            <div class="selected-stops" id="selected-stops" aria-live="polite"></div>
+                            <div class="stop-menu-actions">
+                                <button class="button-clear" id="clear-stops-btn" type="button">Clear all stops</button>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <div class="alerts-panel" id="alerts-panel"></div>
+        <div class="calendar-warning" id="calendar-warning"></div>
+
+        <section class="board">
+            <div class="board-header">
+                <div class="board-header-left">
+                    <div>
+                        <h2 id="board-title">Departures</h2>
+                        <p class="note" id="board-note">Search and pin multiple stops, then switch to fullscreen for a focused departure board.</p>
+                    </div>
+                </div>
+                <div class="board-actions">
+                    <button class="kids-favorite-btn" id="kids-favorite-btn" type="button">☆ Favourite this stop</button>
+                    <div class="board-toggles">
+                        <label class="toggle-label"><input type="checkbox" id="toggle-terminus" checked /> Show terminus arrivals</label>
+                        <label class="toggle-label"><input type="checkbox" id="toggle-oos" /> Show out-of-service trains</label>
+                    </div>
+                    <button class="button-fullscreen" id="fullscreen-toggle" type="button">Enter fullscreen</button>
+                </div>
+            </div>
+            <div id="board-body">
+                <div class="empty-state" id="empty-state">Add one or more stops to see live departures.</div>
+            </div>
+        </section>
+        <span id="departure-count" style="display:none">0 upcoming departures</span>
+
+        <!-- Promotional banner matching AT display board reference -->
+<!--        <div class="promo-banner" id="promo-banner" data-variant="a">
+            <div class="promo-layout promo-layout-a">
+                <div class="promo-mascot" hidden="true">
+                    <svg class="promo-bird" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" hidden="true">
+                        <ellipse cx="40" cy="50" rx="22" ry="20" fill="#1a3a6b"/>
+                        <circle cx="40" cy="28" r="16" fill="#1a3a6b"/>
+                        <circle cx="34" cy="24" r="5" fill="white"/>
+                        <circle cx="34" cy="24" r="3" fill="#1a3a6b"/>
+                        <circle cx="46" cy="24" r="5" fill="white"/>
+                        <circle cx="46" cy="24" r="3" fill="#1a3a6b"/>
+                        <ellipse cx="40" cy="35" rx="6" ry="4" fill="#e31c23"/>
+                        <path d="M18 45 Q10 35 14 28 Q18 38 22 42 Z" fill="#2b4f8e"/>
+                        <path d="M62 45 Q70 35 66 28 Q62 38 58 42 Z" fill="#2b4f8e"/>
+                        <line x1="33" y1="70" x2="33" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="47" y1="70" x2="47" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="28" y1="76" x2="38" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="42" y1="76" x2="52" y2="76" stroke="#e87000" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                    <div class="promo-thanks">
+                        <strong>Thanks for catching the bus!</strong>
+                        <span>He waka eke noa – we're all on this journey together.</span>
+                    </div>
+                </div>
+                <div class="promo-tip">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                    <div>
+                        <strong>Tag on, tag off</strong>
+                        <span>Use your AT HOP card or contactless payment for the best fare.</span>
+                    </div>
+                </div>
+                <div class="promo-plan">
+                    <strong>Plan your trip</strong>
+                    <a href="https://at.govt.nz" target="_blank" rel="noopener noreferrer" class="promo-link">→ AT.govt.nz</a>
+                </div>
+            </div>
+
+            <div class="promo-layout promo-layout-b">
+                <div class="promo-mascot">
+                    <svg class="promo-bird" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="10" y="22" width="60" height="36" rx="12" fill="#1e528f"/>
+                        <rect x="16" y="28" width="24" height="12" rx="3" fill="#9fd4ff"/>
+                        <rect x="44" y="28" width="20" height="12" rx="3" fill="#9fd4ff"/>
+                        <circle cx="26" cy="60" r="8" fill="#123055"/>
+                        <circle cx="54" cy="60" r="8" fill="#123055"/>
+                        <circle cx="26" cy="60" r="3" fill="#fff"/>
+                        <circle cx="54" cy="60" r="3" fill="#fff"/>
+                        <path d="M66 26 L74 32 L66 38" fill="#fda4af"/>
+                    </svg>
+                    <div class="promo-thanks">
+                        <strong id="promo-b-title">Need help planning?</strong>
+                        <span id="promo-b-body">Get trip alerts, platform updates and stop notices in one place.</span>
+                    </div>
+                </div>
+                <div class="promo-tip">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9h18"/><path d="M3 15h18"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>
+                    <div>
+                        <strong id="promo-b-tip-title">Save this stop</strong>
+                        <span id="promo-b-tip-body">Keep your favourite stop pinned so departures load instantly.</span>
+                    </div>
+                </div>
+                <div class="promo-plan promo-plan-stack">
+                    <div class="promo-plan-main">
+                        <strong id="promo-b-plan-title">Plan your journey</strong>
+                        <a href="https://at.govt.nz" target="_blank" rel="noopener noreferrer" class="promo-link">→ AT.govt.nz</a>
+                    </div>
+                    <div class="promo-qr" aria-hidden="true"></div>
+                    <div class="promo-support">
+                        <strong id="promo-b-help-title">Need help?</strong>
+                        <span id="promo-b-help-body">Call 09 366 6400</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+    <div class="theme-menu" id="theme-menu">
+        <div class="theme-menu-backdrop" id="theme-menu-backdrop"></div>
+        <div class="theme-menu-panel">
+            <div class="theme-menu-title">Theme</div>
+            <button class="theme-option" data-theme="default" type="button">
+                <span class="theme-swatch" style="background:#061226;"></span> Default
+            </button>
+            <button class="theme-option" data-theme="light" type="button">
+                <span class="theme-swatch" style="background:#f0f4f8;border-color:rgba(0,0,0,0.2);"></span> Light
+            </button>
+            <button class="theme-option" data-theme="contrast" type="button">
+                <span class="theme-swatch" style="background:#000;border-color:#fff;"></span> High Contrast
+            </button>
+            <button class="theme-option" data-theme="at-classic" type="button">
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#0073BD 0%,#001930 55%,#FFDD00 100%);border-color:rgba(0,0,0,0.2);"></span> AT Metro
+            </button>
+<!--<button class="theme-option" data-theme="kids-light" type="button" hidden>
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#8ed6ff 0%,#ffe493 50%,#ff9fc9 100%);border-color:rgba(0,0,0,0.15);"></span> Kids Light
+            </button>
+            <button class="theme-option" data-theme="kids-dark" type="button" hidden>
+                <span class="theme-swatch" style="background:linear-gradient(135deg,#101b4d 0%,#6d47ff 45%,#19d3ff 100%);border-color:rgba(255,255,255,0.22);"></span> Kids Dark
+            </button>-->
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://api.at.govt.nz';
+        const GTFS_API_KEY = '0b6d714ed53748ceb08b086129ed4375'; // GTFS V3 Secondary (try this for departures)
+        const REALTIME_API_KEY = '52aacd1bd356439b8a54949165d70812'; // Realtime Compact Primary
+        const REALTIME_VEHICLE_LOCATIONS_URL = `${API_BASE}/realtime/legacy/vehiclelocations`;
+        const REALTIME_TRIP_UPDATES_URL = `${API_BASE}/realtime/legacy/tripupdates`;
+        const SELECTED_STOPS_STORAGE_KEY = 'at-departure-board-selected-stops';
+        const REALTIME_COMBINED_URL = `${API_BASE}/realtime/legacy`;
+
+        // ── Theme menu ──
+        const THEMES = {
+            default: {}  // Uses :root defaults
+        };
+
+        function applyTheme(name) {
+            document.documentElement.setAttribute('data-theme', name);
+            localStorage.setItem('at-theme', name);
+            document.querySelectorAll('.theme-option').forEach(o => {
+                o.classList.toggle('active', o.dataset.theme === name);
+            });
+        }
+
+        // Apply saved theme on load
+        const savedTheme = localStorage.getItem('at-theme') || 'default';
+        applyTheme(savedTheme);
+
+        (function() {
+            const themeBtn = document.getElementById('theme-btn');
+            const themeMenu = document.getElementById('theme-menu');
+            const themeBackdrop = document.getElementById('theme-menu-backdrop');
+            themeBtn.addEventListener('click', () => themeMenu.classList.toggle('open'));
+            themeBackdrop.addEventListener('click', () => themeMenu.classList.remove('open'));
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    applyTheme(opt.dataset.theme);
+                    updateKidsThemeContent();
+                    themeMenu.classList.remove('open');
+                });
+            });
+        })();
+        const REALTIME_SERVICE_ALERTS_URL = `${API_BASE}/realtime/legacy/servicealerts`;
+        const REALTIME_FERRY_POSITIONS_URL = `${API_BASE}/realtime/legacy/ferrypositions`;
+        const TERMINUS_TOGGLE_KEY = 'at-departure-board-show-terminus';
+        const OOS_TOGGLE_KEY = 'at-departure-board-show-oos';
+
+        const fallbackStops = [
+            {
+                stopCode: 'britomart',
+                stopId: 'britomart',
+                stopName: 'Britomart Transport Centre',
+                departures: [
+                    { route: '14', destination: 'Albany', platform: '5', status: 'On time', offset: 4 },
+                    { route: '14', destination: 'Takanini', platform: '5', status: 'On time', offset: 12 },
+                    { route: 'Type 9', destination: 'Southmall', platform: '7', status: 'Delayed', offset: 18 },
+                    { route: 'F2', destination: 'Devonport', platform: '3', status: 'Boarding', offset: 2 }
+                ]
+            },
+            {
+                stopCode: 'newmarket',
+                stopId: 'newmarket',
+                stopName: 'Newmarket Station',
+                departures: [
+                    { route: 'T2', destination: 'Manukau', platform: '2', status: 'On time', offset: 5 },
+                    { route: 'T4', destination: 'Papakura', platform: '1', status: 'On time', offset: 9 },
+                    { route: '12', destination: 'Mt Eden', platform: 'A', status: 'On time', offset: 16 }
+                ]
+            },
+            {
+                stopCode: 'takapuna',
+                stopId: 'takapuna',
+                stopName: 'Takapuna Bus Station',
+                departures: [
+                    { route: '13', destination: 'Britomart', platform: '4', status: 'On time', offset: 6 },
+                    { route: '12B', destination: 'Hauraki', platform: '5', status: 'Delayed', offset: 14 },
+                    { route: '72', destination: 'Albany', platform: '3', status: 'On time', offset: 10 }
+                ]
+            },
+            {
+                stopCode: 'devonport',
+                stopId: 'devonport',
+                stopName: 'Devonport Ferry Terminal',
+                departures: [
+                    { route: 'F2', destination: 'Auckland CBD', platform: '1', status: 'On time', offset: 8 },
+                    { route: 'F4', destination: 'Wynyard Quarter', platform: '1', status: 'On time', offset: 21 }
+                ]
+            },
+            {
+                stopCode: 'manukau',
+                stopId: 'manukau',
+                stopName: 'Manukau Bus Station',
+                departures: [
+                    { route: 'T2', destination: 'Britomart', platform: '2', status: 'On time', offset: 7 },
+                    { route: '31', destination: 'Onehunga', platform: '4', status: 'Delayed', offset: 11 },
+                    { route: '33', destination: 'East Tamaki', platform: '5', status: 'On time', offset: 15 }
+                ]
+            }
+        ];
+
+        const state = {
+            selectedStops: [],
+            departureData: {},
+            searchResults: [],
+            searchLoading: false,
+            searchError: null,
+            searchQuery: '',
+            showTerminusArrivals: true,
+            showOutOfService: false,
+            showAllDepartures: false
+        };
+
+        let searchRequestId = 0;
+        let searchTimer = null;
+        let refreshTimer = null;
+        let liveClockTimer = null;
+        const realtimeVehicleCache = {
+            fetchedAt: 0,
+            byTrip: new Map()
+        };
+        const stopPlatformCache = new Map();
+        const routeDetailsCache = new Map();
+        const tripDetailsCache = new Map();
+        const tripStopTimesCache = new Map();
+        const ferryPositionCache = { fetchedAt: 0, vessels: [] };
+        const serviceAlertsCache = { fetchedAt: 0, alerts: [] };
+        const outOfServiceVehicles = [];
+        const calendarCache = new Map();
+        const expandedTripIds = new Set();
+        // Line status: tracks which rail route_ids have realtime data vs only scheduled
+        const lineStatusCache = {
+            fetchedAt: 0,
+            // routeId -> { routeId, shortName, longName, routeType, isRunning, scheduledCount, realtimeCount, alertReason }
+            routes: new Map()
+        };
+
+        // Rail route → Rail Replacement Bus route mapping
+        const RAIL_TO_RB_MAP = {
+            'STH-201': 'RBS-402',
+            'EAST-201': 'RBE-402',
+            'WEST-201': 'RBW-402',
+            'ONE-201': 'RBO-402',
+            'HUIA-404': 'RBM-402'
+        };
+        // All known rail route IDs (used for zero-trip station detection)
+        const KNOWN_RAIL_ROUTES = ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201', 'HUIA-404'];
+        // Station name (lowercase, stripped of "Train Station") → array of rail route IDs serving it
+        const STATION_ROUTES = {
+            // Southern Line only
+            'papakura': ['STH-201', 'HUIA-404'],
+            'takaanini': ['STH-201'],
+            'te mahia': ['STH-201'],
+            'manurewa': ['STH-201'],
+            'homai': ['STH-201'],
+            'ellerslie': ['STH-201'],
+            'greenlane': ['STH-201'],
+            'remuera': ['STH-201'],
+            'pukekohe': ['STH-201'],
+            // Eastern Line only
+            'manukau': ['EAST-201'],
+            'sylvia park': ['EAST-201'],
+            'panmure': ['EAST-201'],
+            'glen innes': ['EAST-201'],
+            'meadowbank': ['EAST-201'],
+            'orakei': ['EAST-201'],
+            // Western Line only
+            'swanson': ['WEST-201'],
+            'ranui': ['WEST-201'],
+            'henderson': ['WEST-201'],
+            'sturges road': ['WEST-201'],
+            'new lynn': ['WEST-201'],
+            'fruitvale road': ['WEST-201'],
+            'glen eden': ['WEST-201'],
+            'sunnyvale': ['WEST-201'],
+            'avondale': ['WEST-201'],
+            'mt albert': ['WEST-201'],
+            'baldwin avenue': ['WEST-201'],
+            'morningside': ['WEST-201'],
+            'kingsland': ['WEST-201'],
+            'grafton': ['WEST-201'],
+            // Onehunga Line only
+            'onehunga': ['ONE-201'],
+            'te papapa': ['ONE-201'],
+            // Southern + Eastern (shared section)
+            'puhinui': ['STH-201', 'EAST-201'],
+            'papatoetoe': ['STH-201', 'EAST-201'],
+            'middlemore': ['STH-201', 'EAST-201'],
+            'otahuhu': ['STH-201', 'EAST-201'],
+            // Southern + Onehunga
+            'penrose': ['STH-201', 'ONE-201'],
+            // Hub stations (multiple lines)
+            'newmarket': ['STH-201', 'ONE-201'],
+            'parnell': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'britomart': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            // CRL stations (all lines)
+            'karangahape': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'karanga-a-hape': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'te waihorotiu': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'aotea': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'maungawhau': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            'mt eden': ['STH-201', 'EAST-201', 'WEST-201', 'ONE-201'],
+            // Te Huia
+            'huntly': ['HUIA-404'],
+            'te rapa': ['HUIA-404'],
+            'frankton': ['HUIA-404']
+        };
+        // Cache for rail replacement bus stop lookups (stationStopCode -> { status, stops })
+        const rbStopCache = new Map();
+
+        const searchInput = document.getElementById('stop-search');
+        const searchDropdown = document.getElementById('search-dropdown');
+        const clearButton = document.getElementById('clear-stops-btn');
+        const stopMenu = document.getElementById('stop-menu');
+        const stopMenuLabel = document.getElementById('stop-menu-label');
+        const fullscreenToggle = document.getElementById('fullscreen-toggle');
+        const selectedStopsContainer = document.getElementById('selected-stops');
+        const boardBody = document.getElementById('board-body');
+        const heroTitle = document.getElementById('hero-title');
+        const heroSubtitle = document.getElementById('hero-subtitle');
+        const boardTitle = document.getElementById('board-title');
+        const boardNote = document.getElementById('board-note');
+        const kidsFavoriteBtn = document.getElementById('kids-favorite-btn');
+        const liveTime = document.getElementById('live-time');
+        const lastUpdated = document.getElementById('last-updated');
+        const heroLocation = document.getElementById('hero-location');
+        const heroLiveTimeCompact = document.getElementById('hero-live-time-compact');
+        const heroLiveDateCompact = document.getElementById('hero-live-date-compact');
+        const heroWeatherIcon = document.getElementById('hero-weather-icon');
+        const heroWeatherTemp = document.getElementById('hero-weather-temp');
+        const atLogo = document.getElementById('at-logo');
+        const kidsHeroMapLink = document.getElementById('kids-hero-map-link');
+        const liveMapLink = document.getElementById('live-map-link');
+        const promoBTitle = document.getElementById('promo-b-title');
+        const promoBBody = document.getElementById('promo-b-body');
+        const promoBTipTitle = document.getElementById('promo-b-tip-title');
+        const promoBTipBody = document.getElementById('promo-b-tip-body');
+        const promoBPlanTitle = document.getElementById('promo-b-plan-title');
+        const promoBHelpTitle = document.getElementById('promo-b-help-title');
+        const promoBHelpBody = document.getElementById('promo-b-help-body');
+        const watchCount = document.getElementById('watch-count');
+        const departureCount = document.getElementById('departure-count');
+        const alertsPanel = document.getElementById('alerts-panel');
+        const calendarWarning = document.getElementById('calendar-warning');
+        const toggleTerminus = document.getElementById('toggle-terminus');
+        const toggleOOS = document.getElementById('toggle-oos');
+
+        function normalizeText(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function getStopGroupKey(stop) {
+            const raw = String(stop.stopName || stop.stopCode || '').trim().replace(/\s+/g, ' ');
+            const cleaned = raw
+                .replace(/^(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*[-:]?\s*/i, '')
+                .replace(/^(?:bay|stop|platform|plat)\s*[A-Z]+\s*[-:]?\s*/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s*[-–—:]\s*$/i, '')
+                .trim();
+            const normalizedRaw = normalizeText(raw);
+            const normalizedCleaned = normalizeText(cleaned || raw);
+            if (normalizedRaw === normalizedCleaned) {
+                return `${normalizedRaw}:${stop.stopCode || stop.stopId || ''}`;
+            }
+            return normalizedCleaned;
+        }
+
+        function getPrettyStopName(stop) {
+            const raw = String(stop.stopName || stop.stopCode || '').trim().replace(/\s+/g, ' ');
+            return raw
+                .replace(/^(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*[-:]?\s*/i, '')
+                .replace(/^(?:bay|stop|platform|plat)\s*[A-Z]+\s*[-:]?\s*/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s*[-–—:]\s*(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[\d/]+[A-Z]?\s*$/i, '')
+                .replace(/\s+(?:bay|stop|platform|plat)\s*[A-Z]+\s*$/i, '')
+                .replace(/\s*[-–—:]\s*$/i, '')
+                .trim();
+        }
+
+        function getStopPlatformLabel(stop) {
+            if (!stop) return '';
+            if (stop.platformCode) return String(stop.platformCode).trim();
+            const raw = String(stop.stopName || stop.displayName || '').trim();
+            // Try multiple patterns for platform extraction
+            const patterns = [
+                /\b(?:platform|plat|bay|stop)\s+([A-Z0-9]+)\b/i,
+                /[\s\-]([A-Z0-9]{1,2})\s*$/i,
+                /plat(?:form)?\s*([A-Z0-9]+)/i,
+                /platform\s+([A-Z0-9]+)/i
+            ];
+            for (const pattern of patterns) {
+                const match = raw.match(pattern);
+                if (match && match[1]) return String(match[1]).trim().toUpperCase();
+            }
+            return '';
+        }
+
+        function groupSearchResults(results) {
+            const groups = new Map();
+            (results || []).forEach(stop => {
+                const key = getStopGroupKey(stop);
+                const existing = groups.get(key);
+                if (existing) {
+                    if (!existing.rawStops.some(item => item.stopCode === stop.stopCode)) {
+                        existing.rawStops.push(stop);
+                    }
+                } else {
+                    groups.set(key, {
+                        displayName: getPrettyStopName(stop) || stop.stopName,
+                        rawStops: [stop]
+                    });
+                }
+            });
+
+            return Array.from(groups.values()).map(group => {
+                const pendingStops = group.rawStops.filter(stop => !stopIsSelected(stop));
+                return {
+                    displayName: group.displayName,
+                    rawStops: group.rawStops,
+                    pendingStops,
+                    count: pendingStops.length,
+                    stopCode: pendingStops[0]?.stopCode || group.rawStops[0].stopCode
+                };
+            }).filter(group => group.count > 0);
+        }
+
+        function addStopGroup(group, preserveSearch = false) {
+            const stopsToAdd = group.pendingStops || group.rawStops.filter(stop => !stopIsSelected(stop));
+            if (stopsToAdd.length === 0) {
+                return;
+            }
+            stopsToAdd.forEach(stop => addStop(stop, true));
+            if (!preserveSearch) {
+                searchInput.value = '';
+                state.searchQuery = '';
+                state.searchResults = [];
+                hideSearchList();
+            }
+        }
+
+        function getFallbackMatches(query) {
+            const normalized = normalizeText(query);
+            if (!normalized) return [];
+            return fallbackStops.filter(stop =>
+                stop.stopName.toLowerCase().includes(normalized) ||
+                stop.stopCode.toLowerCase().includes(normalized)
+            );
+        }
+
+        async function fetchStopSuggestions(query) {
+            const normalized = normalizeText(query);
+            if (!normalized) return [];
+
+            const requestId = ++searchRequestId;
+            state.searchLoading = true;
+            state.searchError = null;
+            renderSearchList(query);
+
+            const today = new Date().toISOString().split('T')[0];
+            const baseParams = new URLSearchParams();
+            baseParams.set('filter[date]', today);
+            baseParams.set('page[limit]', '80');
+
+            const directParams = new URLSearchParams(baseParams);
+            if (/^\d+$/.test(normalized)) {
+                directParams.set('filter[stop_code]', `${normalized}*`);
+            } else {
+                directParams.set('filter[stop_name]', `*${normalized}*`);
+            }
+
+            const directUrl = `${API_BASE}/gtfs/v3/stops?${directParams.toString()}`;
+
+            async function parseStopResults(data) {
+                return (data || []).map(item => {
+                    const attr = item.attributes || {};
+                    return {
+                        stopCode: attr.stop_code || '',
+                        stopName: attr.stop_name || '',
+                        stopId: attr.stop_id || '',
+                        platformCode: attr.platform_code || '',
+                        locationType: attr.location_type,
+                        wheelchairBoarding: attr.wheelchair_boarding,
+                        stopLat: attr.stop_lat || null,
+                        stopLon: attr.stop_lon || null
+                    };
+                });
+            }
+
+            async function filterLocal(stops) {
+                return stops.filter(stop =>
+                    normalizeText(stop.stopName).includes(normalized) ||
+                    normalizeText(stop.stopCode).includes(normalized)
+                );
+            }
+
+            const tryLocalSearch = async () => {
+                const fallbackUrl = `${API_BASE}/gtfs/v3/stops?filter[date]=${today}&page[limit]=200`;
+                const fallbackResponse = await fetch(fallbackUrl, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!fallbackResponse.ok) throw new Error(`HTTP ${fallbackResponse.status}`);
+                const fallbackJson = await fallbackResponse.json();
+                const fallbackStops = await parseStopResults(fallbackJson.data || []);
+                return filterLocal(fallbackStops);
+            };
+
+            try {
+                const response = await fetch(directUrl, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (requestId !== searchRequestId) return [];
+
+                const rawStops = await parseStopResults(result.data || []);
+                let matches = rawStops;
+                if (matches.length === 0) {
+                    matches = await tryLocalSearch();
+                }
+
+                state.searchResults = matches;
+                state.searchLoading = false;
+                state.searchError = null;
+                renderSearchList(query);
+                return matches;
+            } catch (error) {
+                if (requestId !== searchRequestId) return [];
+                try {
+                    const matches = await tryLocalSearch();
+                    state.searchResults = matches;
+                    state.searchLoading = false;
+                    state.searchError = null;
+                    renderSearchList(query);
+                    return matches;
+                } catch (_fallbackError) {
+                    state.searchLoading = false;
+                    state.searchError = error.message || 'Unable to search stops';
+                    const fallback = getFallbackMatches(query);
+                    state.searchResults = fallback;
+                    renderSearchList(query);
+                    return fallback;
+                }
+            }
+        }
+
+        function renderSearchList(query = '') {
+            const normalized = normalizeText(query);
+            if (!normalized) {
+                searchDropdown.innerHTML = '<div class="search-item">Type a stop name or stop code to search the full AT database.</div>';
+                return;
+            }
+
+            if (state.searchLoading) {
+                searchDropdown.innerHTML = '<div class="search-item">Searching stops…</div>';
+                return;
+            }
+
+            const matches = groupSearchResults(state.searchResults);
+            if (!matches || matches.length === 0) {
+                const message = state.searchResults && state.searchResults.length > 0
+                    ? 'All matching stops are already added. Remove one or try a different search.'
+                    : state.searchError
+                        ? 'Search unavailable — using offline fallback.'
+                        : 'No stops found for this query.';
+                searchDropdown.innerHTML = `<div class="search-item">${message}</div>`;
+                return;
+            }
+
+            searchDropdown.innerHTML = matches.map((stop, index) => {
+                const label = stop.count > 1
+                    ? `${stop.displayName} (${stop.rawStops.length} platforms)`
+                    : `${stop.displayName} (${stop.stopCode})`;
+                return `<div class="search-item" data-group-index="${index}" role="option">${label}</div>`;
+            }).join('');
+
+            searchDropdown.querySelectorAll('.search-item[data-group-index]').forEach(item => {
+                item.addEventListener('click', () => {
+                    const groupIndex = Number(item.dataset.groupIndex);
+                    const stopGroup = matches[groupIndex];
+                    if (stopGroup) {
+                        addStopGroup(stopGroup, true);
+                        renderSearchList(searchInput.value);
+                        showSearchList();
+                    }
+                });
+            });
+        }
+
+        function scheduleSearch(query) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => fetchStopSuggestions(query), 220);
+        }
+
+        function showSearchList() {
+            searchDropdown.classList.remove('hidden');
+            searchInput.setAttribute('aria-expanded', 'true');
+            renderSearchList(searchInput.value);
+        }
+
+        function hideSearchList() {
+            searchDropdown.classList.add('hidden');
+            searchInput.setAttribute('aria-expanded', 'false');
+        }
+
+        function findStopByInput(value) {
+            const normalized = normalizeText(value);
+            if (!normalized) return null;
+
+            const exactMatch = state.searchResults.find(stop =>
+                normalizeText(stop.stopName) === normalized || normalizeText(stop.stopCode) === normalized
+            );
+            if (exactMatch) return exactMatch;
+
+            if (state.searchResults.length > 0) return state.searchResults[0];
+
+            return fallbackStops.find(stop =>
+                normalizeText(stop.stopName) === normalized || normalizeText(stop.stopCode) === normalized
+            );
+        }
+
+        function stopIsSelected(stop) {
+            return state.selectedStops.some(item => item.stopCode === stop.stopCode);
+        }
+
+        function transformFallbackDepartures(stop) {
+            const now = new Date();
+            return (stop.departures || []).map(dep => {
+                const departureTime = new Date(now.getTime() + dep.offset * 60000);
+                return {
+                    stopName: stop.stopName,
+                    stopCode: stop.stopCode || '',
+                    route: dep.route,
+                    destination: dep.destination,
+                    details: dep.destination || stop.stopName,
+                    platform: dep.platform,
+                    status: dep.status,
+                    time: departureTime
+                };
+            });
+        }
+
+        function formatDepartureStatus(movement, hasLiveTracking = false) {
+            const scheduled = movement.scheduledDepartureTime;
+            const expected = movement.expectedDepartureTime;
+            if (movement.departureBoardingActivity === 'cancelled') return 'Cancelled';
+
+            const boardingThresholdMs = 3 * 60 * 1000; // show boarding only when arrival is imminent
+            const targetTime = expected ? new Date(expected) : scheduled ? new Date(scheduled) : null;
+            const now = new Date();
+            const isBoardingNow = movement.departureBoardingActivity === 'boarding' && targetTime && (targetTime.getTime() - now.getTime()) <= boardingThresholdMs;
+
+            if (expected && scheduled) {
+                const scheduledMs = new Date(scheduled).getTime();
+                const expectedMs = new Date(expected).getTime();
+                const diffMinutes = Math.round((expectedMs - scheduledMs) / 60000);
+                if (diffMinutes > 0) return `Delayed by ${diffMinutes} min`;
+                if (diffMinutes < 0) return `Ahead of schedule by ${Math.abs(diffMinutes)} min`;
+                if (isBoardingNow) return 'Boarding';
+                return hasLiveTracking ? 'On time' : '';
+            }
+
+            if (isBoardingNow) {
+                return 'Boarding';
+            }
+            if (movement.departureBoardingActivity === 'noBoarding') return 'Not boarding';
+            return '';
+        }
+
+        function getOccupancyValueByPath(source, paths) {
+            return paths.reduce((result, path) => {
+                if (result != null) return result;
+                return path.reduce((value, key) => {
+                    if (value == null || typeof value !== 'object') return undefined;
+                    return value[key];
+                }, source);
+            }, undefined);
+        }
+
+        function normalizeTripKey(value) {
+            // Remove the last dash-separated segment if there are 6+ parts (GTFS includes extra hash)
+            let processedValue = String(value || '');
+            const parts = processedValue.split('-');
+            if (parts.length >= 6) {
+                // Keep first 5 segments (ROUTE-STOP-TIME-SEQ-HASH)
+                processedValue = parts.slice(0, 5).join('-');
+            }
+            return processedValue.replace(/[^a-z0-9]/gi, '').toLowerCase();
+        }
+
+        function normalizeOccupancyStatus(raw) {
+            let numericValue = Number(raw);
+            if (Number.isFinite(numericValue)) {
+                numericValue = Math.max(0, Math.min(5, numericValue));
+            }
+            const gtfsNumericStatusMap = {
+                0: { label: 'Very quiet', percent: 10, className: 'low' },
+                1: { label: 'Seats available', percent: 30, className: 'low' },
+                2: { label: 'Few seats left', percent: 55, className: 'medium' },
+                3: { label: 'Standing room only', percent: 82, className: 'high' },
+                4: { label: 'Very crowded', percent: 94, className: 'high' },
+                5: { label: 'Full', percent: 100, className: 'high' },
+                6: { label: 'Not accepting passengers', percent: 100, className: 'high' },
+                7: { label: 'Occupancy unavailable', percent: null, className: 'unknown' },
+                8: { label: 'Not boardable', percent: null, className: 'unknown' }
+            };
+            if (Number.isFinite(numericValue) && gtfsNumericStatusMap[numericValue]) {
+                return gtfsNumericStatusMap[numericValue];
+            }
+
+            const value = String(raw || '').trim();
+            if (!value) return null;
+
+            const lower = value.toLowerCase();
+            const upper = value.toUpperCase();
+            const percentMatch = value.match(/(\d{1,3})\s*%/);
+            if (percentMatch) {
+                const percent = Math.min(100, Math.max(0, Number(percentMatch[1])));
+                return {
+                    label: `${percent}% full`,
+                    percent,
+                    className: percent >= 76 ? 'high' : percent >= 41 ? 'medium' : 'low'
+                };
+            }
+
+            const gtfsStatusMap = {
+                EMPTY: { label: 'Very quiet', percent: 10, className: 'low' },
+                MANY_SEATS_AVAILABLE: { label: 'Seats available', percent: 25, className: 'low' },
+                FEW_SEATS_AVAILABLE: { label: 'Few seats left', percent: 55, className: 'medium' },
+                STANDING_ROOM_ONLY: { label: 'Standing room only', percent: 82, className: 'high' },
+                CRUSHED_STANDING_ROOM_ONLY: { label: 'Very crowded', percent: 94, className: 'high' },
+                FULL: { label: 'Full', percent: 100, className: 'high' },
+                NOT_ACCEPTING_PASSENGERS: { label: 'Not accepting passengers', percent: 100, className: 'high' },
+                NO_DATA_AVAILABLE: { label: 'Occupancy unavailable', percent: null, className: 'unknown' },
+                UNKNOWN: { label: 'Occupancy unavailable', percent: null, className: 'unknown' }
+            };
+
+            if (gtfsStatusMap[upper]) return gtfsStatusMap[upper];
+            if (/full|heavy|high|crowd|busy|congest|standing/.test(lower)) return { label: 'Busy', percent: 85, className: 'high' };
+            if (/medium|moderate|mod/.test(lower)) return { label: 'Moderate load', percent: 55, className: 'medium' };
+            if (/low|light|few|available|empty|quiet/.test(lower)) return { label: 'Plenty of space', percent: 25, className: 'low' };
+            return { label: value, percent: null, className: 'unknown' };
+        }
+
+        function getOccupancyInfo(movement) {
+            const countPaths = [
+                ['passengerCount'],
+                ['passengers'],
+                ['onboardPassengers'],
+                ['onBoardPassengers'],
+                ['occupancyCount'],
+                ['currentLoad'],
+                ['vehicleOccupancy', 'passengerCount'],
+                ['occupancy', 'passengerCount'],
+                ['attributes', 'passengerCount'],
+                ['attributes', 'passengers'],
+                ['attributes', 'onboardPassengers'],
+                ['attributes', 'onBoardPassengers'],
+                ['attributes', 'occupancyCount'],
+                ['attributes', 'currentLoad']
+            ];
+            const capacityPaths = [
+                ['capacity'],
+                ['vehicleCapacity'],
+                ['occupancyCapacity'],
+                ['vehicleOccupancy', 'capacity'],
+                ['occupancy', 'capacity'],
+                ['attributes', 'capacity'],
+                ['attributes', 'vehicleCapacity'],
+                ['attributes', 'occupancyCapacity']
+            ];
+            const percentPaths = [
+                ['occupancyPercentage'],
+                ['occupancyPercent'],
+                ['loadPercentage'],
+                ['loadPercent'],
+                ['occupancy', 'percentage'],
+                ['occupancy', 'percent'],
+                ['vehicleOccupancy', 'percentage'],
+                ['vehicleOccupancy', 'percent'],
+                ['attributes', 'occupancyPercentage'],
+                ['attributes', 'occupancyPercent'],
+                ['attributes', 'loadPercentage'],
+                ['attributes', 'loadPercent']
+            ];
+            const statusPaths = [
+                ['occupancyStatus'],
+                ['occupancy_status'],
+                ['congestionLevel'],
+                ['congestion_level'],
+                ['occupancyLevel'],
+                ['vehicleOccupancyStatus'],
+                ['vehicle_occupancy_status'],
+                ['vehicleOccupancy', 'status'],
+                ['attributes', 'occupancyStatus'],
+                ['attributes', 'occupancy_status'],
+                ['attributes', 'congestionLevel'],
+                ['attributes', 'congestion_level'],
+                ['attributes', 'vehicleOccupancyStatus'],
+                ['attributes', 'vehicle_occupancy_status']
+            ];
+
+            const rawCount = getOccupancyValueByPath(movement, countPaths);
+            const rawCapacity = getOccupancyValueByPath(movement, capacityPaths);
+            const rawPercent = getOccupancyValueByPath(movement, percentPaths);
+            const rawStatus = getOccupancyValueByPath(movement, statusPaths);
+            const occupancyObject = typeof movement.occupancy === 'object' ? movement.occupancy : null;
+            const occupancyStatus = rawStatus ?? occupancyObject?.status ?? occupancyObject?.level ?? occupancyObject?.text;
+
+            const parsedCount = Number.isFinite(Number(rawCount)) && Number(rawCount) >= 0 ? Math.round(Number(rawCount)) : null;
+            const parsedCapacity = Number.isFinite(Number(rawCapacity)) && Number(rawCapacity) > 0 ? Math.round(Number(rawCapacity)) : null;
+
+            let percent = Number.isFinite(Number(rawPercent)) ? Math.round(Number(rawPercent)) : null;
+            if (percent == null && parsedCount != null && parsedCapacity != null) {
+                percent = Math.round((parsedCount / parsedCapacity) * 100);
+            }
+            if (percent != null) {
+                percent = Math.min(100, Math.max(0, percent));
+            }
+
+            const normalizedStatus = normalizeOccupancyStatus(occupancyStatus);
+            const resolvedPercent = percent ?? normalizedStatus?.percent ?? null;
+            const className = resolvedPercent != null
+                ? (resolvedPercent >= 76 ? 'high' : resolvedPercent >= 41 ? 'medium' : 'low')
+                : (normalizedStatus?.className || 'unknown');
+
+            let label = '';
+            if (parsedCount != null && parsedCapacity != null) {
+                label = `${parsedCount}/${parsedCapacity} aboard`;
+            } else if (parsedCount != null) {
+                label = `${parsedCount} aboard`;
+            } else if (percent != null) {
+                label = `${percent}% full`;
+            } else if (normalizedStatus) {
+                label = normalizedStatus.label;
+            }
+
+            if (!label) return null;
+            return { label, className, percent: resolvedPercent };
+        }
+
+        async function fetchRealtimeVehicleLookup() {
+            const cacheTtlMs = 20 * 1000;
+            if ((Date.now() - realtimeVehicleCache.fetchedAt) < cacheTtlMs && realtimeVehicleCache.byTrip.size > 0) {
+
+                return realtimeVehicleCache.byTrip;
+            }
+
+            const byTrip = new Map();
+            const alerts = [];
+            const oosCollector = [];
+            const realtimeHeaders = {
+                'Ocp-Apim-Subscription-Key': REALTIME_API_KEY,
+                'Accept': 'application/json'
+            };
+
+            function createEmptyEntry() {
+                return { occupancy: null, tripUpdate: null, hasLiveData: false,
+                    position: null, congestionLevel: null, vehicleLabel: null, scheduleRelationship: null, routeId: '' };
+            }
+
+            try {
+                // Use combined feed — single API call for trip updates + vehicle positions + alerts
+                const response = await fetch(REALTIME_COMBINED_URL, { headers: realtimeHeaders });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                const entities = (json.response && json.response.entity) || [];
+
+                let tripUpdateCount = 0, vehicleCount = 0, alertCount = 0;
+
+                entities.forEach(entity => {
+                    // Service Alerts
+                    if (entity.alert) {
+                        alerts.push(entity);
+                        alertCount++;
+                    }
+
+                    // Trip Updates
+                    if (entity.trip_update) {
+                        tripUpdateCount++;
+                        const tu = entity.trip_update;
+                        const trip = tu.trip;
+                        const tripId = trip?.trip_id;
+                        if (!tripId) return;
+                        const tripKey = normalizeTripKey(tripId);
+                        if (!tripKey) return;
+
+                        const existing = byTrip.get(tripKey) || createEmptyEntry();
+                        existing.tripUpdate = tu;
+                        existing.hasLiveData = true;
+                        existing.routeId = trip?.route_id || existing.routeId || '';
+                        if (trip.schedule_relationship != null) existing.scheduleRelationship = trip.schedule_relationship;
+                        if (tu.vehicle?.label) existing.vehicleLabel = tu.vehicle.label;
+                        if (!existing.occupancy) existing.occupancy = getOccupancyInfo(tu.vehicle || {}) || getOccupancyInfo(tu);
+                        byTrip.set(tripKey, existing);
+                    }
+
+                    // Vehicle Positions
+                    if (entity.vehicle && !entity.trip_update) {
+                        vehicleCount++;
+                        const vp = entity.vehicle;
+                        const trip = vp.trip;
+                        const tripId = trip?.trip_id;
+                        if (!tripId) {
+                            // Out-of-service vehicle (no trip assignment)
+                            if (vp.position) {
+                                const oosRouteId = trip?.route_id || '';
+                                const oosRouteInfo = routeDetailsCache.get(oosRouteId);
+                                oosCollector.push({
+                                    vehicleId: vp.vehicle?.id || '',
+                                    vehicleLabel: vp.vehicle?.label || vp.vehicle?.id || 'Unknown',
+                                    position: { lat: vp.position.latitude, lng: vp.position.longitude, bearing: vp.position.bearing },
+                                    routeId: oosRouteId,
+                                    routeType: oosRouteInfo?.routeType ?? null,
+                                    routeShortName: oosRouteInfo?.shortName || '',
+                                    timestamp: vp.timestamp || null
+                                });
+                            }
+                            return;
+                        }
+                        const tripKey = normalizeTripKey(tripId);
+                        if (!tripKey) return;
+
+                        const existing = byTrip.get(tripKey) || createEmptyEntry();
+                        existing.hasLiveData = true;
+                        existing.routeId = trip?.route_id || existing.routeId || '';
+
+                        if (vp.position) {
+                            existing.position = {
+                                lat: vp.position.latitude, lng: vp.position.longitude,
+                                bearing: vp.position.bearing, speed: vp.position.speed
+                            };
+                        }
+                        if (vp.congestion_level != null) existing.congestionLevel = vp.congestion_level;
+                        if (vp.occupancy_status != null && !existing.occupancy) {
+                            existing.occupancy = normalizeOccupancyStatus(vp.occupancy_status);
+                        }
+                        if (!existing.occupancy) existing.occupancy = getOccupancyInfo(vp);
+                        if (vp.vehicle?.label) existing.vehicleLabel = vp.vehicle.label;
+                        if (trip.schedule_relationship != null && existing.scheduleRelationship == null) {
+                            existing.scheduleRelationship = trip.schedule_relationship;
+                        }
+                        byTrip.set(tripKey, existing);
+                    }
+                });
+
+
+                serviceAlertsCache.alerts = alerts;
+                serviceAlertsCache.fetchedAt = Date.now();
+                renderServiceAlerts(alerts);
+
+            } catch (err) {
+                console.warn('Combined feed failed, falling back to separate endpoints:', err);
+                const [tripResult, vehicleResult] = await Promise.all([
+                    fetch(REALTIME_TRIP_UPDATES_URL, { headers: realtimeHeaders })
+                        .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+                        .then(json => (json.response && json.response.entity) || [])
+                        .catch(e => { console.warn('Trip updates unavailable:', e); return []; }),
+                    fetch(REALTIME_VEHICLE_LOCATIONS_URL, { headers: realtimeHeaders })
+                        .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+                        .then(json => (json.response && json.response.entity) || [])
+                        .catch(e => { console.warn('Vehicle locations unavailable:', e); return []; })
+                ]);
+
+                function processEntityFallback(entity) {
+                    const tripUpdate = entity.trip_update || entity.TripUpdate || entity.tripUpdate;
+                    const vehicle = entity.vehicle || entity.VehiclePosition?.vehicle || tripUpdate?.vehicle;
+                    const trip = tripUpdate?.trip || vehicle?.trip;
+                    const tripId = trip?.trip_id || trip?.tripId;
+                    if (!tripId) {
+                        // Capture out-of-service vehicles from fallback feeds
+                        if (vehicle?.position) {
+                            const fbRouteId = trip?.route_id || '';
+                            const fbRouteInfo = routeDetailsCache.get(fbRouteId);
+                            oosCollector.push({
+                                vehicleId: vehicle?.vehicle?.id || vehicle?.id || '',
+                                vehicleLabel: vehicle?.vehicle?.label || vehicle?.label || vehicle?.vehicle?.id || 'Unknown',
+                                position: { lat: vehicle.position.latitude, lng: vehicle.position.longitude, bearing: vehicle.position.bearing },
+                                routeId: fbRouteId,
+                                routeType: fbRouteInfo?.routeType ?? null,
+                                routeShortName: fbRouteInfo?.shortName || '',
+                                timestamp: vehicle.timestamp || null
+                            });
+                        }
+                        return;
+                    }
+                    const tripKey = normalizeTripKey(tripId);
+                    if (!tripKey) return;
+                    const existing = byTrip.get(tripKey) || createEmptyEntry();
+                    if (!existing.occupancy) existing.occupancy = getOccupancyInfo(vehicle || {});
+                    if (!existing.occupancy) existing.occupancy = getOccupancyInfo(tripUpdate || {});
+                    if (tripUpdate && tripUpdate.trip && !existing.tripUpdate) existing.tripUpdate = tripUpdate;
+                    existing.hasLiveData = true;
+                    existing.routeId = trip?.route_id || existing.routeId || '';
+                    if (vehicle?.position) {
+                        existing.position = {
+                            lat: vehicle.position.latitude, lng: vehicle.position.longitude,
+                            bearing: vehicle.position.bearing, speed: vehicle.position.speed
+                        };
+                    }
+                    if (vehicle?.congestion_level != null) existing.congestionLevel = vehicle.congestion_level;
+                    if (vehicle?.vehicle?.label || vehicle?.label) existing.vehicleLabel = vehicle?.vehicle?.label || vehicle?.label;
+                    if (trip?.schedule_relationship != null) existing.scheduleRelationship = trip.schedule_relationship;
+                    byTrip.set(tripKey, existing);
+                }
+
+                tripResult.forEach(e => processEntityFallback(e));
+                vehicleResult.forEach(e => processEntityFallback(e));
+
+            }
+
+            outOfServiceVehicles.length = 0;
+            outOfServiceVehicles.push(...oosCollector);
+            realtimeVehicleCache.fetchedAt = Date.now();
+            realtimeVehicleCache.byTrip = byTrip;
+            // Analyze which rail routes have active realtime data
+            analyzeLineStatus(byTrip);
+
+            // Also capture cancelled-trip vehicles as OOS: vehicles with position data
+            // on a rail route where the trip is cancelled and the line isn't running
+            byTrip.forEach((entry, tripKey) => {
+                if (!entry.position) return;
+                if (entry.scheduleRelationship !== 3) return; // only cancelled trips
+                const routeId = entry.routeId;
+                if (!routeId) return;
+                const rInfo = routeDetailsCache.get(routeId);
+                const rType = rInfo?.routeType;
+                if (rType != null && rType > 2) return; // only rail types
+                // Don't duplicate — check if this vehicle is already in OOS list
+                const vLabel = entry.vehicleLabel || tripKey;
+                if (outOfServiceVehicles.some(v => v.vehicleLabel === vLabel)) return;
+                outOfServiceVehicles.push({
+                    vehicleId: tripKey,
+                    vehicleLabel: vLabel,
+                    position: entry.position,
+                    routeId: routeId,
+                    routeType: rType ?? null,
+                    routeShortName: rInfo?.shortName || '',
+                    timestamp: null,
+                    cancelledTrip: true
+                });
+            });
+
+            return byTrip;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // LINE STATUS ANALYSIS — detect which rail lines aren't running
+        // ═══════════════════════════════════════════════════════
+        function analyzeLineStatus(realtimeLookup) {
+            if (!realtimeLookup || realtimeLookup.size === 0) return;
+            // Count realtime entries per route_id (only for rail route types 0,1,2)
+            const routeRealtimeCounts = new Map(); // routeId -> { active: number, cancelled: number }
+            realtimeLookup.forEach((entry, tripKey) => {
+                const routeId = entry.routeId;
+                if (!routeId) return;
+                const routeInfo = routeDetailsCache.get(routeId);
+                // Only analyze rail routes (type 0=tram, 1=subway, 2=rail)
+                if (routeInfo && routeInfo.routeType != null && routeInfo.routeType > 2) return;
+                // If no routeInfo yet, we can't filter by type — include it (may be rail)
+                const counts = routeRealtimeCounts.get(routeId) || { active: 0, cancelled: 0 };
+                // schedule_relationship: 3 = CANCELED
+                if (entry.scheduleRelationship === 3) {
+                    counts.cancelled++;
+                } else {
+                    counts.active++;
+                }
+                routeRealtimeCounts.set(routeId, counts);
+            });
+            lineStatusCache.realtimeRouteCounts = routeRealtimeCounts;
+            lineStatusCache.fetchedAt = Date.now();
+        }
+
+        function isRailRouteRunning(routeId) {
+            if (!routeId) return true; // assume running if unknown
+            const countsMap = lineStatusCache.realtimeRouteCounts;
+            if (!countsMap) return true;
+            // Only draw conclusions if the overall realtime feed is working
+            // (has ANY entries — bus, train, ferry, etc.). If the feed itself is empty/down, assume running.
+            if (realtimeVehicleCache.byTrip.size === 0) return true;
+            const counts = countsMap.get(routeId);
+            if (!counts) return false; // feed is alive but this route has zero entries — NOT running
+            return counts.active > 0; // running if at least one non-cancelled trip has realtime
+        }
+
+        function isTripCancelledInRealtime(tripId, realtimeLookup) {
+            if (!tripId || !realtimeLookup) return false;
+            const tripKey = normalizeTripKey(tripId);
+            const entry = realtimeLookup.get(tripKey);
+            if (!entry) return false;
+            return entry.scheduleRelationship === 3;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // TRAIN STATION DETECTION & ZERO-TRIP DISRUPTION DETECTION
+        // ═══════════════════════════════════════════════════════
+
+        // Detect if a stop is a train station (parent station with "Train Station" in name, or locationType === 1 with rail-like name)
+        function isTrainStation(stop) {
+            if (!stop) return false;
+            const name = String(stop.stopName || '').toLowerCase();
+            // Parent stations (locationType 1) with "train station" in name
+            if (stop.locationType === 1 && name.includes('train station')) return true;
+            // Even without locationType set yet, name-based detection for common AT pattern
+            if (name.includes('train station')) return true;
+            // Check if the stop name looks like a known train station pattern (e.g. "Papakura Train Station", "Newmarket Train Station")
+            return false;
+        }
+
+        // Get the rail route IDs that serve a given train station (returns null if unknown → show all)
+        function getRoutesForStation(stop) {
+            const name = String(stop.stopName || '').toLowerCase()
+                .replace(/\s*train\s*station\s*/i, '').trim()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // strip diacritics (e.g. Ōtāhuhu → Otahuhu)
+            return STATION_ROUTES[name] || null;
+        }
+
+        // Get rail route IDs that have service alerts (indicating disruption)
+        function getRailRoutesWithAlerts() {
+            const alertedRoutes = new Map(); // routeId -> alertInfo
+            if (serviceAlertsCache.alerts.length === 0) return alertedRoutes;
+            serviceAlertsCache.alerts.forEach(alertEntity => {
+                const a = alertEntity.alert || {};
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                entities.forEach(e => {
+                    if (!e.route_id) return;
+                    const routeInfo = routeDetailsCache.get(e.route_id);
+                    // Only track rail routes (type 0, 1, 2)
+                    if (routeInfo && routeInfo.routeType != null && routeInfo.routeType > 2) return;
+                    if (!alertedRoutes.has(e.route_id)) {
+                        alertedRoutes.set(e.route_id, {
+                            routeId: e.route_id,
+                            shortName: routeInfo?.shortName || e.route_id,
+                            longName: routeInfo?.longName || '',
+                            routeColor: routeInfo?.routeColor || null
+                        });
+                    }
+                });
+            });
+            return alertedRoutes;
+        }
+
+        // Detect suspended rail lines for a train station that has ZERO scheduled trips.
+        // This handles the case where the GTFS timetable itself has been cleared (e.g. CRL transition).
+        function detectZeroTripStationDisruptions(stop) {
+            const disruptions = []; // array of { routeId, shortName, longName, color, reason }
+            if (!isTrainStation(stop)) return disruptions;
+            const data = state.departureData[stop.stopCode];
+            // Only trigger when we've fetched successfully but got zero rows
+            if (!data || data.status !== 'ready') return disruptions;
+            if (data.rows && data.rows.length > 0) return disruptions;
+            // The realtime feed must be alive (has bus data etc.) for us to conclude rail is down
+            if (realtimeVehicleCache.byTrip.size === 0) return disruptions;
+
+            // Determine which rail lines actually serve this station (null = unknown, show all)
+            const stationRoutes = getRoutesForStation(stop);
+
+            // Check which rail routes are NOT running (zero realtime entries)
+            // First try: use service alerts to identify which specific rail lines are disrupted
+            const alertedRailRoutes = getRailRoutesWithAlerts();
+            if (alertedRailRoutes.size > 0) {
+                alertedRailRoutes.forEach((info, routeId) => {
+                    // Only show lines that actually serve this station
+                    if (stationRoutes && !stationRoutes.includes(routeId)) return;
+                    // Confirm this route isn't actually running
+                    if (isRailRouteRunning(routeId)) return;
+                    const reason = getLineAlertReason(routeId);
+                    disruptions.push({
+                        routeId: routeId,
+                        shortName: getRouteLabel(info.shortName),
+                        longName: info.longName,
+                        color: info.routeColor || getRouteColor(info.shortName),
+                        reason: reason
+                    });
+                });
+            }
+
+            // Fallback: if no specific service alerts found, check known rail routes for this station
+            if (disruptions.length === 0) {
+                const routesToCheck = stationRoutes || KNOWN_RAIL_ROUTES;
+                routesToCheck.forEach(routeId => {
+                    if (isRailRouteRunning(routeId)) return;
+                    const routeInfo = routeDetailsCache.get(routeId);
+                    if (!routeInfo) return;
+                    disruptions.push({
+                        routeId: routeId,
+                        shortName: getRouteLabel(routeInfo.shortName),
+                        longName: routeInfo.longName || '',
+                        color: routeInfo.routeColor || getRouteColor(routeInfo.shortName),
+                        reason: getLineAlertReason(routeId)
+                    });
+                });
+            }
+
+            return disruptions;
+        }
+
+        // Search for a nearby rail replacement bus stop for a given train station
+        async function findRailReplacementBusStops(stop) {
+            const cacheKey = stop.stopCode;
+            const cached = rbStopCache.get(cacheKey);
+            if (cached && cached.status !== 'loading') return cached;
+
+            rbStopCache.set(cacheKey, { status: 'loading', stops: [] });
+            const stationName = getPrettyStopName(stop).replace(/\s*train\s*station\s*/i, '').trim();
+            if (!stationName) { rbStopCache.set(cacheKey, { status: 'done', stops: [] }); return rbStopCache.get(cacheKey); }
+
+            try {
+                // Search for bus stops near this station by name (e.g. "Papakura Station")
+                const today = new Date().toISOString().split('T')[0];
+                const searchTerms = [`${stationName} Station`, stationName];
+                let foundStops = [];
+
+                for (const term of searchTerms) {
+                    if (foundStops.length > 0) break;
+                    const url = `${API_BASE}/gtfs/v3/stops?filter[stop_name]=*${encodeURIComponent(term)}*&filter[date]=${today}&page[limit]=50`;
+                    const response = await fetch(url, {
+                        headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                    });
+                    if (!response.ok) continue;
+                    const json = await response.json();
+                    const stops = (json.data || []).map(item => {
+                        const a = item.attributes || {};
+                        return {
+                            stopCode: a.stop_code || '',
+                            stopId: a.stop_id || '',
+                            stopName: a.stop_name || '',
+                            locationType: a.location_type,
+                            stopLat: a.stop_lat || null,
+                            stopLon: a.stop_lon || null
+                        };
+                    });
+                    // Filter to bus-type stops (not train platforms) that are near the station
+                    foundStops = stops.filter(s => {
+                        // Exclude train platforms and the station itself
+                        if (s.stopCode === stop.stopCode) return false;
+                        const sName = s.stopName.toLowerCase();
+                        if (sName.includes('train station')) return false;
+                        if (sName.includes('platform') || sName.includes('plat ')) return false;
+                        // Must be within reasonable distance if we have coords
+                        if (stop.stopLat && s.stopLat) {
+                            const dist = haversineDistance(stop.stopLat, stop.stopLon, s.stopLat, s.stopLon);
+                            if (dist > 0.5) return false; // within 500m
+                        }
+                        return true;
+                    });
+                }
+
+                // Now check which of these stops actually have rail replacement bus trips
+                const rbStops = [];
+                for (const busStop of foundStops.slice(0, 5)) {
+                    const tripUrl = `${API_BASE}/gtfs/v3/stops/${encodeURIComponent(busStop.stopId)}/stoptrips?filter[date]=${new Date().toISOString().split('T')[0]}&filter[start_hour]=${new Date().getHours()}&filter[hour_range]=4`;
+                    try {
+                        const tripResp = await fetch(tripUrl, {
+                            headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                        });
+                        if (!tripResp.ok) continue;
+                        const tripJson = await tripResp.json();
+                        const trips = tripJson.data || [];
+                        // Check if any trips are on RB* routes
+                        const hasRbTrips = trips.some(t => {
+                            const rId = (t.attributes?.route_id || '').toUpperCase();
+                            return rId.startsWith('RB');
+                        });
+                        if (hasRbTrips) {
+                            rbStops.push(busStop);
+                        }
+                    } catch (_) {}
+                }
+
+                const result = { status: 'done', stops: rbStops };
+                rbStopCache.set(cacheKey, result);
+                return result;
+            } catch (err) {
+                console.warn('Failed to find rail replacement bus stops:', err);
+                const result = { status: 'error', stops: [] };
+                rbStopCache.set(cacheKey, result);
+                return result;
+            }
+        }
+
+        function getLineAlertReason(routeId) {
+            if (!routeId || serviceAlertsCache.alerts.length === 0) return '';
+            const relevant = serviceAlertsCache.alerts.filter(alertEntity => {
+                const a = alertEntity.alert || {};
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                return entities.some(e => e.route_id === routeId);
+            });
+            if (relevant.length === 0) return '';
+            const a = relevant[0].alert || {};
+            const headerText = a.header_text?.translation?.text
+                || (Array.isArray(a.header_text?.translation) ? a.header_text.translation[0]?.text : '')
+                || '';
+            const descText = a.description_text?.translation?.text
+                || (Array.isArray(a.description_text?.translation) ? a.description_text.translation[0]?.text : '')
+                || '';
+            return headerText + (descText ? ` — ${descText}` : '');
+        }
+
+        function findRealtimeDataForMovement(movement, realtimeLookup) {
+            if (!realtimeLookup || realtimeLookup.size === 0) return null;
+
+            const rawTripId =
+                movement.vehicleJourneyName
+                || movement.vehicle_journey_name
+                || movement.tripId
+                || movement.trip_id
+                || movement.trip?.trip_id;
+
+            const movementTripKey = normalizeTripKey(rawTripId);
+            if (!movementTripKey) return null;
+
+            let realtimeData = realtimeLookup.get(movementTripKey);
+            if (!realtimeData) {
+                // Fuzzy match: only try prefix matching with a minimum overlap to avoid false matches
+                const MIN_MATCH_LEN = 8;
+                if (movementTripKey.length >= MIN_MATCH_LEN) {
+                    realtimeData = Array.from(realtimeLookup.entries()).find(([tripKey]) => {
+                        if (tripKey.length < MIN_MATCH_LEN) return false;
+                        return movementTripKey.startsWith(tripKey) || tripKey.startsWith(movementTripKey);
+                    })?.[1] || null;
+                }
+            }
+            if (!realtimeData) {
+
+            }
+
+            return realtimeData || null;
+        }
+
+        function cleanRouteId(routeId) {
+            if (!routeId) return '—';
+            const match = String(routeId).match(/^(\d+|[A-Z]+\d*)/);
+            return match ? match[1] : String(routeId);
+        }
+
+        function mapStopTripToRow(trip, stop, realtimeLookup) {
+            const attrs = trip.attributes || trip;
+            // For realtime stop_time_update matching, try both the full stop_id and the stop_code prefix
+            const mainCode = attrs.stop_id || stop.stopId || stop.stopCode || '';
+            const stopCodePrefix = (stop.stopCode || '').split('-')[0];
+            
+            // Parse departure time - format is HH:MM:SS or ISO-like date/time
+            let departureTime = null;
+            if (attrs.departure_time) {
+                const depStr = String(attrs.departure_time);
+                if (/^\d{2}:\d{2}:\d{2}$/.test(depStr)) {
+                    const today = new Date();
+                    const [hours, minutes, seconds] = depStr.split(':').map(Number);
+                    departureTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes, seconds);
+                } else if (/^\d{4}-\d{2}-\d{2}$/.test(depStr)) {
+                    departureTime = new Date(`${depStr}T${attrs.trip_start_time || '00:00:00'}`);
+                } else {
+                    departureTime = new Date(depStr);
+                }
+            }
+
+            const realtimeData = findRealtimeDataForMovement({
+                trip_id: attrs.trip_id,
+                vehicleJourneyName: attrs.trip_id
+            }, realtimeLookup);
+            const hasLiveTracking = !!realtimeData?.hasLiveData;
+            const realtimeOccupancy = realtimeData?.occupancy || null;
+            let expectedTime = null;
+            let delaySeconds = null;
+            let hasStopLevelData = false; // true only when we have per-stop delay info
+            let trainSkipsThisStop = false;
+            if (realtimeData?.tripUpdate) {
+                // Try matching stop_time_update by stop_id (multiple formats) or by stop_sequence
+                const stopSequence = attrs.stop_sequence;
+                const rawStopTimeUpdates = realtimeData.tripUpdate.stop_time_update;
+                const stopTimeUpdates = Array.isArray(rawStopTimeUpdates)
+                    ? rawStopTimeUpdates
+                    : rawStopTimeUpdates ? [rawStopTimeUpdates] : [];
+                const stopTimeUpdate = stopTimeUpdates.find(update => {
+                    const updateStopId = normalizeText(update.stop_id);
+                    // Try exact match with full stop_id, then prefix match with stop_code
+                    if (updateStopId === normalizeText(mainCode)) return true;
+                    if (updateStopId === normalizeText(attrs.stop_id)) return true;
+                    if (stopCodePrefix && updateStopId.startsWith(stopCodePrefix + '-')) return true;
+                    // Also try matching by stop_sequence
+                    if (stopSequence != null && update.stop_sequence != null && Number(update.stop_sequence) === Number(stopSequence)) return true;
+                    return false;
+                });
+                // If the trip has a substantial stop_time_update list (likely full trip) but our stop
+                // isn't in it, the train probably skips this stop in reality
+                if (!stopTimeUpdate && stopTimeUpdates.length >= 5) {
+                    trainSkipsThisStop = true;
+                }
+                if (stopTimeUpdate) {
+                    hasStopLevelData = true;
+                    // Use delay field directly if available (more reliable)
+                    const depDelay = stopTimeUpdate.departure?.delay ?? stopTimeUpdate.arrival?.delay;
+                    if (depDelay != null) {
+                        delaySeconds = Number(depDelay);
+                        if (departureTime) {
+                            expectedTime = new Date(departureTime.getTime() + (delaySeconds * 1000));
+                        }
+                    } else {
+                        // Fall back to absolute time
+                        const timestamp = stopTimeUpdate.departure?.time || stopTimeUpdate.arrival?.time;
+                        if (timestamp != null) {
+                            expectedTime = new Date(Number(timestamp) * 1000);
+                        }
+                    }
+                } else {
+
+                }
+                // Fall back to trip-level delay — but only use non-zero delays as evidence
+                // A trip-level delay of 0 without per-stop data just means "scheduled, no info"
+                if (delaySeconds == null && realtimeData.tripUpdate.delay != null) {
+                    const tripDelay = Number(realtimeData.tripUpdate.delay);
+                    if (tripDelay !== 0) {
+                        delaySeconds = tripDelay;
+                        if (departureTime) {
+                            expectedTime = new Date(departureTime.getTime() + (delaySeconds * 1000));
+                        }
+                    }
+                }
+            } else {
+
+            }
+            // Legacy fallback: trip.delay (some feeds put it here) — same rule, skip 0
+            if (delaySeconds == null && realtimeData?.tripUpdate?.trip?.delay != null && departureTime) {
+                const legacyDelay = Number(realtimeData.tripUpdate.trip.delay);
+                if (legacyDelay !== 0) {
+                    delaySeconds = legacyDelay;
+                    expectedTime = new Date(departureTime.getTime() + (delaySeconds * 1000));
+                }
+            }
+            const tripShortName = String(attrs.trip_short_name || '').trim();
+            const routeLabel = tripShortName && !/^[0-9]+$/.test(tripShortName)
+                ? tripShortName
+                : cleanRouteId(attrs.route_id) || '—';
+            const details = [
+                attrs.stop_headsign && attrs.stop_headsign !== attrs.trip_headsign ? attrs.stop_headsign : null,
+                attrs.trip_short_name && !/^[0-9]+$/.test(attrs.trip_short_name) ? `Trip ${attrs.trip_short_name}` : null
+            ].filter(Boolean).join(' • ') || stop.stopName;
+
+            // Get platform: try cache first (for parent stations), then stop's platform code
+            let platform = attrs.stop_id ? stopPlatformCache.get(attrs.stop_id) : null;
+            if (!platform) {
+                platform = getStopPlatformLabel(stop) || '—';
+            }
+            if (!platform || platform === '—') {
+                platform = attrs.platform_code || attrs.platformCode || platform;
+            }
+
+            let status = '';
+            // Only show status when we have genuine evidence of live tracking:
+            // - per-stop delay data (hasStopLevelData), or
+            // - occupancy data confirming the vehicle is active
+            // For "On time", also require the departure is within 60 min (far-future trips aren't truly tracked)
+            const hasGenuineTracking = hasStopLevelData || !!realtimeOccupancy;
+            const minutesToDeparture = departureTime ? Math.round((departureTime.getTime() - Date.now()) / 60000) : null;
+            if (hasLiveTracking) {
+                if (delaySeconds != null) {
+                    const delayMinutes = Math.round(Math.abs(delaySeconds) / 60);
+                    if (delaySeconds > 60) {
+                        status = `Delayed by ${delayMinutes} min`;
+                    } else if (delaySeconds < -60) {
+                        status = `Ahead by ${delayMinutes} min`;
+                    } else if (hasGenuineTracking && (minutesToDeparture == null || minutesToDeparture <= 60)) {
+                        status = 'On time';
+                    }
+                } else if (expectedTime && departureTime) {
+                    const diff = expectedTime.getTime() - departureTime.getTime();
+                    const diffMinutes = Math.round(Math.abs(diff) / 60000);
+                    if (diff > 60000) {
+                        status = `Delayed by ${diffMinutes} min`;
+                    } else if (diff < -60000) {
+                        status = `Ahead by ${diffMinutes} min`;
+                    } else if (hasGenuineTracking && (minutesToDeparture == null || minutesToDeparture <= 60)) {
+                        status = 'On time';
+                    }
+                }
+            }
+            // --- New feature enrichment ---
+            const routeInfo = routeDetailsCache.get(attrs.route_id);
+            const routeType = routeInfo?.routeType ?? 3;
+            const modeIcon = getModeIcon(routeType);
+            const modeLabel = getModeLabel(routeType);
+            const apiRouteColor = routeInfo?.routeColor || null;
+            const routeLongName = routeInfo?.longName || '';
+
+            const congestionInfo = realtimeData ? getCongestionInfo(realtimeData.congestionLevel) : null;
+            const schedRelInfo = realtimeData?.scheduleRelationship != null
+                ? getScheduleRelationshipInfo(realtimeData.scheduleRelationship) : null;
+
+            let vehicleDistance = null;
+            if (realtimeData?.position?.lat != null && stop.stopLat != null) {
+                const distKm = haversineDistance(
+                    realtimeData.position.lat, realtimeData.position.lng,
+                    stop.stopLat, stop.stopLon
+                );
+                vehicleDistance = formatDistance(distKm);
+            }
+
+            const vehicleLabel = realtimeData?.vehicleLabel || null;
+            const cachedTripDetails = tripDetailsCache.get(attrs.trip_id);
+            const wheelchairAccessible = cachedTripDetails?.wheelchairAccessible ?? null;
+            const bikesAllowed = cachedTripDetails?.bikesAllowed ?? null;
+
+            // If realtime data shows this train skips our stop, exclude it
+            if (trainSkipsThisStop) return null;
+
+            // Determine if this specific trip is cancelled or the whole line is suspended
+            const isRailType = (routeType === 0 || routeType === 1 || routeType === 2);
+            const tripCancelled = isTripCancelledInRealtime(attrs.trip_id, realtimeLookup);
+            // A rail trip on a line with zero active realtime vehicles is "line suspended"
+            const lineSuspended = isRailType && lineStatusCache.fetchedAt > 0 && !isRailRouteRunning(attrs.route_id) && !tripCancelled;
+            // Override status for cancelled trips
+            if (tripCancelled) {
+                status = 'Cancelled';
+            }
+
+            return {
+                stopName: stop.stopName,
+                stopCode: stop.stopCode || stop.stopId || '',
+                route: routeLabel,
+                destination: attrs.trip_headsign || attrs.stop_headsign || '—',
+                details: details,
+                platform: platform,
+                status: status,
+                occupancy: realtimeOccupancy || null,
+                time: expectedTime || departureTime,
+                scheduledTime: departureTime,
+                expectedTime: expectedTime,
+                tripId: attrs.trip_id || '',
+                routeId: attrs.route_id || '',
+                routeType: routeType,
+                modeIcon: modeIcon,
+                modeLabel: modeLabel,
+                apiRouteColor: apiRouteColor,
+                routeLongName: routeLongName,
+                congestionInfo: congestionInfo,
+                schedRelInfo: schedRelInfo,
+                vehicleDistance: vehicleDistance,
+                vehicleLabel: vehicleLabel,
+                wheelchairAccessible: wheelchairAccessible,
+                bikesAllowed: bikesAllowed,
+                isTerminus: Number(attrs.pickup_type) === 1,
+                isCancelled: tripCancelled,
+                lineSuspended: lineSuspended
+            };
+        }
+
+        function mapMovementToRow(movement, stopName, realtimeLookup) {
+            const scheduled = movement.scheduledDepartureTime || movement.departureTime;
+            const expected = movement.expectedDepartureTime || scheduled;
+            const scheduledTime = scheduled ? new Date(scheduled) : null;
+            const expectedTime = expected ? new Date(expected) : null;
+            const time = expectedTime || scheduledTime;
+            const realtimeData = findRealtimeDataForMovement(movement, realtimeLookup);
+            const occupancy = realtimeData?.occupancy || getOccupancyInfo(movement);
+            const hasLiveTracking = !!realtimeData?.hasLiveData || !!occupancy;
+
+            const destination = movement.destinationDisplay || movement.destination_display || movement.stopDisplay || '—';
+            const routeId = movement.route_id || '';
+            const routeInfo = routeDetailsCache.get(routeId);
+            const routeType = routeInfo?.routeType ?? 3;
+            return {
+                stopName,
+                stopCode: '',
+                route: movement.route_short_name || movement.route_long_name || movement.route_id || '—',
+                destination,
+                details: destination !== '—' ? destination : stopName,
+                platform: movement.departurePlatformName || movement.departure_platform_name || '—',
+                status: formatDepartureStatus(movement, hasLiveTracking),
+                occupancy: occupancy,
+                time,
+                scheduledTime,
+                expectedTime,
+                tripId: movement.tripId || movement.trip_id || '',
+                routeId: routeId,
+                routeType: routeType,
+                modeIcon: getModeIcon(routeType),
+                modeLabel: getModeLabel(routeType),
+                apiRouteColor: routeInfo?.routeColor || null,
+                routeLongName: routeInfo?.longName || '',
+                congestionInfo: realtimeData ? getCongestionInfo(realtimeData.congestionLevel) : null,
+                schedRelInfo: realtimeData?.scheduleRelationship != null
+                    ? getScheduleRelationshipInfo(realtimeData.scheduleRelationship) : null,
+                vehicleDistance: null,
+                vehicleLabel: realtimeData?.vehicleLabel || null,
+                wheelchairAccessible: null,
+                bikesAllowed: null,
+                isTerminus: false
+            };
+        }
+
+        function hexToRgba(hex, alpha) {
+            const sanitized = String(hex || '').replace('#', '');
+            const bigint = parseInt(sanitized, 16);
+            if (Number.isNaN(bigint)) return `rgba(79, 209, 197, ${alpha})`;
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function getRouteLabel(route) {
+            const raw = String(route || '').trim().toUpperCase();
+            const code = raw.replace(/[^A-Z0-9]/g, '');
+            const labelCode = (code.match(/^[A-Z0-9]+/) || [raw])[0];
+            if (/^(T1|ONE|1|T1ONE)$/.test(code) || code.startsWith('T1')) return 'ONE';
+            if (/^(T2|WEST|2|T2WEST)$/.test(code) || code.startsWith('T2')) return 'WEST';
+            if (/^(T3|STH|3|T3STH)$/.test(code) || code.startsWith('T3')) return 'STH';
+            if (/^(T4|EAST|4|T4EAST)$/.test(code) || code.startsWith('T4')) return 'EAST';
+            // Rail bus replacements
+            if (code === 'RBE') return 'RBE';
+            if (code === 'RBW' || code === 'RBWX') return code;
+            if (code === 'RBO') return 'RBO';
+            if (code === 'RBS' || code === 'RBSX') return code;
+            // Keep NX1, NX2, WX1, etc. as-is
+            if (/^(NX|WX)[12]$/.test(code)) return code;
+            // For other routes with letters followed by numbers, keep them together
+            if (/^[A-Z]+\d+$/.test(code)) return code;
+            // Only strip numbers for generic cases
+            const letterPrefix = code.match(/^([A-Z]{2,})\d+$/);
+            if (letterPrefix) return letterPrefix[1];
+            return labelCode;
+        }
+
+        function getRouteColor(route) {
+            const raw = String(route || '').trim().toUpperCase();
+            const code = raw.replace(/\s+/g, '');
+            // Rail bus replacements
+            if (code === 'RBE') return '#F59E0B';
+            if (code === 'RBW' || code === 'RBWX') return '#10B981';
+            if (code === 'RBO') return '#00AEEF';
+            if (code === 'RBS' || code === 'RBSX') return '#EF4444';
+            if (code.startsWith('ONE')) return '#00AEEF';
+            if (/^(T1|1|T1ONE)$/.test(code) || code.startsWith('T1')) return '#3B82F6';
+            if (code === 'WEST' || code.startsWith('T2')) return '#10B981';
+            if (code === 'STH' || code.startsWith('T3')) return '#EF4444';
+            if (code === 'EAST' || code.startsWith('T4')) return '#F59E0B';
+            if (code.startsWith('TMK')) return '#007AB8';
+            if (code.startsWith('INN')) return '#56AF31';
+            if (code.startsWith('OUT')) return '#F39200';
+            if (code.startsWith('CTY') || raw.includes('CITYLINK')) return '#E30613';
+            if (code.startsWith('AIR') || raw.includes('AIRPORTLINK')) return '#F97316';
+            if (/^(T5|5)$/.test(code) || code.startsWith('T5')) return '#9c2a88';
+            if (/^(T6|6)$/.test(code) || code.startsWith('T6')) return '#ffbb00';
+            if (code === 'NX1') return '#1D4ED8';
+            if (code === 'NX2') return '#60A5FA';
+            if (code.startsWith('NX')) return '#8c5dff';
+            if (code.startsWith('WX1')) return '#047857';
+            if (code.startsWith('WX')) return '#3f9eff';
+            if (/^F/.test(code)) return '#ffba4f';
+            if (/LINK/.test(code) || code.startsWith('L')) return '#ff925e';
+            if (/^T[0-9]/.test(code)) return '#31d7ae';
+            return '#4fd1c5';
+        }
+
+        function renderOccupancyMeter(percent) {
+            const filledBars = percent == null ? 0 : Math.max(1, Math.min(4, Math.ceil(percent / 25)));
+            return `<span class="occupancy-meter" aria-hidden="true">${Array.from({ length: 4 }, (_, index) => `<span class="${index < filledBars ? 'filled' : ''}"></span>`).join('')}</span>`;
+        }
+
+        function formatDepartureTimeLabel(time, scheduledTime, expectedTime, hasLiveTracking = false) {
+            if (!time) return '—';
+            const now = new Date();
+            const target = expectedTime || scheduledTime || time;
+            const minutesAway = Math.round((new Date(target).getTime() - now.getTime()) / 60000);
+            
+            // Only show "X min" countdown for live-tracked departures within 60 minutes
+            if (hasLiveTracking && minutesAway <= 60) {
+                if (minutesAway <= 0) return 'Now';
+                return `<span class="time-num">${minutesAway}</span><span class="time-unit"> min</span>`;
+            }
+            
+            // Otherwise show scheduled clock time
+            return new Date(target).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatClockTimeLabel(time) {
+            if (!time) return '';
+            return new Date(time).toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function fetchDeparturesForStop(stop) {
+            const key = stop.stopCode;
+            const isFirstLoad = !state.departureData[key] || state.departureData[key].rows.length === 0;
+            if (isFirstLoad) {
+                state.departureData[key] = { status: 'loading', rows: [] };
+                renderSelectedStops();
+                renderBoard();
+            }
+
+            if (stop.departures && stop.stopCode && !/^[0-9]+$/.test(stop.stopCode)) {
+                state.departureData[key] = { status: 'ready', rows: transformFallbackDepartures(stop), updatedAt: Date.now() };
+                renderBoard();
+                return;
+            }
+
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            const currentHour = today.getHours();
+            
+            // Use the full stop_id for the API call (the API requires it, not just the stop_code)
+            const stopId = stop.stopId || stop.stopCode;
+            const stopCode = stop.stopCode || '';
+            const url = `${API_BASE}/gtfs/v3/stops/${encodeURIComponent(stopId)}/stoptrips?filter[date]=${dateStr}&filter[start_hour]=${currentHour}&filter[hour_range]=4`;
+            
+            try {
+                const [response, realtimeLookup] = await Promise.all([
+                    fetch(url, {
+                        headers: {
+                            'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                            'Accept': 'application/json'
+                        }
+                    }),
+                    fetchRealtimeVehicleLookup().catch(() => new Map())
+                ]);
+                if (!response.ok) {
+                    // A 404 means the stop has no scheduled trips at all (common during timetable transitions)
+                    // Treat it as "0 trips found" so disruption detection can still work
+                    if (response.status === 404) {
+                        if (!state.selectedStops.some(item => item.stopCode === key)) return;
+                        state.departureData[key] = { status: 'ready', rows: [], updatedAt: Date.now() };
+                        updateLastUpdated(state.departureData[key].updatedAt);
+                        scheduleRender();
+                        return;
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const json = await response.json();
+                const tripData = (json.data || []);
+
+                const rows = tripData
+                    .map(trip => mapStopTripToRow(trip, stop, realtimeLookup))
+                    .filter(Boolean)
+                    .filter(row => row.time && row.time.getTime() >= Date.now() - 60000)
+                    .sort((a, b) => (a.time?.getTime() || 0) - (b.time?.getTime() || 0));
+
+                if (!state.selectedStops.some(item => item.stopCode === key)) return;
+                state.departureData[key] = { status: 'ready', rows, updatedAt: Date.now() };
+                updateLastUpdated(state.departureData[key].updatedAt);
+            } catch (error) {
+                if (stop.departures) {
+                    state.departureData[key] = { status: 'ready', rows: transformFallbackDepartures(stop), updatedAt: Date.now(), offline: true };
+                    updateLastUpdated(state.departureData[key].updatedAt);
+                } else {
+                    state.departureData[key] = { status: 'error', error: error.message, rows: [] };
+                }
+            }
+            scheduleRender();
+            // Enrich with trip details (wheelchair, bikes) after a short delay
+            setTimeout(enrichDeparturesWithTripDetails, 1500);
+        }
+
+        function refreshAllDepartures() {
+            state.selectedStops.forEach(stop => fetchDeparturesForStop(stop));
+        }
+
+        function saveSelectedStops() {
+            try {
+                const stopsToStore = state.selectedStops.map(stop => ({
+                    stopCode: stop.stopCode,
+                    stopId: stop.stopId || '',
+                    stopName: stop.stopName,
+                    displayName: stop.displayName || '',
+                    parentStation: stop.parentStation || '',
+                    platformCode: stop.platformCode || '',
+                    stopLat: stop.stopLat || null,
+                    stopLon: stop.stopLon || null
+                }));
+                localStorage.setItem(SELECTED_STOPS_STORAGE_KEY, JSON.stringify(stopsToStore));
+            } catch (error) {
+                // Ignore storage failures.
+            }
+        }
+
+        async function fetchStopDetails(stop) {
+            if (!stop || !stop.stopId) return stop;
+
+            const url = `${API_BASE}/gtfs/v3/stops/${encodeURIComponent(stop.stopId)}`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) return stop;
+                const json = await response.json();
+                const attrs = (json.data && json.data.attributes) || {};
+                stop.platformCode = stop.platformCode || attrs.platform_code || '';
+                stop.parentStation = stop.parentStation || attrs.parent_station || '';
+                stop.locationType = attrs.location_type;
+                stop.stopLat = attrs.stop_lat || stop.stopLat || null;
+                stop.stopLon = attrs.stop_lon || stop.stopLon || null;
+
+                
+                // If this is a parent station or has a parent, fetch child stops
+                if (attrs.location_type === 1 || stop.parentStation) {
+                    await fetchChildStops(stop.parentStation || stop.stopId);
+                }
+            } catch (error) {
+                console.error(`Error fetching stop details for ${stop.stopCode}:`, error);
+            }
+            return stop;
+        }
+
+        async function fetchChildStops(parentStopId) {
+            const url = `${API_BASE}/gtfs/v3/stops?filter[parent_station]=${encodeURIComponent(parentStopId)}&page[limit]=500`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                let json = await response.json();
+                let stops = json.data || [];
+
+                if (stops.length === 0) {
+                    const dateStr = new Date().toISOString().split('T')[0];
+                    const fallbackResponse = await fetch(`${API_BASE}/gtfs/v3/stops?filter[date]=${dateStr}&page[limit]=500`, {
+                        headers: {
+                            'Ocp-Apim-Subscription-Key': GTFS_API_KEY,
+                            'Accept': 'application/json'
+                        }
+                    });
+                    if (fallbackResponse.ok) {
+                        const fallbackJson = await fallbackResponse.json();
+                        stops = (fallbackJson.data || []).filter(item => {
+                            const attrs = item.attributes || {};
+                            return attrs.parent_station === parentStopId;
+                        });
+                    }
+                }
+
+                stops.forEach(item => {
+                    const attrs = item.attributes || {};
+                    const stopId = attrs.stop_id;
+                    const platform = attrs.platform_code || '';
+                    if (stopId) {
+                        stopPlatformCache.set(stopId, platform);
+
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching child stops:', error);
+            }
+        }
+
+        function restoreSelectedStops() {
+            try {
+                const raw = localStorage.getItem(SELECTED_STOPS_STORAGE_KEY);
+                if (!raw) return;
+                const storedStops = JSON.parse(raw);
+                if (!Array.isArray(storedStops)) return;
+
+                state.selectedStops = storedStops
+                    .filter(stop => stop && stop.stopCode && stop.stopName)
+                    .map(stop => ({
+                        stopCode: stop.stopCode,
+                        stopId: stop.stopId || stop.stopCode,
+                        stopName: stop.stopName,
+                        displayName: stop.displayName || stop.stopName,
+                        parentStation: stop.parentStation || '',
+                        platformCode: stop.platformCode || '',
+                        stopLat: stop.stopLat || null,
+                        stopLon: stop.stopLon || null
+                    }));
+
+                state.selectedStops.forEach(stop => {
+                    if (!state.departureData[stop.stopCode]) {
+                        state.departureData[stop.stopCode] = { status: 'loading', rows: [] };
+                    }
+                });
+            } catch (error) {
+                // Ignore invalid storage payloads.
+            }
+        }
+
+        function updateKidsHeroSummary() {
+            if (!heroLocation) return;
+            const themeName = document.documentElement.getAttribute('data-theme');
+            const isKidsTheme = themeName === 'kids-light' || themeName === 'kids-dark';
+            if (state.selectedStops.length === 0) {
+                heroLocation.textContent = isKidsTheme ? 'Pin a few stops to build your board' : 'Choose a stop to get started';
+                return;
+            }
+
+            if (state.selectedStops.length === 1) {
+                const stop = state.selectedStops[0];
+                heroLocation.textContent = isKidsTheme
+                    ? 'Watching 1 stop'
+                    : `${stop.stopName} (${stop.stopCode})`;
+                return;
+            }
+
+            const firstStop = state.selectedStops[0];
+            heroLocation.textContent = `${state.selectedStops.length} selected stops · starting with ${firstStop.stopName}`;
+        }
+
+        function updateKidsThemeContent() {
+            const themeName = document.documentElement.getAttribute('data-theme');
+            const isKidsTheme = themeName === 'kids-light' || themeName === 'kids-dark';
+            const firstStop = state.selectedStops[0];
+            const promoBanner = document.getElementById('promo-banner');
+
+            document.documentElement.dataset.kidsLightSelected = themeName === 'kids-light' && firstStop ? 'true' : 'false';
+
+            if (heroTitle && heroSubtitle) {
+                if (themeName === 'kids-light') {
+                    heroTitle.textContent = 'Kia ora, Auckland!';
+                    heroSubtitle.textContent = firstStop ? getPrettyStopName(firstStop) : 'Choose your favourite stop';
+                } else if (themeName === 'kids-dark') {
+                    heroTitle.textContent = 'Auckland Bus Departures';
+                    heroSubtitle.textContent = firstStop ? getPrettyStopName(firstStop) : 'Choose your favourite stop';
+                } else {
+                    heroTitle.textContent = 'Auckland Transport';
+                    heroSubtitle.textContent = 'DEPARTURE BOARD';
+                }
+            }
+
+            if (atLogo) {
+                if (themeName === 'kids-light') {
+                    atLogo.setAttribute('viewBox', '0 0 72 72');
+                    atLogo.innerHTML = `<image href="images/placeholder images for kids theme/at-auckland-transport-logo-png_seeklogo-434920.png" x="0" y="0" width="72" height="72" preserveAspectRatio="xMidYMid meet"/>`;
+                } else {
+                    atLogo.setAttribute('viewBox', '0 0 60 60');
+                    atLogo.innerHTML = `
+                        <circle cx="30" cy="30" r="29" fill="#e31c23"/>
+                        <circle cx="30" cy="30" r="29" fill="none" stroke="white" stroke-width="3"/>
+                        <text x="30" y="42" text-anchor="middle" fill="white" font-family="'Nunito','Arial Black',sans-serif" font-weight="900" font-size="26" letter-spacing="-0.5">AT</text>
+                    `;
+                }
+            }
+
+            // Swap hero decoration illustration
+            const kidsHeroDecor = document.querySelector('.kids-hero-decor');
+            if (kidsHeroDecor) {
+                if (themeName === 'kids-light') {
+                    kidsHeroDecor.innerHTML = `<img src="images/placeholder images for kids theme/31b2eda0-19db-4393-aea5-2f286ee4196d.png" alt="" aria-hidden="true" class="kids-hero-scene-img">`;
+                } else {
+                    kidsHeroDecor.innerHTML = `<span class="kids-sun"></span><span class="kids-tile"></span>`;
+                }
+            }
+
+            // Swap promo bus mascot to cute bus image in kids-light
+            const promoBirdEl = document.querySelector('.promo-layout-b .promo-bird');
+            if (promoBirdEl) {
+                if (themeName === 'kids-light') {
+                    promoBirdEl.setAttribute('viewBox', '0 0 120 102');
+                    promoBirdEl.innerHTML = `<image href="images/placeholder images for kids theme/df38f687-f751-4856-b540-0dfd2994e72e.png" x="0" y="0" width="120" height="102" preserveAspectRatio="xMidYMid meet"/>`;
+                } else {
+                    promoBirdEl.setAttribute('viewBox', '0 0 80 80');
+                    promoBirdEl.innerHTML = `
+                        <rect x="10" y="22" width="60" height="36" rx="12" fill="#1e528f"/>
+                        <rect x="16" y="28" width="24" height="12" rx="3" fill="#9fd4ff"/>
+                        <rect x="44" y="28" width="20" height="12" rx="3" fill="#9fd4ff"/>
+                        <circle cx="26" cy="60" r="8" fill="#123055"/>
+                        <circle cx="54" cy="60" r="8" fill="#123055"/>
+                        <circle cx="26" cy="60" r="3" fill="#fff"/>
+                        <circle cx="54" cy="60" r="3" fill="#fff"/>
+                        <path d="M66 26 L74 32 L66 38" fill="#fda4af"/>
+                    `;
+                }
+            }
+
+            if (boardTitle) {
+                boardTitle.textContent = isKidsTheme ? 'Next buses' : 'Departures';
+            }
+
+            if (boardNote) {
+                boardNote.textContent = isKidsTheme
+                    ? 'Search and pin multiple stops, then switch to fullscreen for a friendly next-buses board.'
+                    : 'Search and pin multiple stops, then switch to fullscreen for a focused departure board.';
+            }
+
+            if (kidsFavoriteBtn) {
+                kidsFavoriteBtn.hidden = !isKidsTheme || !firstStop;
+                if (firstStop) {
+                    kidsFavoriteBtn.textContent = isKidsTheme ? '☆ Favourite this stop' : `☆ Favourite ${firstStop.stopName}`;
+                }
+            }
+
+            if (liveMapLink) {
+                liveMapLink.textContent = isKidsTheme ? 'Open Live Map' : 'Open Live Map';
+            }
+
+            if (kidsHeroMapLink) {
+                kidsHeroMapLink.hidden = true;
+            }
+
+            if (promoBanner) {
+                if (themeName === 'kids-light') {
+                    promoBanner.setAttribute('data-variant', 'b');
+                    promoBanner.dataset.forcedVariant = 'kids-light';
+                } else if (promoBanner.dataset.forcedVariant === 'kids-light') {
+                    delete promoBanner.dataset.forcedVariant;
+                    chooseRandomPromoVariant();
+                }
+            }
+
+            if (themeName === 'kids-light') {
+                if (promoBTitle) promoBTitle.textContent = 'Thanks for catching the bus!';
+                if (promoBBody) promoBBody.textContent = 'He waka eke noa - we\'re all on this journey together.';
+                if (promoBTipTitle) promoBTipTitle.textContent = 'Tag on, tag off';
+                if (promoBTipBody) promoBTipBody.textContent = 'Use your AT HOP card or contactless payment for the best fare.';
+                if (promoBPlanTitle) promoBPlanTitle.textContent = 'Plan your journey';
+                if (promoBHelpTitle) promoBHelpTitle.textContent = 'Need help?';
+                if (promoBHelpBody) promoBHelpBody.textContent = 'Call 09 366 6400';
+            } else {
+                if (promoBTitle) promoBTitle.textContent = 'Need help planning?';
+                if (promoBBody) promoBBody.textContent = 'Get trip alerts, platform updates and stop notices in one place.';
+                if (promoBTipTitle) promoBTipTitle.textContent = 'Save this stop';
+                if (promoBTipBody) promoBTipBody.textContent = 'Keep your favourite stop pinned so departures load instantly.';
+                if (promoBPlanTitle) promoBPlanTitle.textContent = 'Plan your journey';
+                if (promoBHelpTitle) promoBHelpTitle.textContent = 'Need help?';
+                if (promoBHelpBody) promoBHelpBody.textContent = 'Call 09 366 6400';
+            }
+        }
+
+        function getKidsThemeRouteColor(route) {
+            const code = String(route || '').trim().toUpperCase().replace(/\s+/g, '');
+            if (code === 'NX1' || code === '923') return '#7C3AED';
+            if (code === 'NX2' || code === '18') return '#14B8A6';
+            if (code === '938') return '#D946A8';
+            if (code === '27T' || code === 'INNERLINK' || code === 'INN' || code === '27H') return '#84B632';
+            if (code === '120' || code === 'AIR' || code === 'AIRPORTLINK') return '#FF5A47';
+            if (code === '20' || code === '75' || code === '814' || code.startsWith('RB')) return '#F97316';
+            if (code.startsWith('WX')) return '#0891B2';
+            return getRouteColor(route);
+        }
+
+        function renderSelectedStops() {
+            selectedStopsContainer.innerHTML = '';
+            stopMenuLabel.textContent = state.selectedStops.length === 0
+                ? 'Selected stops'
+                : `${state.selectedStops.length} selected stop${state.selectedStops.length === 1 ? '' : 's'}`;
+            updateKidsHeroSummary();
+            updateKidsThemeContent();
+            if (state.selectedStops.length === 0) {
+                selectedStopsContainer.innerHTML = '<span class="note">No stops selected yet.</span>';
+                return;
+            }
+
+            state.selectedStops.forEach(stop => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                chip.innerHTML = `<span>${stop.stopName} (${stop.stopCode})</span><button aria-label="Remove ${stop.stopName}" data-stop-code="${stop.stopCode}">&times;</button>`;
+                selectedStopsContainer.appendChild(chip);
+            });
+        }
+
+        function createBoardBody(content) {
+            if (typeof content === 'string') {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = content;
+                return wrapper.firstElementChild;
+            }
+            return content;
+        }
+
+        function replaceBoardBodyContent(element) {
+            if (typeof element === 'string') {
+                boardBody.innerHTML = element;
+                return;
+            }
+            if (element instanceof Node) {
+                boardBody.replaceChildren(element);
+                return;
+            }
+            boardBody.innerHTML = '';
+        }
+
+        function getDepartureRows() {
+            let rows = state.selectedStops.flatMap(stop => {
+                const data = state.departureData[stop.stopCode];
+                return data && data.rows ? data.rows.map(row => ({ ...row, stopName: stop.stopName, stopCode: row.stopCode || stop.stopCode || '' })) : [];
+            });
+            // Hide departures from lines that aren't running at all today
+            // (but keep individually cancelled trips — they show as 'Cancelled')
+            rows = rows.filter(row => !row.lineSuspended);
+            if (!state.showTerminusArrivals) {
+                rows = rows.filter(row => !row.isTerminus);
+            }
+            return rows.sort((a, b) => (a.time?.getTime() || 0) - (b.time?.getTime() || 0));
+        }
+
+        // Collect suspended rail lines that affect currently-watched stops
+        function getSuspendedLinesForWatchedStops() {
+            const suspendedLines = new Map(); // routeId -> { routeId, shortName, longName, color, reason }
+            state.selectedStops.forEach(stop => {
+                const data = state.departureData[stop.stopCode];
+                if (!data || !data.rows) return;
+                // Path 1: Traditional detection — rows exist but some have lineSuspended flag
+                data.rows.forEach(row => {
+                    if (row.lineSuspended && row.routeId && !suspendedLines.has(row.routeId)) {
+                        const routeInfo = routeDetailsCache.get(row.routeId);
+                        const shortName = routeInfo?.shortName || row.route || row.routeId;
+                        const longName = routeInfo?.longName || '';
+                        const routeColor = row.apiRouteColor || getRouteColor(row.route);
+                        const reason = getLineAlertReason(row.routeId);
+                        suspendedLines.set(row.routeId, {
+                            routeId: row.routeId,
+                            shortName: getRouteLabel(shortName),
+                            longName: longName,
+                            color: routeColor,
+                            reason: reason,
+                            stationStopCode: stop.stopCode
+                        });
+                    }
+                });
+                // Path 2: Zero-trip train station detection — GTFS has no scheduled trips at all
+                // This handles the scenario where the timetable itself has been cleared (e.g. CRL transition)
+                const zeroTripDisruptions = detectZeroTripStationDisruptions(stop);
+                zeroTripDisruptions.forEach(d => {
+                    if (!suspendedLines.has(d.routeId)) {
+                        suspendedLines.set(d.routeId, { ...d, stationStopCode: stop.stopCode });
+                    }
+                });
+            });
+            const result = Array.from(suspendedLines.values());
+            return result;
+        }
+
+        // Build OOS section HTML (reusable across empty-state and departure-list paths)
+        function buildOosHtml() {
+            if (!state.showOutOfService || outOfServiceVehicles.length === 0) return '';
+            const railOOS = outOfServiceVehicles.filter(v =>
+                v.routeType == null || v.routeType === 0 || v.routeType === 1 || v.routeType === 2
+            );
+            if (railOOS.length === 0) return '';
+            // Compute distance to closest watched stop for each OOS vehicle, then filter to within 1km
+            const OOS_MAX_DISTANCE_KM = 1.0;
+            const oosWithDistance = railOOS.map(vehicle => {
+                let closestStop = null;
+                let minDist = Infinity;
+                if (vehicle.position?.lat != null) {
+                    state.selectedStops.forEach(stop => {
+                        if (stop.stopLat == null) return;
+                        const dist = haversineDistance(vehicle.position.lat, vehicle.position.lng, stop.stopLat, stop.stopLon);
+                        if (dist < minDist) { minDist = dist; closestStop = stop; }
+                    });
+                }
+                return { vehicle, closestStop, minDist };
+            }).filter(item => item.minDist <= OOS_MAX_DISTANCE_KM);
+            if (oosWithDistance.length === 0) return '';
+            const trainIcon = getModeIcon(2);
+            const routeColor = '#9ca3af';
+            const routeBg = 'rgba(156, 163, 175, 0.12)';
+            const routeBorder = 'rgba(156, 163, 175, 0.25)';
+            let html = `<div class="oos-section"><div class="oos-section-header">Out-of-Service Rail Vehicles Nearby (${oosWithDistance.length})</div><div class="departure-list">`;
+            oosWithDistance.forEach(({ vehicle, closestStop, minDist }) => {
+                let nearbyHtml = '';
+                if (closestStop) {
+                    nearbyHtml = `<span class="vehicle-distance">${formatDistance(minDist)} from ${getPrettyStopName(closestStop)}</span>`;
+                } else if (vehicle.position?.lat != null) {
+                    nearbyHtml = `<span class="vehicle-distance">${vehicle.position.lat.toFixed(4)}, ${vehicle.position.lng.toFixed(4)}</span>`;
+                }
+                const safeLabel = String(vehicle.vehicleLabel).replace(/</g, '&lt;');
+                const cancelledTag = vehicle.cancelledTrip ? ' (cancelled trip)' : '';
+                html += `<div class="departure-card oos-card">
+                    <div class="departure-row">
+                        <div class="departure-route" style="background:${routeBg}; color:${routeColor}; border: 1px solid ${routeBorder};"><span class="mode-icon" title="Train">${trainIcon}</span>OOS</div>
+                        <div class="departure-info">
+                            <h3>Out of Service${cancelledTag}</h3>
+                            <p>Vehicle: ${safeLabel}${vehicle.routeShortName ? ` &middot; Route ${vehicle.routeShortName}` : ''}</p>
+                        </div>
+                        <div class="departure-time">
+                            <span class="departure-time-main" style="color:var(--muted)">&mdash;</span>
+                        </div>
+                    </div>
+                    <div class="departure-meta">
+                        <div class="departure-meta-primary">
+                            <span class="departure-status status-oos">Out of Service</span>
+                            ${nearbyHtml}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            html += '</div></div>';
+            return html;
+        }
+
+        // Build HTML for a single disruption notice (with optional rail replacement bus button)
+        function buildDisruptionNoticeHtml(line, showRbButton = true) {
+            const safeShortName = String(line.shortName).replace(/</g, '&lt;');
+            const safeLongName = String(line.longName).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const safeReason = line.reason ? String(line.reason).replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+            const rbRouteId = RAIL_TO_RB_MAP[line.routeId] || '';
+            const stationCode = line.stationStopCode || '';
+            const busIcon = getModeIcon(3);
+            const rbButtonHtml = (showRbButton && stationCode) ? `<button class="disruption-rb-btn" data-station-code="${stationCode}" data-route-id="${line.routeId}" data-rb-route="${rbRouteId}" onclick="handleAddRbStop(this)">
+                <span class="rb-icon">${busIcon}</span> Track rail replacement buses
+            </button>` : '';
+            return `<div class="line-disruption-notice">
+                <div class="disruption-icon" style="background:${line.color}">${safeShortName}</div>
+                <div class="disruption-content">
+                    <div class="disruption-title">${safeShortName} Line — Trains not running</div>
+                    <div class="disruption-body">${safeLongName ? safeLongName + ' — ' : ''}No active trains detected on this line. Scheduled services have been removed from the departure board.</div>
+                    ${safeReason ? `<div class="disruption-reason">${safeReason}</div>` : ''}
+                    ${rbButtonHtml}
+                </div>
+            </div>`;
+        }
+
+        // Handle click on "Track rail replacement buses" button
+        async function handleAddRbStop(btn) {
+            const stationCode = btn.dataset.stationCode;
+            const routeId = btn.dataset.routeId;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Searching for bus stops…';
+
+            // Find the station stop object
+            const station = state.selectedStops.find(s => s.stopCode === stationCode);
+            if (!station) {
+                btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Station not found';
+                return;
+            }
+
+            const result = await findRailReplacementBusStops(station);
+            if (result.stops.length === 0) {
+                btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> No replacement bus stops found nearby';
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Track rail replacement buses';
+                }, 5000);
+                return;
+            }
+
+            // Add found RB bus stops to the watch list
+            let addedCount = 0;
+            result.stops.forEach(rbStop => {
+                if (stopIsSelected(rbStop)) return;
+                addStop(rbStop, true); // preserveSearch=true to avoid clearing search
+                addedCount++;
+            });
+
+            if (addedCount > 0) {
+                btn.innerHTML = `<span class="rb-icon">${getModeIcon(3)}</span> ✓ Added ${addedCount} replacement bus stop${addedCount > 1 ? 's' : ''}`;
+                btn.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+                btn.style.color = '#34d399';
+            } else {
+                btn.innerHTML = '<span class="rb-icon">' + getModeIcon(3) + '</span> Bus stops already tracked';
+            }
+        }
+
+        let lastRenderFingerprint = '';
+        function renderBoard() {
+            const selected = state.selectedStops;
+            watchCount.textContent = `${selected.length}`;
+
+            if (selected.length === 0) {
+                departureCount.textContent = '0 upcoming departures';
+                if (lastRenderFingerprint !== 'empty') {
+                    replaceBoardBodyContent('<div class="empty-state">Add one or more stops to see live departures.</div>');
+                    lastRenderFingerprint = 'empty';
+                }
+                return;
+            }
+
+            const departures = getDepartureRows();
+            const loadingStops = selected.filter(stop => state.departureData[stop.stopCode]?.status === 'loading');
+            const errorStops = selected.filter(stop => state.departureData[stop.stopCode]?.status === 'error');
+
+            departureCount.textContent = `${departures.length} upcoming departures`;
+
+            // Build fingerprint from departure data to skip redundant DOM rebuilds
+            const fingerprint = departures.map(d => `${d.tripId}|${d.status}|${d.time?.getTime()|| 0}|${d.occupancy?.label || ''}`).join(';')
+                + `|L${loadingStops.length}|E${errorStops.length}|X${[...expandedTripIds].join(',')}`
+                + `|T${state.showTerminusArrivals}|O${state.showOutOfService}|OC${outOfServiceVehicles.length}|LS${lineStatusCache.fetchedAt}|SA${serviceAlertsCache.fetchedAt}`;
+            if (fingerprint === lastRenderFingerprint) return;
+            lastRenderFingerprint = fingerprint;
+
+            if (departures.length === 0 && loadingStops.length > 0) {
+                replaceBoardBodyContent('<div class="empty-state">Loading live departures…</div>');
+                return;
+            }
+
+            if (departures.length === 0 && errorStops.length > 0) {
+                replaceBoardBodyContent('<div class="empty-state">Unable to load departures for the selected stops.</div>');
+                return;
+            }
+
+            if (departures.length === 0) {
+                // Even with no active departures, still show disruption notices if lines are suspended
+                const suspendedCheck = getSuspendedLinesForWatchedStops();
+                const oosHtml = buildOosHtml();
+                let emptyContent = '';
+                if (suspendedCheck.length > 0) {
+                    emptyContent += '<div class="line-disruptions">';
+                    const rbButtonShown = new Set(); // only show one RB button per station
+                    suspendedCheck.forEach(line => {
+                        const showRbBtn = line.stationStopCode && !rbButtonShown.has(line.stationStopCode);
+                        if (showRbBtn) rbButtonShown.add(line.stationStopCode);
+                        emptyContent += buildDisruptionNoticeHtml(line, showRbBtn);
+                    });
+                    emptyContent += '</div>';
+                }
+                emptyContent += oosHtml;
+                if (!suspendedCheck.length && !oosHtml) {
+                    emptyContent += '<div class="empty-state">No departures found for the selected stops.</div>';
+                } else {
+                    emptyContent += '<div class="empty-state">No other departures found for the selected stops.</div>';
+                }
+                replaceBoardBodyContent(emptyContent);
+                return;
+            }
+
+            const list = document.createElement('div');
+            list.className = 'departure-list';
+            const activeTheme = document.documentElement.getAttribute('data-theme');
+            const isKidsTheme = activeTheme === 'kids-light' || activeTheme === 'kids-dark';
+
+            // Render line disruption notices at the top
+            const suspendedLines = getSuspendedLinesForWatchedStops();
+            if (suspendedLines.length > 0) {
+                const disruptionPanel = document.createElement('div');
+                disruptionPanel.className = 'line-disruptions';
+                const rbBtnShown = new Set();
+                disruptionPanel.innerHTML = suspendedLines.map(line => {
+                    const showRb = line.stationStopCode && !rbBtnShown.has(line.stationStopCode);
+                    if (showRb) rbBtnShown.add(line.stationStopCode);
+                    return buildDisruptionNoticeHtml(line, showRb);
+                }).join('');
+                list.appendChild(disruptionPanel);
+            }
+
+            if (isKidsTheme) {
+                const columns = document.createElement('div');
+                columns.className = 'kids-board-columns';
+                columns.innerHTML = `
+                    <span class="kids-board-col kids-board-col-route">Route</span>
+                    <span class="kids-board-col kids-board-col-destination">Destination</span>
+                    <span class="kids-board-col kids-board-col-scheduled">Scheduled</span>
+                    <span class="kids-board-col kids-board-col-due">Due</span>
+                `;
+                list.appendChild(columns);
+            }
+
+            const INITIAL_SHOW = 5;
+            const showAll = state.showAllDepartures || false;
+            const visibleDeps = showAll ? departures : departures.slice(0, INITIAL_SHOW);
+
+            visibleDeps.forEach(dep => {
+                const card = document.createElement('div');
+                card.className = 'departure-card' + (dep.isCancelled ? ' cancelled-card' : '');
+                card.dataset.tripId = dep.tripId || '';
+                const hasLiveTracking = !!dep.expectedTime;
+                const timeLabel = formatDepartureTimeLabel(dep.time, dep.scheduledTime, dep.expectedTime, hasLiveTracking);
+                const scheduledLabel = formatClockTimeLabel(dep.scheduledTime || dep.expectedTime || dep.time);
+                const routeLabel = getRouteLabel(dep.route);
+                const routeColor = isKidsTheme ? getKidsThemeRouteColor(dep.route) : (dep.apiRouteColor || getRouteColor(dep.route));
+                const routeBackground = hexToRgba(routeColor, 0.18);
+                const routeBorder = hexToRgba(routeColor, 0.33);
+                const normalizedStatus = (dep.status || '').toLowerCase();
+                const statusClass = normalizedStatus.includes('delay') ? 'status-delay'
+                    : normalizedStatus.includes('ahead') ? 'status-ahead'
+                    : normalizedStatus.includes('board') ? 'status-board'
+                    : normalizedStatus.includes('cancel') ? 'status-cancel'
+                    : 'status-on';
+                const statusHtml = dep.status ? `<span class="departure-status ${statusClass}">${dep.status}</span>` : '';
+                const occupancyHtml = dep.occupancy
+                    ? `<span class="occupancy-chip ${dep.occupancy.className}">${renderOccupancyMeter(dep.occupancy.percent)}<span>${dep.occupancy.label}</span></span>`
+                    : '';
+
+                const modeIconHtml = dep.modeIcon ? `<span class="mode-icon" title="${dep.modeLabel || ''}">${dep.modeIcon}</span>` : '';
+                const congestionHtml = dep.congestionInfo
+                    ? `<span class="congestion-chip ${dep.congestionInfo.className}">${dep.congestionInfo.label}</span>` : '';
+                const schedBadgeHtml = dep.schedRelInfo
+                    ? `<span class="schedule-badge ${dep.schedRelInfo.className}">${dep.schedRelInfo.label}</span>` : '';
+                const terminusBadgeHtml = dep.isTerminus
+                    ? `<span class="terminus-badge">Arriving only</span>` : '';
+                const distanceHtml = dep.vehicleDistance
+                    ? `<span class="vehicle-distance">${dep.vehicleDistance}</span>` : '';
+                const vesselHtml = (dep.routeType === 4 && dep.vehicleLabel)
+                    ? `<span class="vessel-name">Vessel: ${dep.vehicleLabel}</span>` : '';
+                const dueSignalHtml = dep.expectedTime ? `<span class="departure-due-signal" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13C5 11 7 11 9 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 9C10 6 13 6 16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M11 5C13 3.5 15 3.5 17 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>` : '';
+                const routeStyle = isKidsTheme
+                    ? `background:${routeColor} !important; color:#fff !important; border:none !important;`
+                    : `background:${routeBackground}; color:${routeColor}; border: 1px solid ${routeBorder};`;
+                const timeMainStyle = isKidsTheme ? ` style="color:${routeColor} !important;"` : '';
+                const dueSignalStyledHtml = dep.expectedTime
+                    ? `<span class="departure-due-signal" style="color:${routeColor} !important;" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13C5 11 7 11 9 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 9C10 6 13 6 16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M11 5C13 3.5 15 3.5 17 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>`
+                    : '';
+
+                let accessHtml = '';
+                if (dep.wheelchairAccessible === 1) accessHtml += '<span title="Wheelchair accessible">Accessible</span>';
+                if (dep.bikesAllowed === 1) accessHtml += '<span title="Bikes allowed">Bikes</span>';
+                if (accessHtml) accessHtml = `<span class="access-icons">${accessHtml}</span>`;
+
+                const expandBtnHtml = dep.tripId ? `<button class="departure-expand-btn" data-trip-id="${dep.tripId}">View journey ▸</button>` : '';
+
+                card.style.setProperty('--kids-accent', routeColor);
+                card.style.setProperty('--kids-route-color', routeColor);
+                card.style.setProperty('--kids-route-bg', routeBackground);
+                card.style.setProperty('--kids-route-border', routeBorder);
+
+                card.innerHTML = `
+                    <div class="departure-row">
+                        <div class="departure-route" style="${routeStyle}">${modeIconHtml}${routeLabel}</div>
+                        <div class="departure-info">
+                            <h3>${dep.details}</h3>
+                            <p>${dep.destination}${dep.routeLongName && dep.routeLongName !== dep.destination ? ` <span class="route-long-name" style="opacity:0.6">· ${dep.routeLongName}</span>` : ''}</p>
+                        </div>
+                        <div class="departure-time">
+                            <span class="departure-time-pill"><span class="schedule-prefix">Sched</span> ${scheduledLabel}</span>
+                            <span class="departure-time-main"${timeMainStyle}>${timeLabel}</span>
+                            ${dueSignalStyledHtml}
+                        </div>
+                    </div>
+                    <div class="departure-meta">
+                        <div class="departure-meta-primary">
+                            <span class="departure-platform">${dep.platform && dep.platform !== '—' ? `Platform ${dep.platform}` : (dep.stopName ? `Stop: ${getPrettyStopName({stopName: dep.stopName})}${dep.stopCode ? ` (#${dep.stopCode})` : ''}` : '—')}</span>
+                            ${dep.platform && dep.platform !== '—' && dep.stopName ? `<span class="departure-stop-name">${getPrettyStopName({stopName: dep.stopName})}${dep.stopCode ? ` (#${dep.stopCode})` : ''}</span>` : ''}
+                            ${occupancyHtml}
+                            ${congestionHtml}
+                            ${accessHtml}
+                            ${vesselHtml}
+                            ${distanceHtml}
+                        </div>
+                        <div class="departure-meta-secondary">
+                            ${terminusBadgeHtml}
+                            ${schedBadgeHtml}
+                            ${statusHtml}
+                            ${expandBtnHtml}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            // "View all departures" button
+            if (departures.length > INITIAL_SHOW) {
+                const viewAllBtn = document.createElement('button');
+                viewAllBtn.className = 'view-all-btn';
+                viewAllBtn.type = 'button';
+                if (showAll) {
+                    viewAllBtn.innerHTML = 'Show fewer departures ▴';
+                    viewAllBtn.addEventListener('click', () => { state.showAllDepartures = false; lastRenderFingerprint = ''; renderBoard(); });
+                } else {
+                    viewAllBtn.innerHTML = `View all departures (${departures.length}) ▾`;
+                    viewAllBtn.addEventListener('click', () => { state.showAllDepartures = true; lastRenderFingerprint = ''; renderBoard(); });
+                }
+                list.appendChild(viewAllBtn);
+            }
+
+            // Render out-of-service rail vehicles (using shared helper)
+            const oosHtmlBlock = buildOosHtml();
+            if (oosHtmlBlock) {
+                list.insertAdjacentHTML('beforeend', oosHtmlBlock);
+            }
+
+            // Save scroll positions of expanded journeys before DOM swap
+            const savedScrollPositions = new Map();
+            if (expandedTripIds.size > 0) {
+                const oldJourneys = boardBody.querySelectorAll('.departure-card[data-expanded="true"] .trip-journey');
+                oldJourneys.forEach(el => {
+                    const card = el.closest('.departure-card');
+                    if (card?.dataset.tripId) savedScrollPositions.set(card.dataset.tripId, el.scrollTop);
+                });
+            }
+
+            replaceBoardBodyContent(list);
+
+            // Restore any previously expanded trip journeys
+            if (expandedTripIds.size > 0) {
+                const cards = boardBody.querySelectorAll('.departure-card[data-trip-id]');
+                cards.forEach(card => {
+                    const tripId = card.dataset.tripId;
+                    if (!tripId || !expandedTripIds.has(tripId)) return;
+                    const expandedContent = buildTripExpandedContent(tripId);
+                    if (expandedContent) {
+                        card.insertAdjacentHTML('beforeend', expandedContent);
+                        card.setAttribute('data-expanded', 'true');
+                        const btn = card.querySelector('.departure-expand-btn');
+                        if (btn) btn.textContent = 'Hide journey \u25BE';
+                        const savedScroll = savedScrollPositions.get(tripId);
+                        if (savedScroll != null) {
+                            const journeyEl = card.querySelector('.trip-journey');
+                            if (journeyEl) journeyEl.scrollTop = savedScroll;
+                        }
+                    } else {
+                        expandedTripIds.delete(tripId);
+                    }
+                });
+            }
+
+            if (loadingStops.length > 0 || errorStops.length > 0) {
+                const note = document.createElement('p');
+                note.className = 'note';
+                note.textContent = `Updating ${loadingStops.length} stop${loadingStops.length === 1 ? '' : 's'}${errorStops.length ? `, ${errorStops.length} failed` : ''}.`;
+                boardBody.appendChild(note);
+            }
+        }
+
+        function addStop(stop, preserveSearch = false) {
+            if (stopIsSelected(stop)) {
+                alert(`${stop.stopName} is already added.`);
+                return;
+            }
+            state.selectedStops.push(stop);
+            saveSelectedStops();
+            if (!state.departureData[stop.stopCode]) {
+                state.departureData[stop.stopCode] = { status: 'loading', rows: [] };
+            }
+            if (!preserveSearch) {
+                searchInput.value = '';
+                state.searchQuery = '';
+                state.searchResults = [];
+                hideSearchList();
+            }
+            renderSelectedStops();
+            renderBoard();
+            
+            // Wait for stop details (including child stops/platforms) to be fetched before fetching departures
+            fetchStopDetails(stop).then(updatedStop => {
+                const index = state.selectedStops.findIndex(item => item.stopCode === updatedStop.stopCode);
+                if (index !== -1) {
+                    state.selectedStops[index] = updatedStop;
+                    saveSelectedStops();
+                    renderSelectedStops();
+                }
+                // Now fetch departures AFTER platform cache is populated
+                return fetchDeparturesForStop(updatedStop);
+            }).catch(error => {
+                console.error(`Error during addStop for ${stop.stopCode}:`, error);
+            });
+        }
+
+        function addStopFromInput() {
+            const value = searchInput.value.trim();
+            if (!value) return;
+            const stop = findStopByInput(value);
+            if (!stop) {
+                alert('Stop not found. Try a full Auckland stop name or code.');
+                return;
+            }
+            addStop(stop);
+        }
+
+        function removeStop(stopCode) {
+            state.selectedStops = state.selectedStops.filter(stop => stop.stopCode !== stopCode);
+            saveSelectedStops();
+            renderSelectedStops();
+            renderBoard();
+        }
+
+        function clearStops() {
+            state.selectedStops = [];
+            state.departureData = {};
+            saveSelectedStops();
+            stopMenu.open = false;
+            renderSelectedStops();
+            renderBoard();
+        }
+
+        function setFullscreen(enabled) {
+            document.body.classList.toggle('fullscreen-mode', enabled);
+            fullscreenToggle.textContent = enabled ? 'Exit fullscreen' : 'Enter fullscreen';
+        }
+
+        function toggleFullscreen() {
+            setFullscreen(!document.body.classList.contains('fullscreen-mode'));
+        }
+
+        let lastUpdatedTimestamp = 0;
+        function updateLiveTime() {
+            const now = new Date();
+            liveTime.textContent = now.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const liveDateEl = document.getElementById('live-date');
+            if (liveDateEl) {
+                liveDateEl.textContent = now.toLocaleDateString('en-NZ', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+            }
+            if (heroLiveTimeCompact) {
+                heroLiveTimeCompact.textContent = now.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' }).toLowerCase();
+            }
+            if (heroLiveDateCompact) {
+                heroLiveDateCompact.textContent = now.toLocaleDateString('en-NZ', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+            }
+            // Update relative "ago" text
+            if (lastUpdatedTimestamp) {
+                const secsAgo = Math.round((Date.now() - lastUpdatedTimestamp) / 1000);
+                lastUpdated.textContent = `Updated ${secsAgo}s ago`;
+            }
+        }
+
+        function updateLastUpdated(timestamp = Date.now()) {
+            lastUpdatedTimestamp = timestamp;
+            const secsAgo = Math.round((Date.now() - timestamp) / 1000);
+            lastUpdated.textContent = `Updated ${secsAgo}s ago`;
+        }
+
+        async function fetchWeather() {
+            const el = document.getElementById('weather-widget');
+            if (!el) return;
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-36.8485&longitude=174.7633&current=temperature_2m,weathercode&timezone=Pacific%2FAuckland');
+                if (!res.ok) return;
+                const data = await res.json();
+                const temp = Math.round(data.current.temperature_2m);
+                const code = data.current.weathercode;
+                let icon = '';
+                if (code === 0) icon = '';
+                else if (code <= 3) icon = '';
+                else if (code <= 48) icon = '';
+                else if (code <= 67) icon = '';
+                else if (code <= 77) icon = '';
+                else if (code <= 82) icon = '';
+                else icon = '';
+                el.innerHTML = `<span class="weather-icon">${icon}</span><span class="weather-temp">${temp}°C</span>`;
+                if (heroWeatherIcon) heroWeatherIcon.textContent = icon;
+                if (heroWeatherTemp) heroWeatherTemp.textContent = `${temp}°C`;
+            } catch (_) {
+                // Silently fail — weather is non-critical
+            }
+        }
+
+        function chooseRandomPromoVariant() {
+            const promoBanner = document.getElementById('promo-banner');
+            if (!promoBanner) return;
+            const variants = ['a', 'b'];
+            const selected = variants[Math.floor(Math.random() * variants.length)];
+            promoBanner.setAttribute('data-variant', selected);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // NEW FEATURE FUNCTIONS
+        // ═══════════════════════════════════════════════════════
+
+        // --- Mode Icon helpers ---
+        function getModeIcon(routeType) {
+            const c = 'currentColor';
+            switch (routeType) {
+                case 0: // Tram
+                case 1: // Subway
+                case 2: // Train — pointed nose, overhead wire
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 18l-1.5 3M17 18l1.5 3" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><rect x="5" y="4" width="14" height="14" rx="2.5" stroke="${c}" stroke-width="1.8"/><path d="M5 13h14" stroke="${c}" stroke-width="1.4"/><circle cx="8.5" cy="15.5" r="1" fill="${c}"/><circle cx="15.5" cy="15.5" r="1" fill="${c}"/><rect x="8" y="6.5" width="3" height="3.5" rx="0.8" fill="${c}" opacity="0.35"/><rect x="13" y="6.5" width="3" height="3.5" rx="0.8" fill="${c}" opacity="0.35"/><line x1="12" y1="1" x2="12" y2="4" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="9" y1="1" x2="15" y2="1" stroke="${c}" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+                case 4: // Ferry — wave + hull
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><path d="M5 15l1.5-6h11l1.5 6" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/><rect x="10" y="5" width="4" height="4" rx="0.5" stroke="${c}" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="5" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+                case 3: // Bus — tall front, big windshield, round top
+                default:
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="16" rx="3.5" stroke="${c}" stroke-width="1.8"/><path d="M4 12h16" stroke="${c}" stroke-width="1.4"/><rect x="6" y="5.5" width="12" height="4" rx="1.2" fill="${c}" opacity="0.25"/><circle cx="8" cy="21" r="1.3" fill="${c}"/><circle cx="16" cy="21" r="1.3" fill="${c}"/><line x1="8" y1="19" x2="8" y2="19.7" stroke="${c}" stroke-width="1.5"/><line x1="16" y1="19" x2="16" y2="19.7" stroke="${c}" stroke-width="1.5"/><line x1="2.5" y1="8" x2="4" y2="8" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><line x1="20" y1="8" x2="21.5" y2="8" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+            }
+        }
+        function getModeLabel(routeType) {
+            switch (routeType) {
+                case 0: return 'Tram'; case 1: return 'Subway'; case 2: return 'Train';
+                case 3: return 'Bus'; case 4: return 'Ferry'; default: return 'Transit';
+            }
+        }
+
+        // --- SVG vehicle icons for journey view ---
+        function getVehicleSvgIcon(routeType) {
+            const color = '#60a5fa';
+            switch (routeType) {
+                case 0: // Tram
+                case 1: // Subway
+                case 2: // Train — overhead wire + pantograph, window dividers, headlights
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 18l-1.5 3M17 18l1.5 3" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/><rect x="5" y="4" width="14" height="14" rx="2.5" stroke="${color}" stroke-width="2"/><path d="M5 13h14" stroke="${color}" stroke-width="1.5"/><circle cx="8.5" cy="15.5" r="1.2" fill="${color}"/><circle cx="15.5" cy="15.5" r="1.2" fill="${color}"/><rect x="8" y="6.5" width="3" height="3.5" rx="0.8" fill="${color}" opacity="0.4"/><rect x="13" y="6.5" width="3" height="3.5" rx="0.8" fill="${color}" opacity="0.4"/><line x1="12" y1="1" x2="12" y2="4" stroke="${color}" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="1" x2="15" y2="1" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+                case 4: // Ferry
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke="${color}" stroke-width="2" stroke-linecap="round"/><path d="M5 15l1.5-6h11l1.5 6" stroke="${color}" stroke-width="2" stroke-linejoin="round"/><rect x="10" y="5" width="4" height="4" rx="0.5" stroke="${color}" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="5" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+                case 3: // Bus — big windshield, side mirrors, distinct from train
+                default:
+                    return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="16" rx="3.5" stroke="${color}" stroke-width="2"/><path d="M4 12h16" stroke="${color}" stroke-width="1.5"/><rect x="6" y="5.5" width="12" height="4" rx="1.2" fill="${color}" opacity="0.35"/><circle cx="8" cy="21.5" r="1.5" fill="${color}"/><circle cx="16" cy="21.5" r="1.5" fill="${color}"/><line x1="8" y1="19" x2="8" y2="20" stroke="${color}" stroke-width="1.5"/><line x1="16" y1="19" x2="16" y2="20" stroke="${color}" stroke-width="1.5"/><line x1="2.5" y1="8" x2="4" y2="8" stroke="${color}" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="8" x2="21.5" y2="8" stroke="${color}" stroke-width="2" stroke-linecap="round"/></svg>`;
+            }
+        }
+
+        // --- Congestion Level ---
+        function getCongestionInfo(level) {
+            switch (level) {
+                case 1: return { label: 'Smooth traffic', className: 'cong-low' };
+                case 2: return { label: 'Stop & go', className: 'cong-med' };
+                case 3: return { label: 'Heavy traffic', className: 'cong-high' };
+                case 4: return { label: 'Severe congestion', className: 'cong-high' };
+                default: return null;
+            }
+        }
+
+        // --- Schedule Relationship ---
+        function getScheduleRelationshipInfo(relationship) {
+            switch (relationship) {
+                case 1: return { label: 'Extra service', className: 'sched-added' };
+                case 2: return { label: 'Unscheduled', className: 'sched-unscheduled' };
+                case 3: return { label: 'Canceled', className: 'sched-canceled' };
+                default: return null;
+            }
+        }
+
+        // --- Haversine Distance ---
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const toRad = deg => deg * Math.PI / 180;
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+        function formatDistance(km) {
+            if (km < 1) return `${Math.round(km * 1000)}m away`;
+            return `${km.toFixed(1)}km away`;
+        }
+
+        // --- Fetch All Routes (for colors, types, and long names) ---
+        async function fetchAllRoutes() {
+            if (routeDetailsCache.size > 0) return;
+            try {
+                const response = await fetch(`${API_BASE}/gtfs/v3/routes`, {
+                    headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                (json.data || []).forEach(item => {
+                    const a = item.attributes || {};
+                    routeDetailsCache.set(a.route_id, {
+                        routeId: a.route_id,
+                        shortName: a.route_short_name || '',
+                        longName: a.route_long_name || '',
+                        routeType: a.route_type,
+                        routeColor: a.route_color ? `#${a.route_color}` : null,
+                        routeTextColor: a.route_text_color ? `#${a.route_text_color}` : null,
+                        agencyId: a.agency_id || ''
+                    });
+                });
+
+            } catch (err) {
+                console.warn('Failed to fetch routes:', err);
+            }
+        }
+
+        // --- Fetch Trip Details (wheelchair, bikes) ---
+        async function fetchTripDetails(tripId) {
+            if (!tripId) return null;
+            if (tripDetailsCache.has(tripId)) return tripDetailsCache.get(tripId);
+            try {
+                const response = await fetch(`${API_BASE}/gtfs/v3/trips/${encodeURIComponent(tripId)}`, {
+                    headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) return null;
+                const json = await response.json();
+                const a = (json.data && json.data.attributes) || {};
+                const details = {
+                    wheelchairAccessible: a.wheelchair_accessible,
+                    bikesAllowed: a.bikes_allowed,
+                    blockId: a.block_id, shapeId: a.shape_id
+                };
+                tripDetailsCache.set(tripId, details);
+                return details;
+            } catch (err) { return null; }
+        }
+
+        // --- Fetch Trip Journey (stop times + stop names) ---
+        async function fetchTripJourney(tripId) {
+            if (!tripId) return [];
+            const cacheKey = `journey_${tripId}`;
+            if (tripStopTimesCache.has(cacheKey)) return tripStopTimesCache.get(cacheKey);
+            try {
+                const [timesResp, stopsResp] = await Promise.all([
+                    fetch(`${API_BASE}/gtfs/v3/trips/${encodeURIComponent(tripId)}/stoptimes`, {
+                        headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                    }),
+                    fetch(`${API_BASE}/gtfs/v3/trips/${encodeURIComponent(tripId)}/stops`, {
+                        headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                    })
+                ]);
+                const timesJson = timesResp.ok ? await timesResp.json() : { data: [] };
+                const stopsJson = stopsResp.ok ? await stopsResp.json() : { data: [] };
+
+                const stopNameMap = new Map();
+                const stopLatLonMap = new Map();
+                const stopsData = Array.isArray(stopsJson.data) ? stopsJson.data : stopsJson.data ? [stopsJson.data] : [];
+                stopsData.forEach(item => {
+                    const a = item.attributes || {};
+                    stopNameMap.set(a.stop_id, a.stop_name || a.stop_id);
+                    if (a.stop_lat != null && a.stop_lon != null) {
+                        stopLatLonMap.set(a.stop_id, { lat: a.stop_lat, lon: a.stop_lon });
+                    }
+                });
+
+                const journey = (timesJson.data || []).map(item => {
+                    const a = item.attributes || {};
+                    const coords = stopLatLonMap.get(a.stop_id);
+                    return {
+                        stopId: a.stop_id,
+                        stopName: stopNameMap.get(a.stop_id) || a.stop_id,
+                        stopSequence: a.stop_sequence,
+                        arrivalTime: a.arrival_time,
+                        departureTime: a.departure_time,
+                        stopHeadsign: a.stop_headsign,
+                        stopLat: coords?.lat || null,
+                        stopLon: coords?.lon || null
+                    };
+                }).sort((a, b) => a.stopSequence - b.stopSequence);
+
+                tripStopTimesCache.set(cacheKey, journey);
+                return journey;
+            } catch (err) { return []; }
+        }
+
+        function renderTripJourney(journey, currentStopId, vehiclePosition, routeType) {
+            if (!journey || journey.length === 0) return '<div class="trip-journey"><em>Journey details unavailable.</em></div>';
+
+            const vehicleSvg = getVehicleSvgIcon(routeType != null ? routeType : 3);
+
+            // Determine where the vehicle is between stops
+            let vehicleBetweenIndex = -1; // insert indicator AFTER this index
+            if (vehiclePosition && vehiclePosition.lat != null) {
+                // Find the two adjacent stops the vehicle is closest to being between
+                let bestIndex = -1;
+                let bestScore = Infinity;
+                for (let i = 0; i < journey.length - 1; i++) {
+                    const s1 = journey[i];
+                    const s2 = journey[i + 1];
+                    if (s1.stopLat == null || s2.stopLat == null) continue;
+                    const d1 = haversineDistance(vehiclePosition.lat, vehiclePosition.lng, s1.stopLat, s1.stopLon);
+                    const d2 = haversineDistance(vehiclePosition.lat, vehiclePosition.lng, s2.stopLat, s2.stopLon);
+                    const segLen = haversineDistance(s1.stopLat, s1.stopLon, s2.stopLat, s2.stopLon);
+                    // Score: how close the vehicle is to being on this segment
+                    const score = (d1 + d2) - segLen;
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestIndex = i;
+                    }
+                }
+                // Only show if reasonably close to the route (within ~2km deviation)
+                if (bestIndex >= 0 && bestScore < 2) {
+                    vehicleBetweenIndex = bestIndex;
+                }
+            }
+
+            const stopsHtml = journey.map((stop, idx) => {
+                const isCurrent = stop.stopId === currentStopId;
+                const isPassed = vehicleBetweenIndex >= 0 && idx <= vehicleBetweenIndex;
+                const timeStr = stop.departureTime || stop.arrivalTime || '';
+                const formattedTime = /^\d{2}:\d{2}/.test(timeStr) ? timeStr.slice(0, 5) : '';
+                let classes = 'trip-stop-item';
+                if (isCurrent) classes += ' current-stop';
+                if (isPassed && !isCurrent) classes += ' stop-passed';
+                let itemHtml = `<div class="${classes}">
+                    <span class="stop-dot"></span>
+                    <span>${stop.stopName}</span>
+                    <span class="trip-stop-time">${formattedTime}</span>
+                </div>`;
+                // Insert vehicle indicator after this stop if vehicle is between this and next
+                if (idx === vehicleBetweenIndex) {
+                    itemHtml += `<div class="trip-vehicle-indicator">
+                        <span class="vehicle-marker">${vehicleSvg}</span>
+                        <span class="vehicle-line"></span>
+                        <span>Vehicle is here</span>
+                    </div>`;
+                }
+                return itemHtml;
+            }).join('');
+            return `<div class="trip-journey">
+                <div class="trip-journey-header"><span>Full journey (${journey.length} stops)</span></div>
+                ${stopsHtml}
+            </div>`;
+        }
+
+        // --- Ferry Positions ---
+        async function fetchFerryPositions() {
+            const cacheTtlMs = 30 * 1000;
+            if ((Date.now() - ferryPositionCache.fetchedAt) < cacheTtlMs) return ferryPositionCache.vessels;
+            try {
+                const response = await fetch(REALTIME_FERRY_POSITIONS_URL, {
+                    headers: { 'Ocp-Apim-Subscription-Key': REALTIME_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                ferryPositionCache.vessels = json.response || [];
+                ferryPositionCache.fetchedAt = Date.now();
+
+                return ferryPositionCache.vessels;
+            } catch (err) {
+                console.warn('Ferry positions unavailable:', err);
+                return ferryPositionCache.vessels;
+            }
+        }
+
+        // --- Service Alerts ---
+        function renderServiceAlerts(alerts) {
+            // Alerts are now shown inline on each departure card — clear global panel
+            if (alertsPanel) alertsPanel.innerHTML = '';
+        }
+
+        // --- Calendar / Holiday Check ---
+        async function checkCalendarForToday() {
+            if (!calendarWarning) return;
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+            try {
+                const dateStr = today.toISOString().split('T')[0];
+                const response = await fetch(`${API_BASE}/gtfs/v3/versions?filter[date]=${dateStr}`, {
+                    headers: { 'Ocp-Apim-Subscription-Key': GTFS_API_KEY, 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const json = await response.json();
+                const versions = json.data || [];
+                if (versions.length > 0) {
+                    const attrs = versions[0].attributes || {};
+                    const feedEnd = attrs.feed_end_date;
+                    if (feedEnd) {
+                        const endDate = new Date(feedEnd.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+                        const daysLeft = Math.round((endDate - today) / (1000 * 60 * 60 * 24));
+                        if (daysLeft < 0) {
+                            calendarWarning.innerHTML = `<div class="calendar-notice"><span class="cal-icon">i</span> Timetable data may be outdated. The current GTFS feed expired ${Math.abs(daysLeft)} day${Math.abs(daysLeft) !== 1 ? 's' : ''} ago.</div>`;
+                            return;
+                        } else if (daysLeft <= 7) {
+                            calendarWarning.innerHTML = `<div class="calendar-notice"><span class="cal-icon">i</span> Current timetable expires in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}. Schedule changes may be coming soon.</div>`;
+                            return;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Calendar check failed:', err);
+            }
+
+            if (isWeekend) {
+                calendarWarning.innerHTML = `<div class="calendar-notice"><span class="cal-icon">i</span> Weekend timetable in effect — services may run less frequently.</div>`;
+            } else {
+                calendarWarning.innerHTML = '';
+            }
+        }
+
+        // --- Build expanded content for a trip from caches ---
+        function buildTripExpandedContent(tripId) {
+            let html = '';
+            const allDepartures = getDepartureRows();
+            const depData = allDepartures.find(d => d.tripId === tripId);
+            let detailHtml = '';
+            if (depData?.vehicleLabel) {
+                const safeLabel = String(depData.vehicleLabel).replace(/</g, '&lt;');
+                detailHtml += `<div class="trip-detail-vehicle"><strong>Vehicle:</strong> ${safeLabel}</div>`;
+            }
+            if (depData?.routeId) {
+                const routeAlerts = getAlertsForRoute(depData.routeId);
+                if (routeAlerts.length > 0) {
+                    detailHtml += routeAlerts.slice(0, 3).map(ae => {
+                        const a = ae.alert || {};
+                        const headerText = a.header_text?.translation?.text
+                            || (Array.isArray(a.header_text?.translation) ? a.header_text.translation[0]?.text : '')
+                            || 'Service Alert';
+                        const descText = a.description_text?.translation?.text
+                            || (Array.isArray(a.description_text?.translation) ? a.description_text.translation[0]?.text : '')
+                            || '';
+                        const safeHeader = headerText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        const safeDesc = descText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        return `<div class="trip-detail-alert"><span class="alert-icon">!</span> <strong>${safeHeader}</strong>${safeDesc ? ` — ${safeDesc}` : ''}</div>`;
+                    }).join('');
+                }
+            }
+            if (detailHtml) html += `<div class="trip-detail-info">${detailHtml}</div>`;
+            const cacheKey = `journey_${tripId}`;
+            const journey = tripStopTimesCache.get(cacheKey);
+            if (journey && journey.length > 0) {
+                const currentStopIds = state.selectedStops.map(s => s.stopId);
+                const currentStopId = currentStopIds.find(sid => journey.some(j => j.stopId === sid)) || '';
+                // Look up vehicle position from realtime cache
+                const tripKey = normalizeTripKey(tripId);
+                const realtimeData = realtimeVehicleCache.byTrip.get(tripKey);
+                const vehiclePosition = realtimeData?.position || null;
+                const routeType = depData?.routeType ?? 3;
+                html += renderTripJourney(journey, currentStopId, vehiclePosition, routeType);
+            }
+            return html;
+        }
+
+        // --- Get alerts for a specific route ---
+        function getAlertsForRoute(routeId) {
+            if (!routeId || serviceAlertsCache.alerts.length === 0) return [];
+            return serviceAlertsCache.alerts.filter(alertEntity => {
+                const a = alertEntity.alert || {};
+                const entities = Array.isArray(a.informed_entity) ? a.informed_entity : a.informed_entity ? [a.informed_entity] : [];
+                return entities.some(e => e.route_id === routeId);
+            });
+        }
+
+        // --- Render scheduling (coalesce rapid renders) ---
+        let renderPending = null;
+        function scheduleRender() {
+            if (renderPending) return;
+            renderPending = requestAnimationFrame(() => {
+                renderPending = null;
+                renderBoard();
+            });
+        }
+
+        // --- Enrich departures with trip details (wheelchair, bikes) ---
+        function enrichDeparturesWithTripDetails() {
+            const allRows = getDepartureRows();
+            const uniqueTripIds = [...new Set(allRows.filter(r => r.tripId).map(r => r.tripId))];
+            const uncached = uniqueTripIds.filter(id => !tripDetailsCache.has(id));
+            if (uncached.length === 0) return;
+            const batch = uncached.slice(0, 10);
+            Promise.all(batch.map(fetchTripDetails)).then(() => {
+                scheduleRender();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Restore toggle state from localStorage
+            try {
+                const savedTerminus = localStorage.getItem(TERMINUS_TOGGLE_KEY);
+                if (savedTerminus !== null) state.showTerminusArrivals = savedTerminus !== 'false';
+                const savedOOS = localStorage.getItem(OOS_TOGGLE_KEY);
+                if (savedOOS !== null) state.showOutOfService = savedOOS === 'true';
+            } catch (_) {}
+            if (toggleTerminus) toggleTerminus.checked = state.showTerminusArrivals;
+            if (toggleOOS) toggleOOS.checked = state.showOutOfService;
+
+            restoreSelectedStops();
+            renderSearchList('');
+            renderSelectedStops();
+            renderBoard();
+            updateLiveTime();
+            updateLastUpdated();
+            chooseRandomPromoVariant();
+
+            // Initialize new features
+            fetchAllRoutes();
+            checkCalendarForToday();
+            fetchFerryPositions();
+
+            if (state.selectedStops.length > 0) {
+                Promise.all(state.selectedStops.map(fetchStopDetails)).then(updatedStops => {
+                    state.selectedStops = updatedStops;
+                    saveSelectedStops();
+                    renderSelectedStops();
+                    renderBoard();
+                    refreshAllDepartures();
+                    // Enrich with trip details after departures load
+                    setTimeout(enrichDeparturesWithTripDetails, 3000);
+                }).catch(() => {
+                    refreshAllDepartures();
+                });
+            }
+
+            liveClockTimer = setInterval(updateLiveTime, 1000);
+            fetchWeather();
+            setInterval(fetchWeather, 30 * 60 * 1000); // refresh weather every 30 min
+            refreshTimer = setInterval(() => {
+                if (state.selectedStops.length > 0) {
+                    refreshAllDepartures();
+                    // Re-render alerts with latest data
+                    renderServiceAlerts(serviceAlertsCache.alerts);
+                }
+            }, 30000);
+            // Refresh ferry positions periodically
+            setInterval(fetchFerryPositions, 60000);
+            // Periodically enrich trip details for visible departures
+            setInterval(enrichDeparturesWithTripDetails, 30000);
+        });
+
+        clearButton.addEventListener('click', clearStops);
+
+        searchDropdown.addEventListener('mousedown', event => {
+            event.preventDefault();
+        });
+
+        if (kidsFavoriteBtn) {
+            kidsFavoriteBtn.addEventListener('click', () => {
+                stopMenu.open = true;
+                stopMenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        }
+
+        selectedStopsContainer.addEventListener('click', event => {
+            const button = event.target.closest('button[data-stop-code]');
+            if (!button) return;
+            removeStop(button.dataset.stopCode);
+        });
+
+        searchInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addStopFromInput();
+                hideSearchList();
+            }
+        });
+
+        searchInput.addEventListener('input', event => {
+            const query = event.target.value;
+            state.searchQuery = query;
+            state.searchResults = [];
+            state.searchError = null;
+            state.searchLoading = Boolean(query.trim());
+            renderSearchList(query);
+            scheduleSearch(query);
+            showSearchList();
+        });
+
+        searchInput.addEventListener('focus', () => {
+            showSearchList();
+            if (searchInput.value.trim()) {
+                scheduleSearch(searchInput.value);
+            }
+        });
+
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                if (!searchDropdown.contains(document.activeElement)) {
+                    hideSearchList();
+                }
+            }, 150);
+        });
+
+        document.addEventListener('click', event => {
+            if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+                hideSearchList();
+            }
+        });
+
+        fullscreenToggle.addEventListener('click', toggleFullscreen);
+
+        // --- Toggle handlers ---
+        if (toggleTerminus) {
+            toggleTerminus.addEventListener('change', () => {
+                state.showTerminusArrivals = toggleTerminus.checked;
+                try { localStorage.setItem(TERMINUS_TOGGLE_KEY, String(state.showTerminusArrivals)); } catch (_) {}
+                lastRenderFingerprint = '';
+                renderBoard();
+            });
+        }
+        if (toggleOOS) {
+            toggleOOS.addEventListener('change', () => {
+                state.showOutOfService = toggleOOS.checked;
+                try { localStorage.setItem(OOS_TOGGLE_KEY, String(state.showOutOfService)); } catch (_) {}
+                lastRenderFingerprint = '';
+                renderBoard();
+            });
+        }
+
+        // --- Trip Journey click handler ---
+        boardBody.addEventListener('click', async event => {
+            const expandBtn = event.target.closest('.departure-expand-btn');
+            if (!expandBtn) return;
+            event.preventDefault();
+            const tripId = expandBtn.dataset.tripId;
+            if (!tripId) return;
+
+            const card = expandBtn.closest('.departure-card');
+            if (!card) return;
+
+            // Toggle off if already expanded
+            const existingJourney = card.querySelector('.trip-journey');
+            if (existingJourney) {
+                existingJourney.remove();
+                const existingDetail = card.querySelector('.trip-detail-info');
+                if (existingDetail) existingDetail.remove();
+                card.removeAttribute('data-expanded');
+                expandBtn.textContent = 'View journey \u25B8';
+                expandedTripIds.delete(tripId);
+                return;
+            }
+
+            expandBtn.textContent = 'Loading\u2026';
+
+            // Fetch trip details and journey in parallel
+            await Promise.all([
+                fetchTripJourney(tripId),
+                fetchTripDetails(tripId)
+            ]);
+
+            // Use shared helper to build content from cache
+            const expandedContent = buildTripExpandedContent(tripId);
+            if (expandedContent) {
+                card.insertAdjacentHTML('beforeend', expandedContent);
+                card.setAttribute('data-expanded', 'true');
+                expandBtn.textContent = 'Hide journey \u25BE';
+                expandedTripIds.add(tripId);
+            } else {
+                expandBtn.textContent = 'View journey \u25B8';
+            }
+        });
+    </script>
+</body>
+</html>

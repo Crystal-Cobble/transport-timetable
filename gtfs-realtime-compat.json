@@ -1,0 +1,912 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Realtime Compat",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.at.govt.nz/realtime/legacy"
+        },
+        {
+            "url": "https://apimanagerproxy.at.govt.nz/realtime/legacy"
+        },
+        {
+            "url": "https://enterpriseapimgr.at.govt.nz/realtime/legacy"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "Combined Feed",
+                "description": "Returns realtime GTFS vehicle locations, trip updates and alerts for the active trips in the Auckland region, updated at least every 30s. Protobuf supported if the Accept header is set to application/x-protobuf.",
+                "operationId": "get_all",
+                "parameters": [
+                    {
+                        "name": "callback",
+                        "in": "query",
+                        "description": "JSONP callback - overrides mimetype and returns JSON with padding",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tripid",
+                        "in": "query",
+                        "description": "Optional - Returns GTFS realtime trip updates/vehicle locations/service alerts filtered by comma separated trip ids",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "vehicleid",
+                        "in": "query",
+                        "description": "Optional - Returns GTFS realtime trip updates/vehicle locations/service alerts filtered by comma separated vehicle ids",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiFrame"
+                                },
+                                "example": {
+                                    "status": "OK",
+                                    "response": {
+                                        "header": {
+                                            "gtfs_realtime_version": "1.0",
+                                            "incrementality": 1,
+                                            "timestamp": 259982000
+                                        },
+                                        "entity": [
+                                            {
+                                                "id": "259982000",
+                                                "is_deleted": false,
+                                                "trip_update": {
+                                                    "trip": {
+                                                        "trip_id": "1033-32504-52500-2-d16dbfbd",
+                                                        "route_id": "325-221",
+                                                        "direction_id": 0,
+                                                        "start_time": "2022-04-07",
+                                                        "start_date": "20190528",
+                                                        "schedule_relationship": 0
+                                                    },
+                                                    "vehicle": {
+                                                        "id": "512000545",
+                                                        "label": "DALDY",
+                                                        "license_plate": "ZMZ7645"
+                                                    },
+                                                    "stop_time_update": [
+                                                        {
+                                                            "stop_sequence": 1,
+                                                            "stop_id": "6955-01-01",
+                                                            "arrival": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "departure": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "schedule_relationship": 0
+                                                        }
+                                                    ],
+                                                    "timestamp": 1558997153,
+                                                    "delay": -67
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "error": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/vehiclelocations": {
+            "get": {
+                "summary": "Vehicle Positions",
+                "description": "Returns realtime GTFS vehicle locations for the active trips in the Auckland region, updated at least every 30s. Protobuf supported if the Accept header is set to application/x-protobuf.",
+                "operationId": "get_vehicle_positions",
+                "parameters": [
+                    {
+                        "name": "callback",
+                        "in": "query",
+                        "description": "JSONP callback - overrides mimetype and returns JSON with padding",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tripid",
+                        "in": "query",
+                        "description": "Optional - Returns GTFS realtime vehicle locations filtered by comma separated trip ids",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "vehicleid",
+                        "in": "query",
+                        "description": "Optional - Returns GTFS realtime vehicle locations filtered by comma separated vehicle ids",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiFrame"
+                                },
+                                "example": {
+                                    "status": "OK",
+                                    "response": {
+                                        "header": {
+                                            "gtfs_realtime_version": "1.0",
+                                            "incrementality": 1,
+                                            "timestamp": 259982000
+                                        },
+                                        "entity": [
+                                            {
+                                                "id": "259982000",
+                                                "is_deleted": false,
+                                                "trip_update": {
+                                                    "trip": {
+                                                        "trip_id": "1033-32504-52500-2-d16dbfbd",
+                                                        "route_id": "325-221",
+                                                        "direction_id": 0,
+                                                        "start_time": "2022-04-07",
+                                                        "start_date": "20190528",
+                                                        "schedule_relationship": 0
+                                                    },
+                                                    "vehicle": {
+                                                        "id": "512000545",
+                                                        "label": "DALDY",
+                                                        "license_plate": "ZMZ7645"
+                                                    },
+                                                    "stop_time_update": [
+                                                        {
+                                                            "stop_sequence": 1,
+                                                            "stop_id": "6955-01-01",
+                                                            "arrival": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "departure": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "schedule_relationship": 0
+                                                        }
+                                                    ],
+                                                    "timestamp": 1558997153,
+                                                    "delay": -67
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "error": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/tripupdates": {
+            "get": {
+                "summary": "Trip Updates",
+                "description": "Returns realtime GTFS trip updates for the active trips in the Auckland region, updated at least every 30s. Protobuf supported if the Accept header is set to application/x-protobuf.",
+                "operationId": "get_trip_updates",
+                "parameters": [
+                    {
+                        "name": "callback",
+                        "in": "query",
+                        "description": "JSONP callback - overrides mimetype and returns JSON with padding",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tripid",
+                        "in": "query",
+                        "description": "Optional - Returns GTFS realtime trip updates filtered by comma separated trip ids",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "vehicleid",
+                        "in": "query",
+                        "description": "Optional - Returns GTFS realtime trip updates filtered by comma separated vehicle ids",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiFrame"
+                                },
+                                "example": {
+                                    "status": "OK",
+                                    "response": {
+                                        "header": {
+                                            "gtfs_realtime_version": "1.0",
+                                            "incrementality": 1,
+                                            "timestamp": 259982000
+                                        },
+                                        "entity": [
+                                            {
+                                                "id": "259982000",
+                                                "is_deleted": false,
+                                                "trip_update": {
+                                                    "trip": {
+                                                        "trip_id": "1033-32504-52500-2-d16dbfbd",
+                                                        "route_id": "325-221",
+                                                        "direction_id": 0,
+                                                        "start_time": "2022-04-07",
+                                                        "start_date": "20190528",
+                                                        "schedule_relationship": 0
+                                                    },
+                                                    "vehicle": {
+                                                        "id": "512000545",
+                                                        "label": "DALDY",
+                                                        "license_plate": "ZMZ7645"
+                                                    },
+                                                    "stop_time_update": [
+                                                        {
+                                                            "stop_sequence": 1,
+                                                            "stop_id": "6955-01-01",
+                                                            "arrival": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "departure": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "schedule_relationship": 0
+                                                        }
+                                                    ],
+                                                    "timestamp": 1558997153,
+                                                    "delay": -67
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "error": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/servicealerts": {
+            "get": {
+                "summary": "Service Alerts",
+                "description": "Returns realtime Service Alerts.",
+                "operationId": "get_service_alerts",
+                "responses": {
+                    "200": {
+                        "description": "Response OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiFrame"
+                                },
+                                "example": {
+                                    "status": "OK",
+                                    "response": {
+                                        "header": {
+                                            "gtfs_realtime_version": "1.0",
+                                            "incrementality": 1,
+                                            "timestamp": 259982000
+                                        },
+                                        "entity": [
+                                            {
+                                                "id": "259982000",
+                                                "is_deleted": false,
+                                                "trip_update": {
+                                                    "trip": {
+                                                        "trip_id": "1033-32504-52500-2-d16dbfbd",
+                                                        "route_id": "325-221",
+                                                        "direction_id": 0,
+                                                        "start_time": "2022-04-07",
+                                                        "start_date": "20190528",
+                                                        "schedule_relationship": 0
+                                                    },
+                                                    "vehicle": {
+                                                        "id": "512000545",
+                                                        "label": "DALDY",
+                                                        "license_plate": "ZMZ7645"
+                                                    },
+                                                    "stop_time_update": [
+                                                        {
+                                                            "stop_sequence": 1,
+                                                            "stop_id": "6955-01-01",
+                                                            "arrival": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "departure": {
+                                                                "delay": -441,
+                                                                "time": 1559005659
+                                                            },
+                                                            "schedule_relationship": 0
+                                                        }
+                                                    ],
+                                                    "timestamp": 1558997153,
+                                                    "delay": -67
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "error": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/ferrypositions": {
+            "get": {
+                "summary": "Ferry Positions",
+                "description": "Returns realtime Ferry Positions.",
+                "operationId": "get_ferry_positions",
+                "responses": {
+                    "200": {
+                        "description": "Response OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FerryApiFrame"
+                                },
+                                "example": {
+                                    "status": "OK",
+                                    "response": [
+                                        {
+                                            "mmsi": 0,
+                                            "callsign": "string",
+                                            "eta": "string",
+                                            "lat": "string",
+                                            "lng": "string",
+                                            "operator": "string",
+                                            "timestamp": "string",
+                                            "vessel": "string"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CongestionLevel": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "integer",
+                "example": 2
+            },
+            "OccupancyStatus": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "type": "integer",
+                "example": 1
+            },
+            "Trip_ScheduleRelationship": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number",
+                "example": 0
+            },
+            "Stop_ScheduleRelationship": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "number",
+                "example": 0
+            },
+            "Effect": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "type": "integer",
+                "example": 8
+            },
+            "Cause": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12
+                ],
+                "type": "integer",
+                "example": 1
+            },
+            "TranslatedString": {
+                "type": "object",
+                "properties": {
+                    "translation": {
+                        "$ref": "#/components/schemas/Translation"
+                    }
+                }
+            },
+            "Trip": {
+                "type": "object",
+                "properties": {
+                    "trip_id": {
+                        "type": "string"
+                    },
+                    "route_id": {
+                        "type": "string"
+                    },
+                    "direction_id": {
+                        "type": "number"
+                    },
+                    "start_time": {
+                        "type": "string"
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "schedule_relationship": {
+                        "$ref": "#/components/schemas/Trip_ScheduleRelationship"
+                    }
+                },
+                "example": {
+                    "trip_id": "1033-32504-52500-2-d16dbfbd",
+                    "route_id": "325-221",
+                    "direction_id": 0,
+                    "start_time": "13:54:00",
+                    "start_date": "20190528",
+                    "schedule_relationship": 0
+                }
+            },
+            "EntitySelector": {
+                "type": "object",
+                "properties": {
+                    "agency_id": {
+                        "type": "string"
+                    },
+                    "route_id": {
+                        "type": "string"
+                    },
+                    "route_type": {
+                        "type": "number"
+                    },
+                    "trip": {
+                        "$ref": "#/components/schemas/Trip"
+                    },
+                    "stop_id": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "route_id": "325-221"
+                }
+            },
+            "Translation": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "text": "sample text",
+                    "language": "English"
+                }
+            },
+            "TripUpdate": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "259982000"
+                    },
+                    "is_deleted": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "trip_update": {
+                        "type": "object",
+                        "properties": {
+                            "trip": {
+                                "$ref": "#/components/schemas/Trip"
+                            },
+                            "vehicle": {
+                                "$ref": "#/components/schemas/VehicleDescription"
+                            },
+                            "stop_time_update": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/StopTimeUpdate"
+                                }
+                            },
+                            "timestamp": {
+                                "type": "number",
+                                "example": 1558997153
+                            },
+                            "delay": {
+                                "type": "number",
+                                "example": -67
+                            }
+                        }
+                    }
+                }
+            },
+            "Position": {
+                "type": "object",
+                "properties": {
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    },
+                    "bearing": {
+                        "type": "string"
+                    },
+                    "odometer": {
+                        "type": "number"
+                    },
+                    "speed": {
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "latitude": -36.84022,
+                    "longitude": 174.776726666667,
+                    "speed": 0.0514444
+                }
+            },
+            "TimeRange": {
+                "type": "object",
+                "properties": {
+                    "start": {
+                        "type": "number"
+                    },
+                    "end": {
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "start": 1559008444,
+                    "end": 1559008746
+                }
+            },
+            "StopTimeEvent": {
+                "type": "object",
+                "properties": {
+                    "delay": {
+                        "type": "number"
+                    },
+                    "time": {
+                        "type": "number"
+                    },
+                    "uncertainty": {
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "delay": -441,
+                    "time": 1559005659
+                }
+            },
+            "VehiclePosition": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "259982000"
+                    },
+                    "is_deleted": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "vehicle": {
+                        "type": "object",
+                        "properties": {
+                            "trip": {
+                                "$ref": "#/components/schemas/Trip"
+                            },
+                            "vehicle": {
+                                "$ref": "#/components/schemas/VehicleDescription"
+                            },
+                            "position": {
+                                "$ref": "#/components/schemas/Position"
+                            },
+                            "timestamp": {
+                                "type": "number",
+                                "example": 1559011152
+                            },
+                            "congestion_level": {
+                                "$ref": "#/components/schemas/CongestionLevel"
+                            },
+                            "occupancy_status": {
+                                "$ref": "#/components/schemas/OccupancyStatus"
+                            }
+                        }
+                    }
+                }
+            },
+            "VehicleDescription": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "license_plate": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "512000545",
+                    "label": "DALDY",
+                    "license_plate": "ZMZ7645"
+                }
+            },
+            "StopTimeUpdate": {
+                "type": "object",
+                "properties": {
+                    "stop_sequence": {
+                        "type": "number",
+                        "example": 1
+                    },
+                    "stop_id": {
+                        "type": "string",
+                        "example": "1-6955"
+                    },
+                    "arrival": {
+                        "$ref": "#/components/schemas/StopTimeEvent"
+                    },
+                    "departure": {
+                        "$ref": "#/components/schemas/StopTimeEvent"
+                    },
+                    "schedule_relationship": {
+                        "$ref": "#/components/schemas/Stop_ScheduleRelationship"
+                    }
+                }
+            },
+            "Alert": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "259982000"
+                    },
+                    "is_deleted": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "alert": {
+                        "type": "object",
+                        "properties": {
+                            "active_period": {
+                                "$ref": "#/components/schemas/TimeRange"
+                            },
+                            "informed_entity": {
+                                "$ref": "#/components/schemas/EntitySelector"
+                            },
+                            "cause": {
+                                "$ref": "#/components/schemas/Cause"
+                            },
+                            "effect": {
+                                "$ref": "#/components/schemas/Effect"
+                            },
+                            "url": {
+                                "$ref": "#/components/schemas/TranslatedString"
+                            },
+                            "header_text": {
+                                "$ref": "#/components/schemas/TranslatedString"
+                            },
+                            "description_text": {
+                                "$ref": "#/components/schemas/TranslatedString"
+                            }
+                        }
+                    }
+                }
+            },
+            "FeedHeader": {
+                "type": "object",
+                "properties": {
+                    "gtfs_realtime_version": {
+                        "type": "string",
+                        "example": "1.0"
+                    },
+                    "incrementality": {
+                        "type": "number",
+                        "example": 1
+                    },
+                    "timestamp": {
+                        "type": "number",
+                        "example": 259982000
+                    }
+                }
+            },
+            "ApiFrame": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK"
+                    },
+                    "response": {
+                        "type": "object",
+                        "properties": {
+                            "header": {
+                                "$ref": "#/components/schemas/FeedHeader"
+                            },
+                            "entity": {
+                                "type": "array",
+                                "items": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TripUpdate"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/VehiclePosition"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Alert"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "error": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                }
+            },
+            "FerryPosition": {
+                "type": "object",
+                "properties": {
+                    "mmsi": {
+                        "type": "number"
+                    },
+                    "callsign": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "eta": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lat": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lng": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "operator": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "vessel": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "FerryApiFrame": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK"
+                    },
+                    "response": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FerryPosition"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}

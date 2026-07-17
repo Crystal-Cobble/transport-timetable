@@ -1,0 +1,211 @@
+﻿/* ── Auckland Transport Metro theme ── */
+[data-theme="at-classic"] {
+    color-scheme: dark;
+    --bg: #001930;
+    --panel: #002b46;
+    --panel-strong: #003c5e;
+    --border: #00a7e5;
+    --text: #f8fbff;
+    --muted: #cfe3f2;
+    --accent: #ffdd00;
+    --accent-2: #95c11f;
+    --accent-3: #00a7e5;
+    --accent-4: #ca0076;
+    --danger: #de0a2b;
+    --success: #95c11f;
+    --error: #de0a2b;
+    --shadow: 0 20px 60px rgba(0,0,0,0.28);
+}
+[data-theme="at-classic"] body {
+    background:
+        radial-gradient(circle at top left, rgba(0, 167, 229, 0.24), transparent 24%),
+        radial-gradient(circle at 85% 0%, rgba(255, 221, 0, 0.2), transparent 24%),
+        linear-gradient(135deg, #001930 0%, #003b63 100%);
+    font-family: 'Nunito', 'Segoe UI', Roboto, system-ui, sans-serif;
+}
+[data-theme="at-classic"] body::before {
+    background: linear-gradient(90deg, rgba(255,221,0,0.08), transparent 35%, rgba(0,167,229,0.1));
+}
+[data-theme="at-classic"] .hero h1 {
+    color: #ffffff;
+    text-shadow: 0 6px 24px rgba(0,0,0,0.28);
+}
+[data-theme="at-classic"] .hero-subtitle { color: var(--accent); }
+[data-theme="at-classic"] .at-brand-mark,
+[data-theme="at-classic"] .at-live-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0.95rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(0,167,229,0.35);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(0,25,48,0.96) 0%, rgba(0,60,94,0.9) 100%);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+}
+[data-theme="at-classic"] .at-brand-logo {
+    width: 54px;
+    height: auto;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.2));
+}
+[data-theme="at-classic"] .at-brand-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+[data-theme="at-classic"] .at-brand-kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 800;
+}
+[data-theme="at-classic"] .at-brand-badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(255,221,0,0.16);
+    border: 1px solid rgba(255,221,0,0.35);
+    color: #fff4b8;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+[data-theme="at-classic"] .stats-bar {
+    background: linear-gradient(135deg, rgba(0,43,70,0.96), rgba(0,60,94,0.95));
+    border-color: rgba(0,167,229,0.45);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+}
+[data-theme="at-classic"] .stats-bar .stat-item { color: rgba(248,251,255,0.78); }
+[data-theme="at-classic"] .stats-bar .stat-item strong { color: #ffffff; }
+[data-theme="at-classic"] .stats-bar .stat-item svg { color: var(--accent); }
+[data-theme="at-classic"] .nav-link-btn,
+[data-theme="at-classic"] .button-fullscreen,
+[data-theme="at-classic"] .view-all-btn {
+    background: linear-gradient(135deg, var(--accent), #ffbf00);
+    color: #001930;
+    border-color: rgba(255,255,255,0.2);
+    font-weight: 800;
+}
+[data-theme="at-classic"] .nav-link-btn:hover,
+[data-theme="at-classic"] .button-fullscreen:hover,
+[data-theme="at-classic"] .view-all-btn:hover { filter: brightness(1.04); }
+[data-theme="at-classic"] .controls-panel,
+[data-theme="at-classic"] .controls-panel .search-box,
+[data-theme="at-classic"] .stop-menu summary,
+[data-theme="at-classic"] .stop-menu-button,
+[data-theme="at-classic"] .board,
+[data-theme="at-classic"] .theme-menu-panel,
+[data-theme="at-classic"] .stop-menu-panel {
+    background: rgba(0,25,48,0.92);
+    border-color: rgba(0,167,229,0.38);
+    box-shadow: var(--shadow);
+}
+[data-theme="at-classic"] .search-dropdown {
+    background: #002b46;
+    border-color: rgba(0,167,229,0.4);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+}
+[data-theme="at-classic"] .search-item:hover { background: rgba(0,167,229,0.16); }
+[data-theme="at-classic"] .stop-menu-top-label { color: #b8d8ea; }
+[data-theme="at-classic"] #stop-search {
+    background: #001930;
+    color: #f8fbff;
+    border-color: rgba(0,167,229,0.4);
+}
+[data-theme="at-classic"] .button-clear {
+    background: rgba(255,221,0,0.14);
+    color: #fff3b5;
+    border-color: rgba(255,221,0,0.28);
+}
+[data-theme="at-classic"] .button-clear:hover { background: rgba(255,221,0,0.2); }
+[data-theme="at-classic"] .board::before { display: none; }
+[data-theme="at-classic"] .board-header {
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    padding-bottom: 0.9rem;
+}
+[data-theme="at-classic"] .board-header h2 { color: #ffffff; }
+[data-theme="at-classic"] .board-header .note { color: #b8d8ea; }
+[data-theme="at-classic"] .departure-card {
+    background: linear-gradient(135deg, rgba(0,43,70,0.98) 0%, rgba(0,60,94,0.95) 100%);
+    border-color: rgba(0,167,229,0.35);
+    border-radius: 0.7rem;
+    box-shadow: none;
+}
+[data-theme="at-classic"] .departure-card:hover {
+    background: linear-gradient(135deg, rgba(0,60,94,1) 0%, rgba(0,80,120,0.98) 100%);
+    border-color: rgba(255,221,0,0.5);
+}
+[data-theme="at-classic"] .departure-route,
+[data-theme="at-classic"] .route-pill {
+    background: linear-gradient(135deg, var(--accent), #ffd74c);
+    color: #001930;
+    border-radius: 0.45rem;
+    box-shadow: none;
+}
+[data-theme="at-classic"] .departure-info h3 { color: #ffffff; }
+[data-theme="at-classic"] .departure-info p { color: #dceaf5; }
+[data-theme="at-classic"] .departure-meta { color: #b8d8ea; }
+[data-theme="at-classic"] .departure-time,
+[data-theme="at-classic"] .departure-time-main { color: #ffffff; }
+[data-theme="at-classic"] .departure-time-pill {
+    color: #001930;
+    background: rgba(255,221,0,0.18);
+    border-color: rgba(255,221,0,0.3);
+}
+[data-theme="at-classic"] .departure-stop-name { color: #a9c9dc; }
+[data-theme="at-classic"] .departure-platform { color: #ffffff; }
+[data-theme="at-classic"] .departure-status,
+[data-theme="at-classic"] .occupancy-chip,
+[data-theme="at-classic"] .access-icons span {
+    background: rgba(255,255,255,0.08);
+    color: #f8fbff;
+    border: 1px solid rgba(255,255,255,0.12);
+}
+[data-theme="at-classic"] .board-table thead { background: rgba(0,167,229,0.16); border-color: rgba(255,255,255,0.1); }
+[data-theme="at-classic"] .board-table th { color: #d4ebff; letter-spacing: 0.08em; }
+[data-theme="at-classic"] .board-table td { border-color: rgba(255,255,255,0.08); }
+[data-theme="at-classic"] .board-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+[data-theme="at-classic"] .departure-expand-btn { background: rgba(255,255,255,0.08); color: #f8fbff; border: 1px solid rgba(255,255,255,0.14); }
+[data-theme="at-classic"] .chip { background: rgba(0,25,48,0.9); border-color: rgba(0,167,229,0.3); color: #eef7ff; }
+[data-theme="at-classic"] .chip button { background: rgba(0,167,229,0.16); color: #eef7ff; }
+[data-theme="at-classic"] .chip button:hover { background: rgba(0,167,229,0.24); }
+[data-theme="at-classic"] .theme-btn { background: rgba(255,255,255,0.08); color: #eef7ff; border-color: rgba(0,167,229,0.3); }
+[data-theme="at-classic"] .theme-btn:hover { background: rgba(255,255,255,0.14); color: #ffffff; }
+[data-theme="at-classic"] .theme-menu-title { color: #8dcbef; }
+[data-theme="at-classic"] .theme-option { color: #f8fbff; }
+[data-theme="at-classic"] .theme-option:hover { background: rgba(0,167,229,0.16); }
+[data-theme="at-classic"] .theme-option.active { background: rgba(255,221,0,0.14); color: #fff4b8; }
+[data-theme="at-classic"] .theme-swatch { border-color: rgba(255,255,255,0.24); }
+[data-theme="at-classic"] .departure-status.status-on,
+[data-theme="at-classic"] .occupancy-chip.low { color: #b8f0a0; background: rgba(149,193,31,0.16); }
+[data-theme="at-classic"] .departure-status.status-delay,
+[data-theme="at-classic"] .occupancy-chip.medium { color: #ffeab3; background: rgba(255,221,0,0.16); }
+[data-theme="at-classic"] .departure-status.status-cancel,
+[data-theme="at-classic"] .occupancy-chip.high { color: #ffc4cf; background: rgba(222,10,43,0.16); }
+[data-theme="at-classic"] .departure-status.status-board,
+[data-theme="at-classic"] .departure-status.status-ahead,
+[data-theme="at-classic"] .occupancy-chip.unknown { color: #bfe7ff; background: rgba(0,167,229,0.16); }
+[data-theme="at-classic"] .cancelled-row { background: rgba(222,10,43,0.14); }
+[data-theme="at-classic"] .expanded-journey-row,
+[data-theme="at-classic"] .expanded-journey-row td,
+[data-theme="at-classic"] .trip-journey { background: #001930; border-color: rgba(255,255,255,0.08); }
+[data-theme="at-classic"] .trip-journey-header { border-color: rgba(255,255,255,0.1); }
+[data-theme="at-classic"] .trip-stop-item { color: #dceaf5; }
+[data-theme="at-classic"] .trip-stop-item .stop-dot { background: #5cc6ff; }
+[data-theme="at-classic"] .note,
+[data-theme="at-classic"] .toggle-label { color: #b9d9ea; }
+[data-theme="at-classic"] .alert-item { background: rgba(255,221,0,0.08); border-color: rgba(255,221,0,0.24); }
+[data-theme="at-classic"] .alert-item .alert-body { color: #eaf6ff; }
+[data-theme="at-classic"] .line-disruption-notice { background: rgba(202,0,118,0.08); border-color: rgba(202,0,118,0.28); }
+[data-theme="at-classic"] .line-disruption-notice .disruption-body { color: #eaf6ff; }
+[data-theme="at-classic"] .departure-card[data-expanded="true"] { border-color: var(--accent); }
+[data-theme="at-classic"] .disruption-reason { color: #ffd2aa; }
+[data-theme="at-classic"] .disruption-rb-btn { background: rgba(0,167,229,0.15); border-color: rgba(0,167,229,0.3); color: #bfe7ff; }
+[data-theme="at-classic"] .disruption-rb-btn:hover { background: rgba(0,167,229,0.22); border-color: rgba(0,167,229,0.4); }
+[data-theme="at-classic"] .terminus-badge { color: #ffd8f2; background: rgba(202,0,118,0.16); }
+

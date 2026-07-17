@@ -1,0 +1,1829 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "General Transit Feed V3 APIs",
+        "description": "The GTFS Static API provides a REST interface over the currently active GTFS Static data published by Auckland Transport.\n\nDetails about GTFS Static can be found at https://gtfs.org/reference/static. The API is currently only implemented for a subset of GTFS entities. Only fields that are not null/empty in the source data are returned.\n\nThe implementation follows the JSON:API spec, described at https://jsonapi.org/. The API currently only implements a subset of this spec, mostly the returned resource objects and errors. Please refer to the individual operations for details about which functions are provided.\n",
+        "version": "v3"
+    },
+    "servers": [
+        {
+            "url": "https://api.at.govt.nz/gtfs/v3"
+        },
+        {
+            "url": "https://apimanagerproxy.at.govt.nz/gtfs/v3"
+        },
+        {
+            "url": "https://enterpriseapimgr.at.govt.nz/gtfs/v3"
+        }
+    ],
+    "paths": {
+        "/routes": {
+            "get": {
+                "tags": [
+                    "Route"
+                ],
+                "summary": "Routes",
+                "description": "List of all routes",
+                "operationId": "get-routes",
+                "parameters": [
+                    {
+                        "name": "filter[route_type]",
+                        "in": "query",
+                        "description": "Route type, valid values >=0. Refer to http://gtfs.org/reference/static#routestxt and https://developers.google.com/transit/gtfs/reference/extended-route-types",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "filter[route_short_name]",
+                        "in": "query",
+                        "description": "Route shortname, valid values e.g: MTIA-209. Refer to http://gtfs.org/reference/static#routestxt and https://developers.google.com/transit/gtfs/reference/extended-route-types",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully get routes",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MultipleEntityResponse"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "routes",
+                                            "id": "101-202",
+                                            "attributes": {
+                                                "route_id": "101-202",
+                                                "agency_id": "NZB",
+                                                "route_short_name": "101",
+                                                "route_long_name": "101",
+                                                "route_type": 3
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "400",
+                                            "title": "Invalid Request",
+                                            "detail": "Filter is invalid. It should be positive integers or zero",
+                                            "source": {
+                                                "parameter": "route_type"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/routes/{id}": {
+            "get": {
+                "tags": [
+                    "Route"
+                ],
+                "summary": "Route by id",
+                "description": "Route retrieved by it's id",
+                "operationId": "get-routes-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Route ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleEntityResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "routes",
+                                        "id": "101-202",
+                                        "attributes": {
+                                            "route_id": "101-202",
+                                            "agency_id": "NZB",
+                                            "route_short_name": "101",
+                                            "route_long_name": "101",
+                                            "route_type": 3
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stops": {
+            "get": {
+                "tags": [
+                    "Stop"
+                ],
+                "summary": "Stops",
+                "description": "List of all stops for a specific date.  Defaults to the date of the request if the filter[date] parameter is not provided.",
+                "operationId": "get-stops",
+                "parameters": [
+                    {
+                        "name": "filter[date]",
+                        "in": "query",
+                        "description": "Query date (YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully get stops",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MultipleEntityResponse"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "stops",
+                                            "id": "100-56c57897",
+                                            "attributes": {
+                                                "stop_id": "100-56c57897",
+                                                "stop_code": "100",
+                                                "stop_name": "Papatoetoe Train Station",
+                                                "stop_lat": -36.97766,
+                                                "stop_lon": 174.84925,
+                                                "location_type": 1,
+                                                "wheelchair_boarding": 0
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "400",
+                                            "title": "Invalid Request",
+                                            "detail": "Filter is invalid. Cannot find the specified filter"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stops/{id}": {
+            "get": {
+                "tags": [
+                    "Stop"
+                ],
+                "summary": "Stop by id",
+                "description": "Stop retrieved by it's id",
+                "operationId": "get-stops-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Stop ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleEntityResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "stops",
+                                        "id": "100-56c57897",
+                                        "attributes": {
+                                            "stop_id": "100-56c57897",
+                                            "stop_code": "100",
+                                            "stop_name": "Papatoetoe Train Station",
+                                            "stop_lat": -36.97766,
+                                            "stop_lon": 174.84925,
+                                            "location_type": 1,
+                                            "wheelchair_boarding": 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/trips/{id}/stops": {
+            "get": {
+                "tags": [
+                    "Stop"
+                ],
+                "summary": "Stops by trip id",
+                "description": "List of Stops associated with a trip",
+                "operationId": "get-trips-id-stops",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Trip ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MultipleEntityResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "stops",
+                                        "id": "100-56c57897",
+                                        "attributes": {
+                                            "stop_id": "100-56c57897",
+                                            "stop_code": "100",
+                                            "stop_name": "Papatoetoe Train Station",
+                                            "stop_lat": -36.97766,
+                                            "stop_lon": 174.84925,
+                                            "location_type": 1,
+                                            "wheelchair_boarding": 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/trips/{id}": {
+            "get": {
+                "tags": [
+                    "Trip"
+                ],
+                "summary": "Trip by id",
+                "description": "Retrieves trip by it's id",
+                "operationId": "get-trips-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Trip ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleEntityResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "trips",
+                                        "id": "1254-10101-23700-2-ee3a0f53",
+                                        "attributes": {
+                                            "trip_id": "1254-10101-23700-2-ee3a0f53",
+                                            "route_id": "101-202",
+                                            "service_id": "Weekday-1",
+                                            "trip_headsign": "Pt Chevalier To Auckland University Via Jervois Rd",
+                                            "direction_id": 0,
+                                            "block_id": "b_238",
+                                            "shape_id": "1254-10101-72540668",
+                                            "wheelchair_accessible": 1,
+                                            "bikes_allowed": 2
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/routes/{id}/trips": {
+            "get": {
+                "tags": [
+                    "Trip"
+                ],
+                "summary": "Trips by route ID",
+                "description": "Trips retrieved by route ID",
+                "operationId": "get-trip-route-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Route ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TripResponse"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "trip",
+                                            "id": "902-98011-21600-1-d485e99d",
+                                            "attributes": {
+                                                "bikes_allowed": 0,
+                                                "direction_id": 0,
+                                                "route_id": "MTIA-209",
+                                                "service_id": "Weekday-1",
+                                                "shape_id": "902-98011-30de1755",
+                                                "trip_headsign": "Waiheke Island 1 To Downtown Pier 11",
+                                                "trip_id": "902-98011-21600-1-d485e99d",
+                                                "wheelchair_accessible": 0
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stops/{id}/stoptrips": {
+            "get": {
+                "tags": [
+                    "Stop"
+                ],
+                "summary": "Stop Trips by stop id",
+                "description": "List of StopTrips running at the stop",
+                "operationId": "get-stoptrips",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Stop ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "filter[date]",
+                        "in": "query",
+                        "description": "Format - date (as full-date in RFC3339). Service Date",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "default": "Today's date",
+                            "example": "2006-01-02"
+                        }
+                    },
+                    {
+                        "name": "filter[start_hour]",
+                        "in": "query",
+                        "description": "Starting hour to filter the trips",
+                        "required": true,
+                        "schema": {
+                            "maximum": 30,
+                            "minimum": 0,
+                            "type": "integer",
+                            "default": "Current hour",
+                            "example": "15"
+                        }
+                    },
+                    {
+                        "name": "filter[hour_range]",
+                        "in": "query",
+                        "description": "Range of hour to filter the trips",
+                        "schema": {
+                            "maximum": 30,
+                            "minimum": 0,
+                            "type": "integer",
+                            "default": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StopTripsResponse"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "string",
+                                            "id": "string",
+                                            "attributes": {
+                                                "arrival_time": "2026-04-07",
+                                                "departure_time": "2026-04-07",
+                                                "direction_id": 1,
+                                                "drop_off_type": 0,
+                                                "pickup_type": 0,
+                                                "route_id": "NX1-203",
+                                                "service_date": "2023-06-01",
+                                                "shape_id": "1395-27002-6be1d2b7",
+                                                "stop_headsign": "ALBANY STN",
+                                                "stop_id": "7036-f1ffa0be",
+                                                "stop_sequence": 3,
+                                                "trip_headsign": "Britomart (Lower Albert St) To Albany Station",
+                                                "trip_id": "1395-27002-19800-2-a27d3190",
+                                                "trip_start_time": "2026-04-07"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/trips/{id}/stoptimes": {
+            "get": {
+                "tags": [
+                    "Stop"
+                ],
+                "summary": "Stop Times by Trip ID",
+                "description": "List of Stop Times associated with a trip",
+                "operationId": "get-stoptimes-trips-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Trip ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StopTimesResponse"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "stoptime",
+                                            "id": "249-820164-57720-2-1125312-9e2d2917_9001-3be05f0c",
+                                            "attributes": {
+                                                "arrival_time": "2023-10-13",
+                                                "departure_time": "2023-10-13",
+                                                "drop_off_type": 0,
+                                                "pickup_type": 0,
+                                                "shape_dist_traveled": 0,
+                                                "stop_headsign": "HC STATION",
+                                                "stop_id": "4791-27dc4f30",
+                                                "stop_sequence": 1,
+                                                "timepoint": 0,
+                                                "trip_id": "1010-98109-18000-2-fc6666b6"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/services/{id}/calendars": {
+            "get": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Calendar by Service ID",
+                "description": "Retrieves calendar by its id",
+                "operationId": "get-calendars-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Service ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CalendarResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "type": "calendar",
+                                        "id": "Daily-2",
+                                        "attributes": {
+                                            "service_id": "Daily-2",
+                                            "start_date": "2023-05-04",
+                                            "end_date": "2023-07-11",
+                                            "monday": 1,
+                                            "tuesday": 1,
+                                            "wednesday": 1,
+                                            "thursday": 1,
+                                            "friday": 1,
+                                            "saturday": 1,
+                                            "sunday": 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/services/{id}/calendardates": {
+            "get": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "CalendarDates by Service ID",
+                "description": "Retrieves calendar date by its id",
+                "operationId": "get-calendar-dates-id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Service ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CalendarDatesResponse"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "type": "calendar",
+                                            "id": "Weekday-1",
+                                            "attributes": {
+                                                "service_id": "Weekday-1",
+                                                "date": "2023-06-05",
+                                                "exception_type": 2
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The specified resource was not found",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "title": "Resouce Not Found",
+                                            "status": "404",
+                                            "source": {
+                                                "parameter": "id"
+                                            },
+                                            "code": "not-found"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "string",
+                                            "code": "string",
+                                            "title": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/versions": {
+            "get": {
+                "tags": [
+                    "Versions"
+                ],
+                "summary": "Get GTFS Versions",
+                "description": "List of published GTFS Versions",
+                "operationId": "get-gtfs-versions",
+                "parameters": [
+                    {
+                        "name": "filter[date]",
+                        "in": "query",
+                        "description": "Query date (YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GtfsVersionsResponse"
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "attributes": {
+                                                "feed_end_date": "20231101",
+                                                "feed_publisher_name": "Auckland Transport",
+                                                "feed_publisher_url": "http://www.aucklandtransport.govt.nz",
+                                                "feed_start_date": "20230816",
+                                                "feed_version": "VDV_Merge_106_2_B_3_273.08585088163075339104136899872CU17"
+                                            },
+                                            "type": "feed_info"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "detail": "Filter is invalid. Cannot find the specified filter",
+                                            "status": "400",
+                                            "title": "Invalid Request"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "code": "string",
+                                            "detail": "string",
+                                            "source": {
+                                                "parameter": "string"
+                                            },
+                                            "status": "string",
+                                            "title": "string"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SingleEntityResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/ResponseData"
+                    }
+                }
+            },
+            "MultipleEntityResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ResponseData"
+                        }
+                    }
+                }
+            },
+            "ResponseData": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Route"
+                            },
+                            {
+                                "$ref": "#/components/schemas/Stop"
+                            },
+                            {
+                                "$ref": "#/components/schemas/Trip"
+                            }
+                        ]
+                    }
+                }
+            },
+            "Route": {
+                "type": "object",
+                "properties": {
+                    "route_id": {
+                        "type": "string"
+                    },
+                    "agency_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "route_short_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "route_long_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "route_desc": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "route_type": {
+                        "type": "integer"
+                    },
+                    "route_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "route_color": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "route_text_color": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "route_sort_order": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                }
+            },
+            "Stop": {
+                "type": "object",
+                "properties": {
+                    "stop_id": {
+                        "type": "string"
+                    },
+                    "stop_code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stop_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stop_desc": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stop_lat": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "stop_lon": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "zone_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stop_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "location_type": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "parent_station": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stop_timezone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "wheelchair_boarding": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "platform_code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "parent_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "pid_name": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "Trip": {
+                "type": "object",
+                "properties": {
+                    "route_id": {
+                        "type": "string"
+                    },
+                    "service_id": {
+                        "type": "string"
+                    },
+                    "trip_id": {
+                        "type": "string"
+                    },
+                    "trip_headsign": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "trip_short_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "direction_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "block_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "shape_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "wheelchair_accessible": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "bikes_allowed": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                }
+            },
+            "TripResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "attributes": {
+                                    "$ref": "#/components/schemas/Trip"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "StopTripsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "attributes": {
+                                    "$ref": "#/components/schemas/StopTrips"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "StopTrips": {
+                "type": "object",
+                "properties": {
+                    "arrival_time": {
+                        "type": "string",
+                        "format": "time",
+                        "nullable": true
+                    },
+                    "departure_time": {
+                        "type": "string",
+                        "format": "time",
+                        "nullable": true
+                    },
+                    "direction_id": {
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "drop_off_type": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "pickup_type": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "route_id": {
+                        "type": "string"
+                    },
+                    "service_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "shape_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stop_headsign": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "stop_id": {
+                        "type": "string"
+                    },
+                    "stop_sequence": {
+                        "type": "integer"
+                    },
+                    "trip_headsign": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "trip_id": {
+                        "type": "string"
+                    },
+                    "trip_short_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "trip_start_time": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "example": {
+                    "arrival_time": "05:35:00",
+                    "departure_time": "05:35:00",
+                    "direction_id": 1,
+                    "drop_off_type": 0,
+                    "pickup_type": 0,
+                    "route_id": "NX1-203",
+                    "service_date": "2023-06-01",
+                    "shape_id": "1395-27002-6be1d2b7",
+                    "stop_headsign": "ALBANY STN",
+                    "stop_id": "7036-f1ffa0be",
+                    "stop_sequence": 3,
+                    "trip_headsign": "Britomart (Lower Albert St) To Albany Station",
+                    "trip_id": "1395-27002-19800-2-a27d3190",
+                    "trip_start_time": "05:30:00"
+                }
+            },
+            "StopTimesResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "attributes": {
+                                    "$ref": "#/components/schemas/StopTimes"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "StopTimes": {
+                "type": "object",
+                "properties": {
+                    "trip_id": {
+                        "type": "string"
+                    },
+                    "stop_id": {
+                        "type": "string"
+                    },
+                    "arrival_time": {
+                        "type": "string",
+                        "format": "time",
+                        "nullable": true
+                    },
+                    "departure_time": {
+                        "type": "string",
+                        "format": "time",
+                        "nullable": true
+                    },
+                    "stop_sequence": {
+                        "type": "integer"
+                    },
+                    "pickup_type": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "drop_off_type": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "stop_headsign": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "shape_dist_traveled": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "timepoint": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "arrival_time_seconds": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "departure_time_seconds": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "example": {
+                    "arrival_time": "05:00:00",
+                    "departure_time": "05:00:00",
+                    "drop_off_type": 0,
+                    "pickup_type": 0,
+                    "shape_dist_traveled": 0,
+                    "stop_headsign": "HC STATION",
+                    "stop_id": "4791-27dc4f30",
+                    "stop_sequence": 1,
+                    "timepoint": 0,
+                    "trip_id": "1010-98109-18000-2-fc6666b6"
+                }
+            },
+            "CalendarResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "attributes": {
+                                "$ref": "#/components/schemas/Calendar"
+                            }
+                        }
+                    }
+                }
+            },
+            "CalendarDatesResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "attributes": {
+                                    "$ref": "#/components/schemas/CalendarDates"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Calendar": {
+                "type": "object",
+                "properties": {
+                    "service_id": {
+                        "type": "string"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "monday": {
+                        "type": "integer"
+                    },
+                    "tuesday": {
+                        "type": "integer"
+                    },
+                    "wednesday": {
+                        "type": "integer"
+                    },
+                    "thursday": {
+                        "type": "integer"
+                    },
+                    "friday": {
+                        "type": "integer"
+                    },
+                    "saturday": {
+                        "type": "integer"
+                    },
+                    "sunday": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "CalendarDates": {
+                "type": "object",
+                "properties": {
+                    "service_id": {
+                        "type": "string"
+                    },
+                    "exception_type": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "detail": {
+                        "type": "string"
+                    },
+                    "source": {
+                        "type": "object",
+                        "properties": {
+                            "parameter": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "GtfsVersions": {
+                "type": "object",
+                "properties": {
+                    "feed_end_date": {
+                        "type": "string"
+                    },
+                    "feed_publisher_name": {
+                        "type": "string"
+                    },
+                    "feed_publisher_url": {
+                        "type": "string"
+                    },
+                    "feed_start_date": {
+                        "type": "string"
+                    },
+                    "feed_version": {
+                        "type": "string"
+                    }
+                }
+            },
+            "GtfsVersionsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "attributes": {
+                                    "$ref": "#/components/schemas/GtfsVersions"
+                                },
+                                "type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Route"
+        },
+        {
+            "name": "Stop"
+        },
+        {
+            "name": "Trip"
+        },
+        {
+            "name": "Calendar"
+        }
+    ]
+}

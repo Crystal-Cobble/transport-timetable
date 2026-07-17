@@ -1,0 +1,1206 @@
+﻿/* ════════════════════════════════════════════════════
+   KIDS THEMES — Complete Rewrite (reference-matched)
+   ALL rules scoped to kids-light / kids-dark only.
+   Zero impact on any other theme.
+   ════════════════════════════════════════════════════ */
+
+/* ── Kids Light: CSS variables ── */
+[data-theme="kids-light"] {
+    color-scheme: light;
+    --bg: #b8ddf5;
+    --panel: rgba(255,253,250,0.98);
+    --panel-strong: #ffffff;
+    --border: rgba(54,125,209,0.15);
+    --text: #1a2a50;
+    --muted: #5d74a3;
+    --accent: #3a83f1;
+    --danger: #ff8a4c;
+    --success: #22c55e;
+    --error: #ef4444;
+    --shadow: 0 16px 45px rgba(57,111,181,0.16);
+}
+/* ── Kids Light: page background ── */
+[data-theme="kids-light"] body {
+    background: #f0f6ff;
+}
+[data-theme="kids-light"] body::before {
+    background:
+        /* Pohutukawa red flowers — top-right corner */
+        radial-gradient(ellipse at 100% 0%, rgba(220,38,38,0.22) 0%, transparent 22%),
+        radial-gradient(ellipse at 82% 0%, rgba(185,28,28,0.14) 0%, transparent 14%),
+        radial-gradient(ellipse at 96% 8%, rgba(239,68,68,0.15) 0%, transparent 10%),
+        /* Pohutukawa pink/red — top-left hint */
+        radial-gradient(ellipse at 4% 2%, rgba(220,38,38,0.1) 0%, transparent 14%),
+        /* Green grass/nature — bottom edge */
+        radial-gradient(ellipse at 50% 102%, rgba(22,163,74,0.32) 0%, transparent 24%),
+        radial-gradient(ellipse at 8% 98%, rgba(34,197,94,0.26) 0%, transparent 18%),
+        radial-gradient(ellipse at 92% 96%, rgba(21,128,61,0.24) 0%, transparent 16%),
+        radial-gradient(ellipse at 70% 100%, rgba(16,185,129,0.2) 0%, transparent 14%),
+        /* Soft sky-blue wash at top-left (AT brand sky) */
+        radial-gradient(ellipse at 0% 0%, rgba(147,210,255,0.28) 0%, transparent 30%);
+    opacity: 1;
+}
+[data-theme="kids-light"] body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 100% 34%, rgba(239,68,68,0.2) 0%, transparent 12%),
+        radial-gradient(ellipse at 98% 41%, rgba(244,114,182,0.16) 0%, transparent 10%),
+        radial-gradient(ellipse at 2% 86%, rgba(34,197,94,0.15) 0%, transparent 12%),
+        linear-gradient(180deg, transparent 0 84%, rgba(134,208,110,0.16) 85% 100%);
+}
+[data-theme="kids-light"] .kia-ora-greeting { display: block !important; color: #e8175d !important; font-size: 1.25rem !important; }
+[data-theme="kids-light"] .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0c2f63, #154887 52%, #1f65a9);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 1.8rem;
+    padding: 1rem 1.15rem;
+    box-shadow: 0 16px 35px rgba(20,60,130,0.25);
+    overflow: hidden;
+}
+[data-theme="kids-light"] .hero::before {
+    content: "";
+    position: absolute;
+    right: 6.4rem;
+    bottom: 0;
+    width: 17rem;
+    height: 5.2rem;
+    background:
+        radial-gradient(circle at 70% 22%, rgba(255,222,115,0.96) 0%, rgba(255,222,115,0.96) 9%, transparent 10%),
+        linear-gradient(180deg, transparent 0 38%, rgba(171,224,255,0.24) 39% 44%, transparent 45%),
+        linear-gradient(135deg, transparent 0 62%, rgba(42,88,152,0.9) 63% 76%, transparent 77%),
+        linear-gradient(90deg, transparent 0 10%, rgba(203,233,255,0.7) 10% 12%, transparent 12% 18%, rgba(203,233,255,0.7) 18% 20%, transparent 20% 36%, rgba(203,233,255,0.82) 36% 38%, transparent 38% 100%),
+        radial-gradient(ellipse at 54% 100%, rgba(115,189,94,0.94) 0%, rgba(115,189,94,0.94) 28%, transparent 29%),
+        radial-gradient(ellipse at 74% 104%, rgba(79,147,214,0.92) 0%, rgba(79,147,214,0.92) 32%, transparent 33%);
+    opacity: 0.92;
+    pointer-events: none;
+}
+[data-theme="kids-light"] .hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0.22rem;
+    background: linear-gradient(90deg, rgba(95,216,255,0.25), rgba(95,216,255,0.95), rgba(95,216,255,0.25));
+}
+[data-theme="kids-light"] .at-logo {
+    background: #ffffff;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow:
+        0 0 0 4px rgba(255,255,255,0.08),
+        0 10px 24px rgba(7,30,73,0.22);
+}
+[data-theme="kids-light"] .hero h1 { color: #f8fbff; font-weight: 900 !important; }
+[data-theme="kids-light"] .hero-subtitle { color: #5fd8ff; font-weight: 800 !important; letter-spacing: 0.14em !important; }
+[data-theme="kids-light"] .kia-ora-greeting { color: #ffe685 !important; }
+[data-theme="kids-light"] .hero-meta-row { display: block; margin-top: 0.45rem; position: relative; z-index: 1; }
+[data-theme="kids-light"] .hero-location {
+    color: rgba(243,249,255,0.92);
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+[data-theme="kids-light"] .hero-location::before { content: "📍"; }
+[data-theme="kids-light"] .kids-hero-decor { display: inline-flex; }
+[data-theme="kids-light"] .kids-sun,
+[data-theme="kids-light"] .kids-tile {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.25);
+}
+[data-theme="kids-light"] .theme-btn { background: rgba(255,255,255,0.12) !important; border-color: rgba(255,255,255,0.25) !important; color: #f8fbff !important; }
+[data-theme="kids-light"] .promo-banner { background: rgba(255,255,255,0.85) !important; border-color: rgba(83,145,223,0.18) !important; }
+[data-theme="kids-light"] .promo-layout-a > * + * {
+    border-left: 1px solid rgba(138,185,234,0.28);
+    padding-left: 1.15rem;
+}
+[data-theme="kids-light"] .kids-favorite-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.58rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(255,248,237,0.95);
+    border: 1px solid rgba(236,206,162,0.48);
+    color: #35508f;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(113,149,207,0.1);
+}
+[data-theme="kids-light"] .kids-favorite-btn[hidden] { display: none; }
+[data-theme="kids-light"] .kids-favorite-btn:hover { background: #fff4df; }
+[data-theme="kids-light"] .promo-layout-b .promo-mascot,
+[data-theme="kids-light"] .promo-layout-b .promo-tip,
+[data-theme="kids-light"] .promo-layout-b .promo-plan {
+    background: rgba(235,246,255,0.84);
+    border: 1px solid rgba(138,185,234,0.28);
+    border-radius: 1rem;
+    padding: 0.6rem 0.75rem;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-plan {
+    min-height: 3.9rem;
+    justify-content: center;
+}
+[data-theme="kids-light"] .promo-thanks strong,
+[data-theme="kids-light"] .promo-tip strong,
+[data-theme="kids-light"] .promo-plan strong { color: #1a2a50 !important; }
+[data-theme="kids-light"] .promo-thanks span,
+[data-theme="kids-light"] .promo-tip span,
+[data-theme="kids-light"] .promo-tip { color: #5d74a3 !important; }
+[data-theme="kids-light"] .promo-link { color: #3459a5 !important; }
+[data-theme="kids-light"] .stats-bar {
+    background: rgba(255,255,255,0.95);
+    border-color: rgba(34,197,94,0.2);
+    box-shadow: 0 8px 24px rgba(74,130,200,0.1);
+}
+[data-theme="kids-light"] .stats-bar .stat-item strong { color: #1a2a50; }
+[data-theme="kids-light"] .nav-link-btn {
+    background: linear-gradient(135deg, #fff6d0, #ffe97a);
+    color: #3459a5;
+    border-color: rgba(255,191,64,0.4);
+}
+[data-theme="kids-light"] .nav-link-btn:hover { background: linear-gradient(135deg, #fff0b8, #ffd840); }
+[data-theme="kids-light"] .controls-panel,
+[data-theme="kids-light"] .board,
+[data-theme="kids-light"] .search-dropdown,
+[data-theme="kids-light"] .stop-menu-panel {
+    background: rgba(255,255,255,0.99);
+    border-color: rgba(75,140,229,0.12);
+    box-shadow: 0 18px 40px rgba(60,120,200,0.12);
+}
+[data-theme="kids-light"] .board { border-radius: 2rem; overflow: hidden; }
+[data-theme="kids-light"] .board-header h2::before {
+    content: "🚌";
+    margin-right: 0.45rem;
+    font-size: 0.95em;
+}
+[data-theme="kids-light"] .board-header h2 { color: #1a2a50; font-size: 1.6rem !important; font-weight: 900 !important; }
+[data-theme="kids-light"] .board-header .note,
+[data-theme="kids-light"] .note,
+[data-theme="kids-light"] .toggle-label,
+[data-theme="kids-light"] .departure-info p,
+[data-theme="kids-light"] .departure-meta,
+[data-theme="kids-light"] .departure-stop-name,
+[data-theme="kids-light"] .trip-stop-item,
+[data-theme="kids-light"] .alert-item .alert-body,
+[data-theme="kids-light"] .line-disruption-notice .disruption-body { color: #5d74a3; }
+[data-theme="kids-light"] .stop-menu summary,
+[data-theme="kids-light"] .stop-menu-button,
+[data-theme="kids-light"] #stop-search {
+    background: #ffffff;
+    border-color: rgba(88,148,228,0.25);
+    color: #1a2a50;
+}
+[data-theme="kids-light"] .button-clear,
+[data-theme="kids-light"] .view-all-btn,
+[data-theme="kids-light"] .departure-expand-btn,
+[data-theme="kids-light"] .chip button,
+[data-theme="kids-light"] .access-icons span {
+    background: rgba(218,238,255,0.8);
+    color: #31529c;
+    border-color: rgba(92,154,232,0.2);
+}
+[data-theme="kids-light"] .button-clear:hover,
+[data-theme="kids-light"] .view-all-btn:hover,
+[data-theme="kids-light"] .departure-expand-btn:hover,
+[data-theme="kids-light"] .chip button:hover { background: rgba(198,227,255,0.9); }
+[data-theme="kids-light"] .fullscreen-btn {
+    background: linear-gradient(135deg, #55a6ff, #6e7cff);
+    color: #fff;
+    font-weight: 800 !important;
+    border-radius: 1.2rem !important;
+    box-shadow: 0 8px 20px rgba(78,133,231,0.3);
+}
+[data-theme="kids-light"] .fullscreen-btn:hover { background: linear-gradient(135deg, #479cfb, #6072fb); }
+
+/* Kids Light: clean flush-row departure list */
+[data-theme="kids-light"] .departure-list {
+    gap: 0;
+    border-radius: 1.6rem;
+    overflow: hidden;
+    border: 1.5px solid rgba(210,230,248,0.8) !important;
+    box-shadow: 0 6px 24px rgba(80,130,200,0.1);
+}
+[data-theme="kids-light"] .departure-card {
+    background: linear-gradient(180deg, #fffef8, #fffdfa) !important;
+    border: none !important;
+    border-bottom: 1.5px solid rgba(220,234,250,0.9) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 1.1rem 1.35rem !important;
+    margin: 0 !important;
+    position: relative;
+    overflow: visible;
+}
+[data-theme="kids-light"] .departure-list .departure-card:last-child { border-bottom: none !important; }
+[data-theme="kids-light"] .departure-list .departure-card:first-child { border-radius: 1.6rem 1.6rem 0 0 !important; }
+[data-theme="kids-light"] .departure-list .departure-card:only-child { border-radius: 1.6rem !important; }
+[data-theme="kids-light"] .departure-card:hover { background: #f6faff !important; }
+[data-theme="kids-light"] .departure-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0.28rem;
+    background: linear-gradient(180deg, rgba(95,216,255,0), rgba(95,216,255,0.7), rgba(95,216,255,0));
+    opacity: 0.65;
+}
+/* No scene strips in kids-light */
+[data-theme="kids-light"] .departure-card::after { display: none !important; }
+
+/* Kids Light: solid colored route badge */
+[data-theme="kids-light"] .departure-route,
+[data-theme="kids-light"] .route-pill {
+    color: #fff !important;
+    border-radius: 1.1rem !important;
+    min-width: 4.4rem !important;
+    min-height: 4.4rem !important;
+    width: 4.4rem !important;
+    padding: 0.4rem 0.5rem !important;
+    font-size: 1.2rem !important;
+    font-weight: 900 !important;
+    line-height: 1.2 !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.14) !important;
+    text-align: center !important;
+    align-self: center !important;
+}
+[data-theme="kids-light"] .departure-route .mode-icon { display: none !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+1) .departure-route,
+[data-theme="kids-light"] .board-table tbody tr:nth-child(5n+1) .route-pill { background: #8B5CF6 !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+2) .departure-route,
+[data-theme="kids-light"] .board-table tbody tr:nth-child(5n+2) .route-pill { background: #14B8A6 !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+3) .departure-route,
+[data-theme="kids-light"] .board-table tbody tr:nth-child(5n+3) .route-pill { background: #F97316 !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+4) .departure-route,
+[data-theme="kids-light"] .board-table tbody tr:nth-child(5n+4) .route-pill { background: #22C55E !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+5) .departure-route,
+[data-theme="kids-light"] .board-table tbody tr:nth-child(5n+5) .route-pill { background: #EF4444 !important; }
+
+/* Kids Light: destination typography */
+[data-theme="kids-light"] .departure-row { align-items: center !important; gap: 1rem !important; }
+[data-theme="kids-light"] .departure-info h3 {
+    font-size: 1.18rem !important; font-weight: 800 !important;
+    color: #1a2a50 !important; letter-spacing: -0.01em;
+}
+[data-theme="kids-light"] .departure-info p { font-size: 0.84rem !important; font-weight: 600 !important; color: #5d74a3 !important; }
+
+/* Kids Light: large time display */
+[data-theme="kids-light"] .departure-time { gap: 0.2rem; align-items: flex-end; }
+[data-theme="kids-light"] .departure-time-main { font-size: 2rem !important; font-weight: 900 !important; line-height: 1 !important; }
+[data-theme="kids-light"] .departure-time-main .time-num { font-size: 2.4rem !important; font-weight: 900 !important; }
+[data-theme="kids-light"] .departure-time-main .time-unit { font-size: 1rem !important; font-weight: 700 !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+1) .departure-time-main { color: #8B5CF6 !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+2) .departure-time-main { color: #0d9488 !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+3) .departure-time-main { color: #EA580C !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+4) .departure-time-main { color: #16A34A !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+5) .departure-time-main { color: #DC2626 !important; }
+
+/* Kids Light: coloured schedule pill */
+[data-theme="kids-light"] .departure-time-pill {
+    font-size: 0.78rem !important; font-weight: 700 !important;
+    padding: 0.32rem 0.7rem !important; border-radius: 999px !important;
+    background: rgba(20,184,166,0.1) !important; color: #0d9488 !important;
+    border: 1.5px solid rgba(20,184,166,0.25) !important;
+}
+[data-theme="kids-light"] .departure-time-pill::before { content: "🕐 "; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+1) .departure-time-pill { background: rgba(139,92,246,0.09) !important; color: #7c3aed !important; border-color: rgba(139,92,246,0.22) !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+3) .departure-time-pill { background: rgba(249,115,22,0.09) !important; color: #ea580c !important; border-color: rgba(249,115,22,0.22) !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+4) .departure-time-pill { background: rgba(34,197,94,0.09) !important; color: #16a34a !important; border-color: rgba(34,197,94,0.22) !important; }
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+5) .departure-time-pill { background: rgba(239,68,68,0.09) !important; color: #dc2626 !important; border-color: rgba(239,68,68,0.22) !important; }
+
+/* Kids Light: theme picker */
+[data-theme="kids-light"] .departure-info h3,
+[data-theme="kids-light"] .departure-platform { color: #1a2a50 !important; }
+[data-theme="kids-light"] .theme-btn,
+[data-theme="kids-light"] .theme-menu-panel {
+    background: rgba(255,253,250,0.98); color: #3459a5; border-color: rgba(75,140,229,0.2);
+}
+[data-theme="kids-light"] .theme-menu-title { color: #6a82b5; }
+[data-theme="kids-light"] .theme-option { color: #3459a5; }
+[data-theme="kids-light"] .theme-option:hover { background: rgba(194,225,255,0.5); }
+[data-theme="kids-light"] .theme-option.active { background: rgba(255,221,119,0.35); color: #d85788; }
+[data-theme="kids-light"] .theme-swatch { border-color: rgba(75,140,229,0.15); }
+
+/* Kids Light: status pills */
+[data-theme="kids-light"] .departure-status { font-size: 0.84rem !important; font-weight: 800 !important; padding: 0.38rem 0.88rem !important; border-radius: 999px !important; }
+[data-theme="kids-light"] .departure-status.status-on,
+[data-theme="kids-light"] .occupancy-chip.low { color: #15803d; background: #dcfce7; border: 1.5px solid rgba(34,197,94,0.3); }
+[data-theme="kids-light"] .departure-status.status-delay,
+[data-theme="kids-light"] .occupancy-chip.medium { color: #b45309; background: #fef3c7; border: 1.5px solid rgba(245,158,11,0.3); }
+[data-theme="kids-light"] .departure-status.status-cancel,
+[data-theme="kids-light"] .occupancy-chip.high { color: #dc2626; background: #fee2e2; border: 1.5px solid rgba(239,68,68,0.3); }
+[data-theme="kids-light"] .departure-status.status-due {
+    color: #15803d !important;
+    background: #dcfce7 !important;
+    border: 1.5px solid rgba(34,197,94,0.35) !important;
+    font-weight: 900 !important;
+    border-radius: 999px !important;
+    padding: 0.35rem 1rem !important;
+    font-size: 0.9rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.3rem !important;
+}
+[data-theme="kids-light"] .departure-status.status-board,
+[data-theme="kids-light"] .departure-status.status-ahead,
+[data-theme="kids-light"] .occupancy-chip.unknown { color: #0369a1; background: #e0f2fe; border: 1.5px solid rgba(14,165,233,0.3); }
+
+/* Kids Light: table, trips, alerts */
+[data-theme="kids-light"] .board-table thead { border-color: rgba(83,145,223,0.14); }
+[data-theme="kids-light"] .board-table th,
+[data-theme="kids-light"] .board-table td { border-color: rgba(83,145,223,0.1); }
+[data-theme="kids-light"] .board-table tr:nth-child(even) td { background: rgba(236,247,255,0.6); }
+[data-theme="kids-light"] .expanded-journey-row,
+[data-theme="kids-light"] .expanded-journey-row td,
+[data-theme="kids-light"] .trip-journey { background: rgba(241,250,255,0.95); border-color: rgba(83,145,223,0.1); }
+[data-theme="kids-light"] .trip-journey-header { border-color: rgba(83,145,223,0.1); }
+[data-theme="kids-light"] .trip-stop-item .stop-dot { background: #7fb6ef; }
+[data-theme="kids-light"] .alert-item { background: rgba(255,234,185,0.6); border-color: rgba(255,190,92,0.3); }
+[data-theme="kids-light"] .line-disruption-notice { background: rgba(255,221,208,0.6); border-color: rgba(255,143,96,0.28); }
+[data-theme="kids-light"] .disruption-rb-btn { background: rgba(184,242,222,0.82); border-color: rgba(89,205,163,0.34); color: #1a8d6f; }
+[data-theme="kids-light"] .disruption-rb-btn:hover { background: rgba(162,237,212,0.9); }
+[data-theme="kids-light"] .terminus-badge { color: #8c55db; background: rgba(224,198,255,0.5); }
+
+/* Kids Light: reference-like hero and four-column board layout */
+[data-theme="kids-light"] .hero-right {
+    margin-left: auto;
+    align-items: flex-start;
+}
+[data-theme="kids-light"] .kids-hero-decor { order: 1; }
+[data-theme="kids-light"] .theme-btn { order: 3; }
+[data-theme="kids-light"] .kids-hero-stats {
+    order: 2;
+    display: grid;
+    justify-items: end;
+    gap: 0.14rem;
+    min-width: 10.75rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 1rem;
+    background: rgba(12, 39, 84, 0.18);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: #ffffff;
+    backdrop-filter: blur(8px);
+    position: relative;
+    z-index: 1;
+}
+[data-theme="kids-light"] .kids-hero-time {
+    font-size: 2.05rem;
+    font-weight: 900;
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+}
+[data-theme="kids-light"] .kids-hero-date {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: rgba(246,250,255,0.88);
+    white-space: nowrap;
+}
+[data-theme="kids-light"] .kids-hero-weather {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #fff3bb;
+}
+[data-theme="kids-light"] .board-actions {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+[data-theme="kids-light"] .kids-board-columns {
+    display: grid;
+    grid-template-columns: 5.2rem minmax(0, 1fr) 8.7rem 7.2rem;
+    align-items: center;
+    padding: 0 1rem 0.55rem;
+    color: #6a82b5;
+    font-size: 0.8rem;
+    font-weight: 800;
+    border-bottom: 1px solid rgba(83,145,223,0.12);
+}
+[data-theme="kids-light"] .kids-board-col-scheduled { text-align: center; }
+[data-theme="kids-light"] .kids-board-col-due { text-align: right; padding-right: 0.25rem; }
+[data-theme="kids-light"] .departure-list { gap: 0 !important; }
+[data-theme="kids-light"] .departure-card {
+    position: relative;
+    overflow: hidden !important;
+}
+[data-theme="kids-light"] .departure-card::after {
+    content: "";
+    display: block !important;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 26%;
+    right: 18%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.72;
+}
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+1)::after {
+    background-image:
+        linear-gradient(to right, transparent 0%, transparent 8%, rgba(79,153,244,0.12) 24%, rgba(79,153,244,0.22) 44%, transparent 70%),
+        linear-gradient(90deg, transparent 0 10%, rgba(81,139,219,0.18) 10% 11%, transparent 11% 16%, rgba(81,139,219,0.18) 16% 17%, transparent 17% 100%),
+        radial-gradient(circle at 78% 28%, rgba(255,214,102,0.92) 0 6%, transparent 7%),
+        radial-gradient(ellipse at 74% 102%, rgba(121,196,106,0.9) 0 24%, transparent 25%),
+        radial-gradient(ellipse at 88% 100%, rgba(108,177,231,0.82) 0 22%, transparent 23%);
+}
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+2)::after {
+    background-image:
+        linear-gradient(to right, transparent 0%, transparent 10%, rgba(117,204,108,0.15) 30%, rgba(117,204,108,0.2) 50%, transparent 74%),
+        radial-gradient(ellipse at 40% 100%, rgba(114,184,81,0.9) 0 24%, transparent 25%),
+        radial-gradient(ellipse at 58% 100%, rgba(148,205,92,0.88) 0 24%, transparent 25%),
+        radial-gradient(ellipse at 76% 102%, rgba(98,175,85,0.86) 0 20%, transparent 21%);
+}
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+3)::after {
+    background-image:
+        linear-gradient(to right, transparent 0%, transparent 10%, rgba(50,184,190,0.12) 30%, rgba(50,184,190,0.2) 48%, transparent 72%),
+        radial-gradient(ellipse at 50% 100%, rgba(37,164,176,0.78) 0 24%, transparent 25%),
+        radial-gradient(ellipse at 68% 100%, rgba(87,207,198,0.72) 0 18%, transparent 19%),
+        radial-gradient(circle at 64% 60%, rgba(255,255,255,0.9) 0 2.2%, transparent 2.4%);
+}
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+4)::after {
+    background-image:
+        linear-gradient(to right, transparent 0%, transparent 10%, rgba(255,174,100,0.12) 30%, rgba(255,174,100,0.2) 48%, transparent 72%),
+        radial-gradient(ellipse at 52% 100%, rgba(82,188,218,0.68) 0 20%, transparent 21%),
+        radial-gradient(ellipse at 70% 100%, rgba(247,217,148,0.92) 0 16%, transparent 17%),
+        radial-gradient(circle at 76% 62%, rgba(42,174,132,0.88) 0 4.8%, transparent 5%),
+        radial-gradient(circle at 82% 56%, rgba(42,174,132,0.88) 0 4.8%, transparent 5%);
+}
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+5)::after {
+    background-image:
+        linear-gradient(to right, transparent 0%, transparent 10%, rgba(116,195,93,0.12) 30%, rgba(116,195,93,0.22) 48%, transparent 72%),
+        radial-gradient(ellipse at 46% 100%, rgba(106,184,86,0.92) 0 24%, transparent 25%),
+        radial-gradient(ellipse at 65% 100%, rgba(129,204,101,0.92) 0 22%, transparent 23%),
+        radial-gradient(ellipse at 80% 102%, rgba(96,176,82,0.84) 0 18%, transparent 19%);
+}
+[data-theme="kids-light"] .departure-row,
+[data-theme="kids-light"] .departure-meta { position: relative; z-index: 1; }
+[data-theme="kids-light"] .departure-row {
+    display: grid !important;
+    grid-template-columns: 5.2rem minmax(0, 1fr) 8.7rem 7.2rem;
+    align-items: center !important;
+    gap: 1rem !important;
+}
+[data-theme="kids-light"] .departure-time { display: contents !important; }
+[data-theme="kids-light"] .departure-time-pill {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    min-width: 7rem;
+    font-size: 0.92rem !important;
+    font-weight: 800 !important;
+    background: rgba(255,255,255,0.76) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+}
+[data-theme="kids-light"] .departure-time-pill .schedule-prefix { display: none; }
+[data-theme="kids-light"] .departure-time-main {
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: end;
+    text-align: right;
+}
+[data-theme="kids-light"] .departure-due-signal {
+    display: inline-flex !important;
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    width: 1rem;
+    height: 1rem;
+    color: currentColor;
+    transform: translateX(1.2rem);
+    opacity: 0.82;
+}
+[data-theme="kids-light"] .departure-due-signal svg { width: 1rem; height: 1rem; }
+[data-theme="kids-light"] .departure-time-main .time-num { font-size: 3rem !important; }
+[data-theme="kids-light"] .departure-time-main .time-unit { font-size: 1.18rem !important; }
+[data-theme="kids-light"] .departure-meta {
+    display: grid !important;
+    grid-template-columns: 5.2rem minmax(0, 1fr) 8.7rem 7.2rem;
+    align-items: center;
+    gap: 0.6rem;
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(220,234,250,0.86);
+}
+[data-theme="kids-light"] .departure-meta-primary { grid-column: 1 / 3; min-width: 0; }
+[data-theme="kids-light"] .departure-meta-secondary { grid-column: 3 / 5; justify-self: end; }
+[data-theme="kids-light"] .departure-route,
+[data-theme="kids-light"] .route-pill {
+    width: 4.55rem !important;
+    min-width: 4.55rem !important;
+    height: 4.55rem !important;
+    min-height: 4.55rem !important;
+    border-radius: 1rem !important;
+    padding: 0.35rem 0.45rem !important;
+    letter-spacing: -0.02em !important;
+}
+[data-theme="kids-light"] .departure-info h3 { font-size: 1.16rem !important; }
+[data-theme="kids-light"] .departure-info p { max-width: 30rem; }
+
+/* Kids Light: closer to reference title/content structure */
+[data-theme="kids-light"] .kia-ora-greeting { display: none !important; }
+[data-theme="kids-light"] .hero h1 {
+    font-size: clamp(2.8rem, 4vw, 3.8rem) !important;
+    line-height: 1 !important;
+}
+[data-theme="kids-light"] .hero-subtitle {
+    color: rgba(241,248,255,0.96) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: 0.98rem !important;
+    font-weight: 700 !important;
+    margin-top: 0.35rem !important;
+}
+[data-theme="kids-light"] .hero-subtitle::before { content: "📍 "; }
+[data-theme="kids-light"] .hero-location {
+    font-size: 0.82rem !important;
+    color: rgba(240,246,255,0.84) !important;
+}
+[data-theme="kids-light"] .hero-location::before { content: "•"; margin-right: 0.45rem; }
+[data-theme="kids-light"] .stats-bar-left .stat-item:nth-child(2),
+[data-theme="kids-light"] .stat-date,
+[data-theme="kids-light"] #weather-widget { display: none !important; }
+[data-theme="kids-light"] .stats-bar {
+    padding: 0.75rem 1.15rem !important;
+    justify-content: space-between;
+}
+[data-theme="kids-light"] .board-header {
+    display: grid !important;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        "title favourite"
+        "controls controls";
+    row-gap: 0.9rem;
+}
+[data-theme="kids-light"] .board-header-left { grid-area: title; }
+[data-theme="kids-light"] .kids-favorite-btn {
+    grid-area: favourite;
+    justify-self: end;
+    align-self: start;
+}
+[data-theme="kids-light"] .board-actions {
+    grid-area: controls;
+    justify-content: space-between !important;
+}
+[data-theme="kids-light"] .kids-board-col-scheduled::before { content: "🕒 "; }
+[data-theme="kids-light"] .kids-board-col-due::before { content: "🚌 "; }
+[data-theme="kids-light"] .departure-route,
+[data-theme="kids-light"] .route-pill {
+    background: var(--kids-route-color) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 10px 24px rgba(28, 57, 110, 0.14) !important;
+}
+[data-theme="kids-light"] .departure-time-main {
+    color: var(--kids-accent) !important;
+}
+[data-theme="kids-light"] .departure-due-signal {
+    color: var(--kids-accent) !important;
+}
+[data-theme="kids-light"] .departure-status,
+[data-theme="kids-light"] .occupancy-chip {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
+}
+[data-theme="kids-light"] .promo-banner {
+    background: linear-gradient(180deg, #d8ecff, #cbe6ff) !important;
+    position: relative;
+    overflow: hidden;
+}
+[data-theme="kids-light"] .promo-banner::before {
+    content: "";
+    position: absolute;
+    left: -2rem;
+    bottom: -1rem;
+    width: 11rem;
+    height: 6rem;
+    background:
+        radial-gradient(ellipse at 45% 100%, rgba(131,201,92,0.9) 0 34%, transparent 35%),
+        radial-gradient(ellipse at 70% 100%, rgba(94,177,84,0.84) 0 26%, transparent 27%),
+        radial-gradient(circle at 76% 32%, rgba(255,255,255,0.9) 0 8%, transparent 9%);
+    pointer-events: none;
+}
+[data-theme="kids-light"] .promo-layout-b {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.4fr;
+    align-items: stretch;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-plan-stack {
+    display: grid;
+    grid-template-columns: auto 4rem auto;
+    align-items: center;
+    gap: 0.85rem;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-qr {
+    display: block;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 0.7rem;
+    background:
+        linear-gradient(90deg, #133b76 0 12%, transparent 12% 18%, #133b76 18% 28%, transparent 28% 34%, #133b76 34% 46%, transparent 46% 54%, #133b76 54% 66%, transparent 66% 74%, #133b76 74% 88%, transparent 88%),
+        linear-gradient(#133b76 0 12%, transparent 12% 18%, #133b76 18% 28%, transparent 28% 34%, #133b76 34% 46%, transparent 46% 54%, #133b76 54% 66%, transparent 66% 74%, #133b76 74% 88%, transparent 88%),
+        #ffffff;
+    border: 1px solid rgba(70,120,201,0.2);
+}
+[data-theme="kids-light"] .promo-layout-b .promo-support strong,
+[data-theme="kids-light"] .promo-layout-b .promo-support span {
+    color: #35508f !important;
+}
+
+/* Kids Light: additional comparison cleanup */
+[data-theme="kids-light"] .hero-copy { max-width: 34rem; position: relative; z-index: 1; }
+[data-theme="kids-light"] .hero h1::after {
+    content: " ☀️";
+    font-size: 0.56em;
+    vertical-align: 0.08em;
+}
+[data-theme="kids-light"] .hero-subtitle {
+    max-width: 20rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+[data-theme="kids-light"] .hero-right { gap: 0.55rem; }
+[data-theme="kids-light"] .kids-hero-stats {
+    min-width: 9.6rem;
+    background: rgba(10, 32, 73, 0.38);
+}
+[data-theme="kids-light"] .kids-hero-date { font-size: 0.74rem; }
+[data-theme="kids-light"] .stats-bar-left { gap: 0.85rem; }
+[data-theme="kids-light"] .stats-bar-left .stat-item { font-size: 0.8rem; }
+[data-theme="kids-light"] .stats-bar-left .stat-item svg { width: 15px; height: 15px; }
+[data-theme="kids-light"] #live-map-link::before { content: "📍"; margin-right: 0.35rem; }
+[data-theme="kids-light"] .controls-panel { padding: 1rem 1.15rem; }
+[data-theme="kids-light"] .search-box label,
+[data-theme="kids-light"] .stop-menu-top-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #6d83b5;
+}
+[data-theme="kids-light"] #stop-search,
+[data-theme="kids-light"] .stop-menu-button { min-height: 3.15rem; border-radius: 1rem !important; }
+[data-theme="kids-light"] .board-header .note { display: none; }
+[data-theme="kids-light"] .board-toggles { gap: 1.2rem; }
+[data-theme="kids-light"] .toggle-label { font-size: 0.74rem !important; }
+[data-theme="kids-light"] .button-fullscreen { min-height: 3.25rem; padding-inline: 1.3rem; }
+[data-theme="kids-light"] .route-long-name,
+[data-theme="kids-light"] .occupancy-chip,
+[data-theme="kids-light"] .congestion-chip,
+[data-theme="kids-light"] .vehicle-distance,
+[data-theme="kids-light"] .access-icons,
+[data-theme="kids-light"] .vessel-name,
+[data-theme="kids-light"] .schedule-badge,
+[data-theme="kids-light"] .departure-stop-name { display: none !important; }
+[data-theme="kids-light"] .departure-platform { font-size: 0.72rem !important; }
+[data-theme="kids-light"] .departure-meta-primary { gap: 0.4rem !important; }
+[data-theme="kids-light"] .departure-meta-secondary { gap: 0.35rem !important; }
+[data-theme="kids-light"] .departure-status { font-size: 0.76rem !important; padding: 0.32rem 0.72rem !important; }
+[data-theme="kids-light"] .departure-expand-btn {
+    background: rgba(223,239,255,0.9) !important;
+    border: 1px solid rgba(115,164,232,0.2) !important;
+    color: #35508f !important;
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.7rem !important;
+}
+[data-theme="kids-light"] .view-all-btn {
+    background: #dceeff !important;
+    border-color: rgba(98,154,225,0.18) !important;
+    color: #35508f !important;
+    width: calc(100% - 1.5rem);
+    margin: 0.85rem 0.75rem 0;
+    border-radius: 0.9rem;
+}
+[data-theme="kids-light"] .departure-card::after { left: 33%; right: 19%; opacity: 0.65; }
+[data-theme="kids-light"] .promo-layout-a {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.2fr;
+    align-items: stretch;
+}
+[data-theme="kids-light"] .promo-layout-a > * + * {
+    border-left: none;
+    padding-left: 0;
+}
+[data-theme="kids-light"] .promo-layout-a > * {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(138,185,234,0.22);
+    border-radius: 1rem;
+    padding: 0.8rem 0.95rem;
+}
+
+/* Kids Light: final board-first reference alignment */
+[data-theme="kids-light"] .page {
+    width: min(1120px, calc(100% - 1.4rem));
+    padding: 0.85rem 0 1.6rem;
+}
+[data-theme="kids-light"] header { margin-bottom: 0.3rem; }
+[data-theme="kids-light"] .kids-hero-map-link {
+    display: none !important;
+}
+[data-theme="kids-light"] .hero {
+    padding: 0.8rem 1rem 0.75rem;
+    border-radius: 1.35rem;
+}
+[data-theme="kids-light"] .at-logo {
+    width: 82px;
+    height: 82px;
+    box-shadow: 0 12px 24px rgba(11, 34, 73, 0.18);
+}
+[data-theme="kids-light"] .hero-copy { max-width: 31rem; }
+[data-theme="kids-light"] .hero h1 {
+    font-size: clamp(2.35rem, 4vw, 3.25rem) !important;
+}
+[data-theme="kids-light"] .hero-meta-row,
+[data-theme="kids-light"] .kids-hero-map-link,
+[data-theme="kids-light"] .stats-bar { display: none !important; }
+[data-theme="kids-light"] .controls {
+    margin-bottom: 0.8rem;
+}
+[data-theme="kids-light"][data-kids-light-selected="true"] .controls {
+    display: none !important;
+}
+[data-theme="kids-light"] .controls-panel {
+    padding: 0.72rem 0.92rem !important;
+    border-radius: 1.15rem;
+}
+[data-theme="kids-light"] .alerts-panel,
+[data-theme="kids-light"] .calendar-warning {
+    display: none !important;
+}
+[data-theme="kids-light"] .search-stop-grid {
+    gap: 0.8rem;
+}
+[data-theme="kids-light"] .board-header {
+    margin-bottom: 0.45rem !important;
+}
+[data-theme="kids-light"] .board {
+    padding-top: 1rem;
+}
+[data-theme="kids-light"] .board-toggles {
+    display: none !important;
+}
+[data-theme="kids-light"] .kids-favorite-btn {
+    padding: 0.5rem 0.82rem;
+    font-size: 0.75rem;
+    box-shadow: none;
+}
+[data-theme="kids-light"] .button-fullscreen {
+    min-height: 2.7rem;
+    padding-inline: 1rem;
+    border-radius: 0.95rem !important;
+}
+[data-theme="kids-light"] .board-header h2 {
+    font-size: 1.28rem !important;
+}
+[data-theme="kids-light"] .kids-board-columns {
+    padding: 0 0.9rem 0.42rem;
+    font-size: 0.67rem;
+}
+[data-theme="kids-light"] .departure-card {
+    padding: 0.88rem 1rem !important;
+}
+[data-theme="kids-light"] .departure-row {
+    grid-template-columns: 4.25rem minmax(0, 1fr) 6.5rem 5.3rem !important;
+    gap: 0.8rem !important;
+    min-height: 5.5rem;
+}
+[data-theme="kids-light"] .departure-route,
+[data-theme="kids-light"] .route-pill {
+    width: 3.8rem !important;
+    min-width: 3.8rem !important;
+    height: 3.8rem !important;
+    min-height: 3.8rem !important;
+    border-radius: 0.85rem !important;
+    font-size: 1rem !important;
+}
+[data-theme="kids-light"] .departure-info h3 {
+    font-size: 1rem !important;
+}
+[data-theme="kids-light"] .departure-info p {
+    margin-top: 0.18rem !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+[data-theme="kids-light"] .departure-time-pill {
+    min-width: 5.7rem;
+    font-size: 0.76rem !important;
+    padding: 0.22rem 0.5rem !important;
+}
+[data-theme="kids-light"] .departure-time-main {
+    min-width: 4.6rem;
+    line-height: 0.92 !important;
+}
+[data-theme="kids-light"] .departure-time-main .time-num {
+    font-size: 2.45rem !important;
+}
+[data-theme="kids-light"] .departure-time-main .time-unit {
+    font-size: 0.95rem !important;
+}
+[data-theme="kids-light"] .departure-due-signal {
+    transform: translateX(0.8rem);
+    width: 0.85rem;
+    height: 0.85rem;
+}
+[data-theme="kids-light"] .departure-meta {
+    display: none !important;
+}
+[data-theme="kids-light"] .departure-card::after {
+    left: 37%;
+    right: 16%;
+    opacity: 0.6;
+}
+[data-theme="kids-light"] .view-all-btn {
+    margin-top: 0.6rem;
+    display: none !important;
+}
+[data-theme="kids-light"] .promo-banner {
+    margin-top: 0.7rem;
+    padding: 0.9rem 1rem;
+    border-radius: 1.1rem;
+    box-shadow: 0 8px 24px rgba(94, 141, 207, 0.12);
+}
+[data-theme="kids-light"] .promo-layout-a {
+    display: none !important;
+}
+[data-theme="kids-light"] .promo-layout-b {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 1rem;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-mascot {
+    gap: 0.8rem;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-tip svg {
+    opacity: 0.5;
+}
+[data-theme="kids-light"] .promo-layout-b > * {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+[data-theme="kids-light"] .promo-layout-b > * + * {
+    border-left: 1px solid rgba(138,185,234,0.28);
+    padding-left: 1rem !important;
+}
+[data-theme="kids-light"] .promo-bird {
+    width: 70px;
+    height: 70px;
+}
+[data-theme="kids-light"] .promo-thanks strong {
+    font-size: 1rem;
+}
+[data-theme="kids-light"] .promo-thanks span,
+[data-theme="kids-light"] .promo-tip span,
+[data-theme="kids-light"] .promo-support span {
+    font-size: 0.76rem;
+}
+[data-theme="kids-light"] .promo-tip strong,
+[data-theme="kids-light"] .promo-plan strong {
+    font-size: 0.87rem;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-plan-stack {
+    grid-template-columns: auto 3.3rem auto;
+    gap: 0.75rem;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-qr {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.55rem;
+}
+
+@media (max-width: 900px) {
+    [data-theme="kids-light"] .hero > div { flex-wrap: wrap; }
+    [data-theme="kids-light"] .hero-right { width: 100%; justify-content: flex-end; }
+    [data-theme="kids-light"] .promo-layout { gap: 0.9rem; }
+    [data-theme="kids-light"] .promo-layout-a,
+    [data-theme="kids-light"] .promo-layout-b { grid-template-columns: 1fr; }
+    [data-theme="kids-light"] .promo-layout-b .promo-plan-stack { grid-template-columns: auto auto; }
+    [data-theme="kids-light"] .hero::before { right: 1rem; width: 12rem; }
+    [data-theme="kids-light"] .kids-hero-stats { min-width: auto; }
+    [data-theme="kids-light"] .kids-board-columns { display: none; }
+    [data-theme="kids-light"] .departure-row {
+        grid-template-columns: 4.7rem minmax(0, 1fr) !important;
+    }
+    [data-theme="kids-light"] .departure-time-pill {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+        margin-top: 0.25rem;
+    }
+    [data-theme="kids-light"] .departure-time-main,
+    [data-theme="kids-light"] .departure-due-signal {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    [data-theme="kids-light"] .departure-meta {
+        grid-template-columns: 1fr !important;
+    }
+    [data-theme="kids-light"] .departure-meta-primary,
+    [data-theme="kids-light"] .departure-meta-secondary {
+        grid-column: 1;
+        justify-self: start;
+    }
+}
+
+@media (max-width: 640px) {
+    [data-theme="kids-light"] .kids-hero-decor { display: none; }
+    [data-theme="kids-light"] .kids-hero-stats { width: 100%; justify-items: start; }
+    [data-theme="kids-light"] .board-header { flex-direction: column !important; align-items: flex-start !important; gap: 0.6rem !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   KIDS LIGHT: FINAL REFERENCE IMAGE MATCH
+   These rules are appended last and override all earlier rules.
+   ══════════════════════════════════════════════════════════════ */
+
+/* 1. Remove ALL scene strip ::after backgrounds — definitive kill */
+[data-theme="kids-light"] .departure-card::after {
+    display: none !important;
+    content: none !important;
+    background-image: none !important;
+    background: none !important;
+}
+
+/* 2. Board-first mode: always hide search controls (matches reference board display) */
+[data-theme="kids-light"] .controls { display: none !important; }
+
+/* 3. Hide fullscreen button — not shown in reference */
+[data-theme="kids-light"] .button-fullscreen { display: none !important; }
+
+/* 4. Hide column headers row — reference has no Route/Destination/Scheduled/Due header bar */
+[data-theme="kids-light"] .kids-board-columns { display: none !important; }
+
+/* 5. Board header: single flex row — title left, favourite button right */
+[data-theme="kids-light"] .board-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.75rem !important;
+    padding: 1.1rem 1.5rem 0.85rem !important;
+    row-gap: 0 !important;
+    grid-template-areas: none !important;
+}
+[data-theme="kids-light"] .board-header-left {
+    flex: 1 1 auto;
+}
+[data-theme="kids-light"] .board-actions {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    align-items: center !important;
+}
+/* Reset any grid-area placement that was putting favourite in wrong row */
+[data-theme="kids-light"] .kids-favorite-btn {
+    grid-area: auto !important;
+    justify-self: auto !important;
+}
+
+/* 6. Ensure view-all button stays hidden */
+[data-theme="kids-light"] .view-all-btn { display: none !important; }
+
+/* 7. Board: reset overflow so border-radius clip stays intact */
+[data-theme="kids-light"] .board { overflow: hidden !important; }
+
+/* 8. Footer: restructure to match reference — mascot | plan+QR+help */
+[data-theme="kids-light"] .promo-layout-b .promo-tip { display: none !important; }
+[data-theme="kids-light"] .promo-layout-b {
+    display: grid !important;
+    grid-template-columns: 1.5fr 1fr !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+}
+[data-theme="kids-light"] .promo-layout-b > * + * {
+    border-left: 1px solid rgba(138, 185, 234, 0.35) !important;
+    padding-left: 1.5rem !important;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-plan-stack {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 1.2rem !important;
+    grid-template-columns: unset !important;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-plan-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-qr {
+    flex-shrink: 0;
+    width: 3.4rem !important;
+    height: 3.4rem !important;
+    border-radius: 0.6rem !important;
+}
+[data-theme="kids-light"] .promo-layout-b .promo-support {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+/* 9. Make promo-bird larger and ensure it displays well */
+[data-theme="kids-light"] .promo-bird {
+    width: 80px !important;
+    height: 80px !important;
+    flex-shrink: 0;
+}
+
+/* 10. Hero illustration (Sky Tower SVG): proper sizing */
+[data-theme="kids-light"] .kids-hero-decor {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    order: 1;
+}
+[data-theme="kids-light"] .kids-hero-decor svg {
+    display: block;
+    flex-shrink: 0;
+    border-radius: 0.85rem;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+}
+/* Hide legacy emoji spans when SVG illustration is injected */
+[data-theme="kids-light"] .kids-sun,
+[data-theme="kids-light"] .kids-tile { display: none !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   KIDS LIGHT: SECOND-PASS VISUAL FIXES (reference match)
+   ══════════════════════════════════════════════════════════════ */
+
+/* Fix 1: Hero — much darker navy to match reference */
+[data-theme="kids-light"] .hero {
+    background: linear-gradient(135deg, #08152e, #0c1b40 52%, #0f2255) !important;
+}
+
+/* Fix 1b: Body — use the real Auckland cityscape illustration */
+[data-theme="kids-light"] body {
+    background-color: #b8ddf5;
+    background-image: url('../images/placeholder images for kids theme/f96a108a-ac00-4c5d-bd0d-8d9d613e1a78.png');
+    background-position: center bottom;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+/* Remove the old radial-gradient overlays since the real image handles the scenery */
+[data-theme="kids-light"] body::before { display: none !important; }
+
+/* Kill hero::before pseudo-element — now that we use the real scene PNG, remove the old gradient illustration */
+[data-theme="kids-light"] .hero::before { display: none !important; content: none !important; }
+
+/* Fix 2: Smaller h1 font so sun emoji stays inline on same line */
+[data-theme="kids-light"] .hero h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.9rem) !important;
+    line-height: 1.05 !important;
+}
+[data-theme="kids-light"] .hero-copy { max-width: 40rem; }
+
+/* Fix 3: Time pill — tinted background using route accent color, matching reference */
+[data-theme="kids-light"] .departure-time-pill,
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+1) .departure-time-pill,
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+2) .departure-time-pill,
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+3) .departure-time-pill,
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+4) .departure-time-pill,
+[data-theme="kids-light"] .departure-list .departure-card:nth-child(5n+5) .departure-time-pill {
+    color: var(--kids-accent, #0d9488) !important;
+    border-color: var(--kids-accent, #0d9488) !important;
+    background: color-mix(in srgb, var(--kids-accent, #0d9488) 12%, transparent) !important;
+    border-radius: 999px !important;
+    padding: 0.3rem 0.85rem !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.3rem !important;
+    white-space: nowrap !important;
+}
+
+/* Fix 4: Remove left-edge blue stripe from departure cards */
+[data-theme="kids-light"] .departure-card::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Fix 5: Column order — minutes (big) in col 3, scheduled time pill in col 4 */
+[data-theme="kids-light"] .departure-row {
+    grid-template-columns: 4.25rem minmax(0,1fr) 6.2rem 8.5rem !important;
+}
+[data-theme="kids-light"] .departure-time-main {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+    text-align: center !important;
+    min-width: unset !important;
+}
+[data-theme="kids-light"] .departure-time-pill {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+    min-width: unset !important;
+}
+
+/* Fix 6: Hide due-signal wifi icon (not in reference design) */
+[data-theme="kids-light"] .departure-due-signal { display: none !important; }
+
+/* Fix 7: Bus PNG mascot — proper sizing */
+[data-theme="kids-light"] .promo-bird {
+    width: 120px !important;
+    height: 102px !important;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+/* Hero scene image (Sky Tower PNG) sizing */
+[data-theme="kids-light"] .kids-hero-scene-img {
+    display: block;
+    width: 92px;
+    height: 92px;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+}
+
+/* AT logo using PNG image — transparent bg so border-radius:50% clips to circle */
+[data-theme="kids-light"] .at-logo {
+    background: transparent !important;
+    overflow: hidden;
+    width: 82px !important;
+    height: 82px !important;
+}
+
+/* Responsive: restore mobile column order after 900px breakpoint overrides */
+@media (max-width: 900px) {
+    [data-theme="kids-light"] .departure-time-main {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        justify-self: end !important;
+    }
+    [data-theme="kids-light"] .departure-time-pill {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+        justify-self: end !important;
+    }
+}
+
+/* 10. Responsive: footer stacks on small screens */
+@media (max-width: 700px) {
+    [data-theme="kids-light"] .promo-layout-b {
+        grid-template-columns: 1fr !important;
+    }
+    [data-theme="kids-light"] .promo-layout-b > * + * {
+        border-left: none !important;
+        padding-left: 0 !important;
+        border-top: 1px solid rgba(138, 185, 234, 0.35) !important;
+        padding-top: 1rem !important;
+    }
+    [data-theme="kids-light"] .promo-layout-b .promo-plan-stack {
+        flex-wrap: wrap;
+    }
+}
+
