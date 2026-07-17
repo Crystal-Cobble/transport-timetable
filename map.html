@@ -146,30 +146,33 @@
     }
     throw lastError||new Error(`Could not load ${category}`);
   }
-  async function loadPlaceCategories(area){
-    const entries=Object.keys(placeSelectors),counts={},failures=[];
-    for(let index=0;index<entries.length;index+=2){
-      const batch=entries.slice(index,index+2);
-      setStatus(`Loading ${batch.map(key=>categories[key].label.toLowerCase()).join(' and ')}…`);
-      const results=await Promise.allSettled(batch.map(key=>fetchPlaceCategory(key,area.bbox)));
-      results.forEach((result,resultIndex)=>{
-        const category=batch[resultIndex];
-        if(result.status==='rejected'){console.warn(`${category} data unavailable`,result.reason);failures.push(category);return}
-        const seen=new Set();let count=0;
-        result.value.forEach(el=>{const key=`${el.type}/${el.id}`;if(!seen.has(key)){seen.add(key);if(addPlace(el,category))count++}});
-        counts[category]=count;
-      });
+  function showCategory(category){if(!active.has(category)){active.add(category);layers[category].addTo(map)}const button=document.querySelector(`.filter[data-category="${category}"]`);if(button)button.setAttribute('aria-pressed','true')}
+  async function loadCategory(category,area){
+    if(category==='transport')return loadAtTransport();
+    const elements=await fetchPlaceCategory(category,area.bbox),seen=new Set();let count=0;
+    elements.forEach(el=>{const key=`${el.type}/${el.id}`;if(!seen.has(key)){seen.add(key);if(addPlace(el,category))count++}});
+    return count;
+  }
+  async function loadCategoriesInOrder(area){
+    const queue=['transport','bike','commercial','culture','recreation','facilities'],failures={},counts={},permanentFailures=[];
+    while(queue.length){
+      const category=queue.shift(),attempt=(failures[category]||0)+1,retryText=attempt>1?` (retry ${attempt-1} of 5)`:'';
+      setStatus(`Loading ${categories[category].label.toLowerCase()}${retryText}…`);
+      try{
+        counts[category]=await loadCategory(category,area);showCategory(category);
+      }catch(error){
+        failures[category]=attempt;console.warn(`${category} load attempt ${attempt} failed`,error);
+        if(attempt<=5)queue.push(category);else permanentFailures.push(category);
+      }
     }
-    return {counts,failures,total:Object.values(counts).reduce((sum,count)=>sum+count,0)};
+    return {counts,failures:permanentFailures,total:Object.values(counts).reduce((sum,count)=>sum+count,0)};
   }
   async function loadPlaces(){
     try{
       setStatus('Finding Tāmaki Makaurau…');const area=await findAuckland();map.fitBounds(area.bounds);
-      setStatus('Loading Auckland Transport stops…');let transportCount=0;
-      try{transportCount=await loadAtTransport()}catch(atError){console.warn('AT transport data unavailable',atError)}
-      if(location.protocol==='file:'){setStatus(`${transportCount.toLocaleString()} AT transport locations loaded. Serve this folder over HTTP to load other places.`,true);return}
-      const places=await loadPlaceCategories(area),loaded=places.total+transportCount;
-      if(places.failures.length){setStatus(`${loaded.toLocaleString()} places loaded · ${places.failures.length} layer${places.failures.length===1?'':'s'} temporarily unavailable`,true)}else{setStatus(`${loaded.toLocaleString()} live places loaded · transport from AT`);setTimeout(()=>setStatus(''),3000)}
+      if(location.protocol==='file:'){setStatus('Serve this folder over HTTP to load the live map layers.',true);return}
+      const result=await loadCategoriesInOrder(area);
+      if(result.failures.length){const names=result.failures.map(key=>categories[key].label).join(', ');setStatus(`${result.total.toLocaleString()} places loaded. Failed after 6 attempts: ${names}.`,true)}else{setStatus(`${result.total.toLocaleString()} live places loaded`);setTimeout(()=>setStatus(''),3000)}
     }catch(error){console.error(error);setStatus('Some live places could not be loaded. Try refreshing the map.',true)}
   }
   document.getElementById('filters').addEventListener('click',e=>{
