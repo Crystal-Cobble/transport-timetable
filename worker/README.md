@@ -1,6 +1,6 @@
 # Transport timetable API Worker
 
-This Cloudflare Worker keeps the Auckland Transport subscription keys out of the GitHub Pages files. It only accepts read-only requests from the Crystal-Cobble GitHub Pages origin, only forwards the GTFS and realtime endpoints used by the site, and caches successful responses at Cloudflare's edge.
+This Cloudflare Worker keeps the Auckland Transport subscription keys out of the GitHub Pages files. It accepts read-only requests from the Crystal-Cobble GitHub Pages site, local development servers, and the standard origins used by packaged Android/iOS web apps. It only forwards the GTFS and realtime endpoints used by the site and caches successful responses at Cloudflare's edge.
 
 Deployed endpoint: `https://transport-timetable-api.baileylivingstonnz.workers.dev`
 

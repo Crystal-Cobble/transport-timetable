@@ -1,5 +1,13 @@
 const AT_ORIGIN = 'https://api.at.govt.nz';
 const GITHUB_PAGES_ORIGIN = 'https://crystal-cobble.github.io';
+const APP_ORIGINS = new Set([
+  'null',
+  'file://',
+  'app://localhost',
+  'capacitor://localhost',
+  'ionic://localhost',
+  'https://appassets.androidplatform.net'
+]);
 
 const GTFS_PATHS = [
   /^\/gtfs\/v3\/routes\/?$/,
@@ -13,12 +21,15 @@ const REALTIME_PATH = /^\/realtime\/legacy(?:\/(?:tripupdates|vehiclelocations|s
 const QUERY_KEY = /^(?:filter\[[a-z_]+\]|page\[(?:limit|offset)\])$/;
 
 function originAllowed(origin) {
-  return origin === GITHUB_PAGES_ORIGIN || /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/.test(origin);
+  return !origin
+    || origin === GITHUB_PAGES_ORIGIN
+    || APP_ORIGINS.has(origin)
+    || /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/.test(origin);
 }
 
 function corsHeaders(origin) {
   return {
-    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Origin': origin || '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Accept',
     'Access-Control-Max-Age': '86400',
