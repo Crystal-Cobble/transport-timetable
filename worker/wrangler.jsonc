@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "transport-timetable-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-20",
+  "workers_dev": true,
+  "preview_urls": false,
+  "secrets": {
+    "required": ["AT_GTFS_KEY", "AT_REALTIME_KEY"]
+  }
+}

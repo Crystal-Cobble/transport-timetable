@@ -8,11 +8,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "map-backups" / "transport-stops.js"
-source = (ROOT / "map.html").read_text(encoding="utf-8")
-match = re.search(r"const AT_API_KEY='([^']+)'", source)
+source = (ROOT / "js" / "beta-api-config.js").read_text(encoding="utf-8")
+match = re.search(r"apiBase:\s*'([^']+)'", source)
 if not match:
-    raise RuntimeError("AT_API_KEY was not found in map.html")
-request = urllib.request.Request("https://api.at.govt.nz/gtfs/v3/stops", headers={"Ocp-Apim-Subscription-Key": match.group(1), "Accept": "application/vnd.api+json", "User-Agent": "transport-timetable-backup/1.0"})
+    raise RuntimeError("Cloudflare Worker apiBase was not found in js/beta-api-config.js")
+api_base = match.group(1).rstrip("/")
+request = urllib.request.Request(api_base + "/gtfs/v3/stops", headers={"Origin": "https://crystal-cobble.github.io", "Accept": "application/vnd.api+json", "User-Agent": "transport-timetable-backup/2.0"})
 with urllib.request.urlopen(request, timeout=90) as response:
     body = json.load(response)
 stops = [item.get("attributes", item) for item in body.get("data", [])]
