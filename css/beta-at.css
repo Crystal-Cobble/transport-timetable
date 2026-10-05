@@ -44,3 +44,29 @@
 @media(max-width:720px){.focus-alert-ticker{min-height:48px}.focus-alert-ticker__group{gap:20px;padding:0 20px}.focus-alert-ticker__item{font-size:.75rem}}
 @media(prefers-reduced-motion:reduce){.focus-alert-ticker__viewport{overflow-x:auto}.focus-alert-ticker__track{animation:none!important}.focus-alert-ticker__group[aria-hidden=true]{display:none}}
 .route-choice{grid-template-columns:minmax(0,1fr) 58px 44px 36px}.route-shape-toggle{width:58px;height:52px;padding:4px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--shore);font-size:.68rem;font-weight:700;cursor:pointer}.route-shape-toggle:hover{background:var(--soft)}.route-shape-toggle[aria-pressed=true]{border-color:var(--shore);background:var(--shore);color:#fff}.route-shape-toggle:focus-visible{outline:3px solid var(--safety);outline-offset:2px}.route-shape-toggle:disabled{cursor:wait;opacity:.7}.route-shape-toggle--empty{visibility:hidden}
+
+/* Compact the live All Routes panel while keeping its controls usable. */
+.sidepanel{padding:12px}
+.route-list{gap:3px;margin:8px 0}
+.route-choice{grid-template-columns:minmax(0,1fr) 50px 38px 30px;gap:4px;align-items:center}
+.route-choice .route-toggle{height:42px;padding:5px 6px}
+.route-toggle strong{flex:none;font-size:.8rem}
+.route-toggle span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.68rem}
+.route-shape-toggle{width:50px;height:42px;padding:3px;font-size:.64rem}
+.route-colour{width:38px;height:42px;padding:3px}
+.route-colour-reset{width:30px;height:42px;font-size:1rem}
+.sidepanel>label{display:block;margin:8px 0 3px;font-size:.8rem}
+.sidepanel>input[type=search]{min-height:34px;padding:5px 8px}
+.sidepanel>p{margin:8px 0}
+#route-count{margin:6px 0;font-size:.78rem}
+
+/* Reduce the height of live vehicle popups. */
+.leaflet-popup-content{margin:8px 10px;line-height:1.2}
+.popup-title{gap:7px;padding-bottom:5px}
+.popup-title .icon-tile{width:32px;height:32px}
+.popup-title .icon{width:20px;height:20px}
+.popup-section{padding:4px 0;font-size:.72rem;line-height:1.2}
+.popup-label{margin-bottom:1px;font-size:.6rem;line-height:1.1}
+.popup-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px}
+.popup-section--wide{grid-column:1/-1}
+.popup-section--last{display:flex;align-items:center;justify-content:space-between;gap:8px}
