@@ -2,6 +2,7 @@ const AT_ORIGIN = 'https://api.at.govt.nz';
 const AT_CDN_ORIGIN = 'https://web-p-ae-website-cms-cdne.azureedge.net';
 const GITHUB_PAGES_ORIGIN = 'https://crystal-cobble.github.io';
 const VEHICLE_PROMOTIONS_PATH = '/vehicle-promotions';
+const TRAIN_VEHICLES_PATH = /^\/serviceinfo\/v1\/vehicles\/byTripId\/[^/]+\/?$/;
 const APP_ORIGINS = new Set([
   'null',
   'file://',
@@ -20,7 +21,7 @@ const GTFS_PATHS = [
   /^\/gtfs\/v3\/shapes\/?$/
 ];
 const REALTIME_PATH = /^\/realtime\/legacy(?:\/(?:tripupdates|vehiclelocations|servicealerts))?\/?$/;
-const QUERY_KEY = /^(?:filter\[[a-z_]+\]|page\[(?:limit|offset)\])$/;
+const QUERY_KEY = /^(?:filter\[[a-z_]+\]|page\[(?:limit|offset)\]|include_filtered_routes)$/;
 
 function originAllowed(origin) {
   return !origin
@@ -60,6 +61,9 @@ function routeFor(pathname, env) {
       cacheSeconds: 3600
     };
   }
+  if (TRAIN_VEHICLES_PATH.test(pathname)) {
+    return {origin: AT_ORIGIN, path: pathname, key: env.AT_TIMETABLE_KEY, accept: 'application/json', forwardQuery: true, cacheSeconds: 300};
+  }
   if (GTFS_PATHS.some(pattern => pattern.test(pathname))) {
     return {origin: AT_ORIGIN, path: pathname, key: env.AT_GTFS_KEY, accept: 'application/json', forwardQuery: true};
   }
@@ -94,8 +98,10 @@ export default {
     if (route.forwardQuery && !route.key) return jsonResponse({error: 'Worker secret is not configured'}, 503, origin);
     if (!route.forwardQuery && url.search) return jsonResponse({error: 'Query parameter not allowed'}, 400, origin);
     if (route.forwardQuery) {
-      for (const key of url.searchParams.keys()) {
-        if (!QUERY_KEY.test(key)) return jsonResponse({error: 'Query parameter not allowed'}, 400, origin);
+      for (const [key, value] of url.searchParams) {
+        if (!QUERY_KEY.test(key) || key === 'include_filtered_routes' && value !== 'true') {
+          return jsonResponse({error: 'Query parameter not allowed'}, 400, origin);
+        }
       }
     }
 

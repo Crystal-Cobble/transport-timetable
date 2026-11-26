@@ -6,6 +6,6 @@
   "workers_dev": true,
   "preview_urls": false,
   "secrets": {
-    "required": ["AT_GTFS_KEY", "AT_REALTIME_KEY"]
+    "required": ["AT_GTFS_KEY", "AT_REALTIME_KEY", "AT_TIMETABLE_KEY"]
   }
 }
