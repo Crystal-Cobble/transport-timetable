@@ -63,7 +63,60 @@ function withInterchanges(stops){
 }
 async function trainStationDirectory(date){if(state.stationDirectory&&state.stationDirectoryDate===date)return state.stationDirectory;const json=await request(`/gtfs/v3/stops?filter[date]=${date}&filter[stop_name]=*Train%20Station*&page[limit]=200`);state.stationDirectory=list(json).map(normalizeStop).filter(stop=>stop.id);state.stationDirectoryDate=date;return state.stationDirectory}
 function nearbyTrainStationStops(matches,stationStops){const hubs=matches.filter(stop=>stop.locationType===1&&Number.isFinite(stop.lat)&&Number.isFinite(stop.lng)),stations=stationStops.filter(stop=>stop.locationType===1&&/\btrain station\b/i.test(stop.name)&&Number.isFinite(stop.lat)&&Number.isFinite(stop.lng)),nearby=new Set;for(const hub of hubs)for(const station of stations){const north=(hub.lat-station.lat)*111320,east=(hub.lng-station.lng)*111320*Math.cos(hub.lat*Math.PI/180);if(Math.hypot(north,east)<=200)nearby.add(station.id)}if(!nearby.size)return[];return stationStops.filter(stop=>nearby.has(stop.id)||nearby.has(stop.parent))}
-async function searchStops(query){if(query.length<2)return[];const date=new Date().toISOString().slice(0,10),numeric=/^\d+$/.test(query),filter=numeric?`filter[stop_code]=${encodeURIComponent(query)}*`:`filter[stop_name]=*${encodeURIComponent(query)}*`;try{const json=await request(`/gtfs/v3/stops?filter[date]=${date}&${filter}&page[limit]=80`),direct=list(json).map(normalizeStop).filter(s=>s.id);if(direct.length){try{return withInterchanges([...direct,...nearbyTrainStationStops(direct,await trainStationDirectory(date))])}catch(error){console.warn('Related train station search unavailable',error);return withInterchanges(direct)}}}catch(error){console.warn('Filtered stop search failed',error)}try{const json=await request(`/gtfs/v3/stops?filter[date]=${date}&page[limit]=200`),q=query.toLowerCase(),matches=list(json).map(normalizeStop).filter(s=>`${s.name} ${s.code} ${s.platform} ${s.id}`.toLowerCase().includes(q)).slice(0,40);return withInterchanges(matches)}catch(error){showNotice('Stop search is temporarily unavailable.',true);return[]}}
+function fuzzyStopDistance(query,name){
+  const target=String(name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  let best=query.length;
+  for(let start=0;start<target.length;start++)for(let length=Math.max(1,query.length-1);length<=query.length+1&&start+length<=target.length;length++){
+    const candidate=target.slice(start,start+length),rows=Array.from({length:candidate.length+1},(_,i)=>[i]);
+    rows[0]=Array.from({length:query.length+1},(_,i)=>i);
+    for(let i=1;i<=candidate.length;i++)for(let j=1;j<=query.length;j++){
+      rows[i][j]=Math.min(rows[i-1][j]+1,rows[i][j-1]+1,rows[i-1][j-1]+(candidate[i-1]===query[j-1]?0:1));
+      if(i>1&&j>1&&candidate[i-1]===query[j-2]&&candidate[i-2]===query[j-1])rows[i][j]=Math.min(rows[i][j],rows[i-2][j-2]+1)
+    }
+    best=Math.min(best,rows[candidate.length][query.length])
+    if(best===0)return best
+  }
+  return best
+}
+async function fuzzySearchStops(query,date){
+  const normalized=query.toLowerCase().replace(/[^a-z0-9]/g,''),words=query.toLowerCase().match(/[a-z0-9]+/g)||[];
+  if(normalized.length<4||/^\d+$/.test(normalized))return[];
+  const chunks=[...new Set(words.flatMap(word=>{
+    if(word.length<3)return[];
+    const parts=[],width=word.length<6?2:3;
+    for(let i=0;i<word.length;i+=width){
+      let part=word.slice(i,i+width);
+      if(part.length<width&&i>=width)part=word.slice(-width);
+      if(part.length===width)parts.push(part)
+    }
+    return parts
+  }))].slice(0,6);
+  if(!chunks.length)return[];
+  const pages=await Promise.all(chunks.map(chunk=>request(`/gtfs/v3/stops?filter[date]=${date}&filter[stop_name]=*${encodeURIComponent(chunk)}*&page[limit]=200`)));
+  const candidates=[...new Map(pages.flatMap(list).map(item=>normalizeStop(item)).filter(stop=>stop.id).map(stop=>[stop.id,stop])).values()];
+  const threshold=normalized.length>=8?2:1,ranked=candidates.map(stop=>({stop,distance:fuzzyStopDistance(normalized,[stop.name,stop.code,stop.platform].join(' '))}))
+    .filter(result=>result.distance<=threshold).sort((a,b)=>a.distance-b.distance).slice(0,40);
+  if(!ranked.length)return[];
+  const best=ranked[0].distance;
+  return withInterchanges(ranked.filter(result=>result.distance===best).map(result=>result.stop))
+}
+async function searchStops(query){
+  if(query.length<2)return[];
+  const date=new Date().toISOString().slice(0,10),numeric=/^\d+$/.test(query),filter=numeric?`filter[stop_code]=${encodeURIComponent(query)}*`:`filter[stop_name]=*${encodeURIComponent(query)}*`;
+  try{
+    const json=await request(`/gtfs/v3/stops?filter[date]=${date}&${filter}&page[limit]=80`),direct=list(json).map(normalizeStop).filter(stop=>stop.id);
+    if(direct.length){
+      try{return withInterchanges([...direct,...nearbyTrainStationStops(direct,await trainStationDirectory(date))])}
+      catch(error){console.warn('Related train station search unavailable',error);return withInterchanges(direct)}
+    }
+  }catch(error){console.warn('Filtered stop search failed',error)}
+  try{
+    const json=await request(`/gtfs/v3/stops?filter[date]=${date}&page[limit]=200`),q=query.toLowerCase(),matches=list(json).map(normalizeStop).filter(stop=>`${stop.name} ${stop.code} ${stop.platform} ${stop.id}`.toLowerCase().includes(q)).slice(0,40);
+    if(matches.length)return withInterchanges(matches);
+  }catch(error){console.warn('Unfiltered stop search failed',error)}
+  try{return await fuzzySearchStops(query,date)}
+  catch(error){console.warn('Fuzzy stop search failed',error);showNotice('Stop search is temporarily unavailable.',true);return[]}
+}
 async function loadInterchangeStops(interchange){if(state.loadedInterchanges.has(interchange.id))return state.interchangeStops.get(interchange.id)||[];const date=new Date().toISOString().slice(0,10),parents=interchange.sourceParentIds||[interchange.id],cached=state.interchangeStops.get(interchange.id)||[];try{const results=await Promise.all(parents.map(async parent=>{try{return list(await request(`/gtfs/v3/stops?filter[date]=${date}&filter[parent_station]=${encodeURIComponent(parent)}&page[limit]=200`)).map(normalizeStop).filter(stop=>stop.id&&stop.parent===parent)}catch(error){console.warn(`Stops unavailable for interchange parent ${parent}`,error);return[]}})),children=sortPlatforms([...new Map([...cached,...results.flat()].map(stop=>[stop.id,stop])).values()]);if(children.length){state.interchangeStops.set(interchange.id,children);state.loadedInterchanges.add(interchange.id);return children}throw new Error('No child stops were returned for this interchange')}catch(error){showNotice(`Could not load all stops for ${interchange.name}. Please try again.`,true);console.warn(`Interchange stops unavailable for ${interchange.name}`,error);return[]}}
 function positionSuggestions(){const root=$('suggestions'),close=$('suggestions-close'),input=$('stop-search'),viewport=window.visualViewport,bounds=input.getBoundingClientRect(),height=viewport?viewport.height:window.innerHeight,top=Math.max(0,bounds.bottom),left=Math.max(0,bounds.left),width=Math.min(bounds.width,window.innerWidth-left);root.style.top=`${top}px`;root.style.left=`${left}px`;root.style.width=`${width}px`;root.style.maxHeight=`${Math.max(0,height-top-8)}px`;close.style.top=`${Math.max(0,bounds.top+(bounds.height-34)/2)}px`;close.style.left=`${left+width-40}px`}
 function renderSuggestions(stops){state.currentSuggestions=stops;const root=$('suggestions'),close=$('suggestions-close'),selectedIds=new Set(state.selected.map(stop=>stop.id)),selectedInterchanges=new Set(state.selected.filter(stop=>stop.selectedInterchange).map(stop=>stop.selectedInterchange)),selectedInterchangeParents=new Set(state.selected.filter(stop=>stop.selectedInterchange).map(stop=>stop.parent));const visibleStops=stops.filter(stop=>stop.interchange?!selectedInterchanges.has(stop.id):stop.parent?!selectedInterchangeParents.has(stop.parent):!selectedIds.has(stop.id));root.innerHTML=visibleStops.map(s=>{if(!s.interchange)return`<button class="suggestion" role="option" data-stop='${esc(JSON.stringify(s))}'><span class="icon-tile"><img class="icon" src="images/png/01-bus-train-ferry-interchange.png" alt=""></span><span><strong>${esc(s.name)}</strong><br><small>${[s.code&&`Stop ${s.code}`,s.platform&&`Platform ${s.platform}`].filter(Boolean).map(esc).join(' · ')}</small></span></button>`;const children=sortPlatforms([...(state.interchangeStops.get(s.id)||[])]),expanded=state.expandedInterchanges.has(s.id);return`<div class="suggestion-group"><div class="suggestion-group__head"><button type="button" class="suggestion suggestion--interchange" role="option" data-add-interchange="${esc(s.id)}" aria-label="Select all stops in ${esc(s.name)}"><span class="icon-tile"><img class="icon" src="images/png/01-bus-train-ferry-interchange.png" alt=""></span><span><strong>${esc(s.name)}</strong><br><small>${children.length||s.childCount} stops and platforms</small></span></button><button type="button" class="suggestion-expand" data-expand-interchange="${esc(s.id)}" aria-label="${expanded?'Hide':'Show'} stops in ${esc(s.name)}" aria-expanded="${expanded}"><span aria-hidden="true">${expanded?'▴':'▾'}</span></button></div><div class="interchange-children${expanded?'':' hidden'}">${children.map(stop=>{const selected=selectedIds.has(stop.id);return`<button class="suggestion suggestion--child${selected?' suggestion--child-selected':''}" role="option" aria-selected="${selected}" data-stop='${esc(JSON.stringify(stop))}'><span class="suggestion-select-circle${selected?' suggestion-select-circle--selected':''}" aria-hidden="true">${selected?'✓':''}</span><span><strong>${esc(stop.name)}</strong><small>${[stop.code&&`Stop ${stop.code}`,stop.platform&&`Platform ${stop.platform}`].filter(Boolean).map(esc).join(' · ')}</small></span></button>`}).join('')}${expanded&&!children.length?'<p class="interchange-loading">Loading stops…</p>':''}</div></div>`}).join('');root.classList.toggle('hidden',!visibleStops.length);close.classList.toggle('hidden',!visibleStops.length);$('stop-search').setAttribute('aria-expanded',String(visibleStops.length>0));if(visibleStops.length)positionSuggestions()}
