@@ -1,5 +1,7 @@
 const AT_ORIGIN = 'https://api.at.govt.nz';
+const AT_CDN_ORIGIN = 'https://web-p-ae-website-cms-cdne.azureedge.net';
 const GITHUB_PAGES_ORIGIN = 'https://crystal-cobble.github.io';
+const VEHICLE_PROMOTIONS_PATH = '/vehicle-promotions';
 const APP_ORIGINS = new Set([
   'null',
   'file://',
@@ -50,8 +52,20 @@ function cacheSeconds(pathname) {
 }
 
 function routeFor(pathname, env) {
-  if (GTFS_PATHS.some(pattern => pattern.test(pathname))) return {key: env.AT_GTFS_KEY, accept: 'application/json'};
-  if (REALTIME_PATH.test(pathname)) return {key: env.AT_REALTIME_KEY, accept: 'application/json'};
+  if (pathname === VEHICLE_PROMOTIONS_PATH) {
+    return {
+      origin: AT_CDN_ORIGIN,
+      path: '/public/mobile/vehicle-promotions.json',
+      accept: 'application/json',
+      cacheSeconds: 3600
+    };
+  }
+  if (GTFS_PATHS.some(pattern => pattern.test(pathname))) {
+    return {origin: AT_ORIGIN, path: pathname, key: env.AT_GTFS_KEY, accept: 'application/json', forwardQuery: true};
+  }
+  if (REALTIME_PATH.test(pathname)) {
+    return {origin: AT_ORIGIN, path: pathname, key: env.AT_REALTIME_KEY, accept: 'application/json', forwardQuery: true};
+  }
   return null;
 }
 
@@ -77,12 +91,15 @@ export default {
 
     const route = routeFor(url.pathname, env);
     if (!route) return jsonResponse({error: 'Endpoint not allowed'}, 404, origin);
-    if (!route.key) return jsonResponse({error: 'Worker secret is not configured'}, 503, origin);
-    for (const key of url.searchParams.keys()) {
-      if (!QUERY_KEY.test(key)) return jsonResponse({error: 'Query parameter not allowed'}, 400, origin);
+    if (route.forwardQuery && !route.key) return jsonResponse({error: 'Worker secret is not configured'}, 503, origin);
+    if (!route.forwardQuery && url.search) return jsonResponse({error: 'Query parameter not allowed'}, 400, origin);
+    if (route.forwardQuery) {
+      for (const key of url.searchParams.keys()) {
+        if (!QUERY_KEY.test(key)) return jsonResponse({error: 'Query parameter not allowed'}, 400, origin);
+      }
     }
 
-    const target = new URL(url.pathname + url.search, AT_ORIGIN);
+    const target = new URL(route.path + (route.forwardQuery ? url.search : ''), route.origin);
     const cache = caches.default;
     const cacheKey = new Request(target.toString(), {method: 'GET'});
     const cached = await cache.match(cacheKey);
@@ -90,12 +107,13 @@ export default {
 
     let upstream;
     try {
+      const headers = {
+        'Accept': request.headers.get('Accept') || route.accept,
+        'User-Agent': 'transport-timetable-worker/1.0'
+      };
+      if (route.key) headers['Ocp-Apim-Subscription-Key'] = route.key;
       upstream = await fetch(target, {
-        headers: {
-          'Accept': request.headers.get('Accept') || route.accept,
-          'Ocp-Apim-Subscription-Key': route.key,
-          'User-Agent': 'transport-timetable-worker/1.0'
-        }
+        headers
       });
     } catch {
       return jsonResponse({error: 'Auckland Transport is temporarily unreachable'}, 502, origin);
@@ -104,7 +122,7 @@ export default {
     if (!upstream.ok) return jsonResponse({error: 'Auckland Transport request failed', status: upstream.status}, upstream.status, origin);
     const headers = new Headers(upstream.headers);
     headers.delete('Set-Cookie');
-    headers.set('Cache-Control', `public, max-age=${cacheSeconds(url.pathname)}`);
+    headers.set('Cache-Control', `public, max-age=${route.cacheSeconds || cacheSeconds(url.pathname)}`);
     headers.set('X-Content-Type-Options', 'nosniff');
     const response = new Response(upstream.body, {status: upstream.status, statusText: upstream.statusText, headers});
     ctx.waitUntil(cache.put(cacheKey, response.clone()));
