@@ -44,6 +44,11 @@
 .fullscreen--entering .departures-panel{transform-origin:center;animation:focus-in .28s cubic-bezier(.2,.8,.2,1) both}.fullscreen--exiting .departures-panel{transform-origin:center;animation:focus-out .24s cubic-bezier(.4,0,.8,.2) both}@keyframes focus-in{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:none}}@keyframes focus-out{from{opacity:1;transform:none}to{opacity:0;transform:scale(.96) translateY(12px)}}
 @media(min-width:901px){.tracking .locate{right:154px;bottom:20px}}
 @media(max-width:720px){.focus-alert-ticker{min-height:48px}.focus-alert-ticker__group{gap:20px;padding:0 20px}.focus-alert-ticker__item{font-size:.75rem}}
+.departure-day-divider{position:sticky;z-index:1;top:0;margin:0 -4px;padding:11px 14px;border-bottom:1px solid var(--line);background:#f3f8fa;color:var(--ocean);font-size:.88rem;font-weight:800}
+.departure-note{margin:-1px 0 10px 90px;padding:7px 12px;border-left:3px solid var(--shore);background:#f2f8fc;color:var(--muted);font-size:.76rem;font-weight:700}
+.departure-note--final{border-left-color:var(--safety);background:#fffbee;color:var(--ocean)}
+.departure-load-sentinel{display:flex;min-height:40px;align-items:center;justify-content:center;padding:8px;color:var(--muted);font-size:.78rem}
+@media(max-width:720px){.departure-note{margin-left:0}.departure-day-divider{top:0}}
 @media(max-width:720px){body:not(.tracking) .search-panel{position:relative;z-index:3;overflow:visible;isolation:auto}}
 @media(prefers-reduced-motion:reduce){.focus-alert-ticker__viewport{overflow-x:auto}.focus-alert-ticker__track{animation:none!important}.focus-alert-ticker__group[aria-hidden=true]{display:none}}
 .route-choice{grid-template-columns:minmax(0,1fr) 58px 44px 36px}.route-shape-toggle{width:58px;height:52px;padding:4px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--shore);font-size:.68rem;font-weight:700;cursor:pointer}.route-shape-toggle:hover{background:var(--soft)}.route-shape-toggle[aria-pressed=true]{border-color:var(--shore);background:var(--shore);color:#fff}.route-shape-toggle:focus-visible{outline:3px solid var(--safety);outline-offset:2px}.route-shape-toggle:disabled{cursor:wait;opacity:.7}.route-shape-toggle--empty{visibility:hidden}
